@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>BP Search</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.search-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#bp {
+    flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    padding: 8px 25px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d5ca8;
+}
+
+.total {
+    margin-bottom: 10px;
+}
+
+.total label {
+    /*display: block;*/
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#totalTK {
+    width: 220px;
+    padding: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #08752d;
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+}
+
+.table-box {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1976d2;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 9px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+#message {
+    text-align: center;
+    padding: 20px;
+}
+
+@media(max-width:600px) {
+
+    .search-area {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #totalTK {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="search-area">
+    <h2>BP Search</h2>
+    <input type="text" id="bp" placeholder="Enter BP" onkeydown="if(event.key==='Enter') searchBP()">
+    <button onclick="searchBP()">Search</button>
+</div>
+
+<div class="total">
+    <label>Total TK</label>
+    <input type="text" id="totalTK" value="0" readonly>
+</div>
+
+
+<div id="message"></div>
+
+<div class="table-box">
+    <table id="resultTable">
+        <thead>   
+        </thead>
+
+        <tbody>   
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxwncq-1Q9YwJs4czdH4aX_nJHA1jb-9EufEEJ_YewwRmEfWXVmfN3ZDLkyIn-42bbU/exec";
+
+
+function searchBP() {
+
+    const bp =
+        document.getElementById("bp").value.trim();
+
+    if (!bp) {
+        alert("BP লিখুন");
+        return;
+    }
+
+    document.getElementById("message").innerHTML =
+        "Searching...";
+
+    document.getElementById("totalTK").value = "0";
+
+    document.querySelector("#resultTable thead").innerHTML = "";
+    document.querySelector("#resultTable tbody").innerHTML = "";
+
+
+    fetch(
+        API_URL + "?bp=" + encodeURIComponent(bp)
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (!data.success) {
+
+            document.getElementById("message").innerHTML =
+                data.message || "Error";
+
+            return;
+        }
+
+        document.getElementById("message").innerHTML = "";
+
+
+        // Total TK
+        document.getElementById("totalTK").value =
+            Number(data.totalTK).toLocaleString();
+
+
+        if (!data.rows || data.rows.length === 0) {
+
+            document.getElementById("message").innerHTML =
+                "এই BP-এর কোনো Data পাওয়া যায়নি।";
+
+            return;
+        }
+
+
+        createTable(data.headers, data.rows);
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById("message").innerHTML =
+            "Server error. আবার চেষ্টা করুন।";
+
+    });
+
+}
+
+
+function createTable(headers, rows) {
+
+    const thead =
+        document.querySelector("#resultTable thead");
+
+    const tbody =
+        document.querySelector("#resultTable tbody");
+
+
+    let headerHTML = "<tr>";
+
+    headers.forEach(header => {
+
+        headerHTML +=
+            "<th>" + escapeHTML(header) + "</th>";
+
+    });
+
+    headerHTML += "</tr>";
+
+    thead.innerHTML = headerHTML;
+
+
+    let bodyHTML = "";
+
+    rows.forEach(row => {
+
+        bodyHTML += "<tr>";
+
+        row.forEach(cell => {
+
+            bodyHTML +=
+                "<td>" + escapeHTML(cell) + "</td>";
+
+        });
+
+        bodyHTML += "</tr>";
+
+    });
+
+    tbody.innerHTML = bodyHTML;
+}
+
+
+function escapeHTML(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+</script>
+
+</body>
+
+</html>
