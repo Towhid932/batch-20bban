@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="batch2020logo.png">
+    <link href="https://kriti.app/cdn/fcebcd9c.css" rel="stylesheet" />
+    <title>2020 Batch Data Entry Form</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #f1f5f9;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: auto;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 5px;
+        font-family: 'Nikosh', sans-serif;
+      }
+      .container .spanSerch{
+        color: #198754;
+        font-weight: 600;
+        font-family: 'Nikosh', sans-serif;
+        padding: 5px 10px;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+      .container a{
+        text-decoration: none;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+      }
+
+      label span {
+        color: red;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 15px;
+        font-family: "Nikosh", sans-serif;
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+      }
+
+      .id-box {
+        background: #f1f5f9;
+        color: #475569;
+      }
+
+      button {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #1d4ed8;
+      }
+
+      button:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+      }
+
+      .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px;
+        border-radius: 7px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .loading {
+        text-align: center;
+        margin-top: 10px;
+        color: #475569;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>বান্দরবান পার্বত্য জেলায় ২০২০ ব্যাচের কল্যাণ ফান্ডে ব্যাচমেটের
+          সাহায্যের জন্য প্রেরিত টাকার তথ্য এন্ট্রি করুন….</h2>
+      <h4 class="spanSerch">আপনার জমাকৃত টাকার তথ্য অনুসন্ধান করতে <a href="serch.html">here</a> ক্লিক করুন</h4>
+
+      <div id="message" class="message"></div>
+
+      <form id="dataForm">
+        <!-- ID Hidden -->
+        <input type="hidden" id="ID" name="ID" />
+
+        <!-- BP -->
+
+        <div class="form-group">
+          <label> BP <span>*</span> </label>
+
+          <input
+            type="text"
+            id="BP"
+            name="BP"
+            placeholder="BP1234567890"
+            maxlength="12"
+            autocomplete="off"
+            required
+          />
+        </div>
+
+        <!-- Rank -->
+
+        <div class="form-group">
+          <label> Rank <span>*</span> </label>
+
+          <select id="Rank" name="Rank" required>
+            <option value="">-- নির্বাচন করুন --</option>
+
+            <option value="কনস্টেবল">কনস্টেবল</option>
+
+            <option value="নায়েক">নায়েক</option>
+
+            <option value="এএসআই (নিরস্ত্র)">এএসআই (নিরস্ত্র)</option>
+          </select>
+        </div>
+
+        <!-- Brush -->
+
+        <div class="form-group">
+          <label> Brush <span>*</span> </label>
+
+          <input type="text" id="Brush" name="Brush" required />
+        </div>
+
+        <!-- Name -->
+
+        <div class="form-group">
+          <label> Name <span>*</span> </label>
+
+          <input type="text" id="Name" name="Name" required />
+        </div>
+
+        <!-- Unit -->
+
+        <div class="form-group">
+          <label> Unit <span>*</span> </label>
+
+          <select id="Unit" name="Unit" required>
+            <option value="">-- নির্বাচন করুন --</option>
+            <option value="সদর থানা">সদর থানা</option>
+            <option value="রুমা থানা">রুমা থানা</option>
+            <option value="রোয়াংছড়ি থানা">রোয়াংছড়ি থানা</option>
+            <option value="নাইক্ষংছড়ি থানা">নাইক্ষংছড়ি থানা</option>
+            <option value="আলীকদম থানা">আলীকদম থানা</option>
+            <option value="থানচি থানা">থানচি থানা</option>
+            <option value="লামা থানা">লামা থানা</option>
+            <option value="ঘুমধুম তদন্ত কেন্দ্র">ঘুমধুম তদন্ত কেন্দ্র</option>
+            <option value="বাইশারী তদন্ত কেন্দ্র">বাইশারী তদন্ত কেন্দ্র</option>
+            <option value="টংকাবতি তদন্ত কেন্দ্র">টংকাবতি তদন্ত কেন্দ্র</option>
+            <option value="সদর ফাঁড়ি">সদর ফাঁড়ি</option>
+            <option value="বাইশারী ফাঁড়ি">বাইশারী ফাঁড়ি</option>
+            <option value="কেয়াজুপাড়া ফাঁড়ি">কেয়াজুপাড়া ফাঁড়ি</option>
+            <option value="গজালিয়া ফাঁড়ি">গজালিয়া ফাঁড়ি</option>
+            <option value="সোনাইছড়ি ফাঁড়ি">সোনাইছড়ি ফাঁড়ি</option>
+            <option value="ফাইতং ফাঁড়ি">ফাইতং ফাঁড়ি</option>
+            <option value="রাজবিল্লা ফাঁড়ি">রাজবিল্লা ফাঁড়ি</option>
+            <option value="ডিবি">ডিবি</option>
+            <option value="ডিএসবি">ডিএসবি</option>
+            <option value="সদর কোর্ট">সদর কোর্ট</option>
+            <option value="লামা কোর্ট">লামা কোর্ট</option>
+            <option value="সদর ট্রাফিক">সদর ট্রাফিক</option>
+            <option value="লামা ট্রাফিক">লামা ট্রাফিক</option>
+            <option value="আলীকদম ট্রাফিক">আলীকদম ট্রাফিক</option>
+            <option value="নাইক্ষ্যংছড়ি ট্রাফিক">নাইক্ষ্যংছড়ি ট্রাফিক</option>
+            <option value="পুলিশ সুপারের কার্যালয়">
+              পুলিশ সুপারের কার্যালয়
+            </option>
+            <option value="এমটি">এমটি</option>
+            <option value="পুলিশ কন্ট্রোল রুম">পুলিশ কন্ট্রোল রুম</option>
+            <option value="ডিপার্টমেন্টাল স্টোর">ডিপার্টমেন্টাল স্টোর</option>
+            <option value="অস্ত্রাগার">অস্ত্রাগার</option>
+            <option value="রেশন স্টোর">রেশন স্টোর</option>
+            <option value="ব্যান্ড গ্রুপ">ব্যান্ড গ্রুপ</option>
+            <option value="রিজার্ভ অফিস">রিজার্ভ অফিস</option>
+            <option value="সদর সার্কেল অফিস">সদর সার্কেল অফিস</option>
+            <option value="লামা সার্কেল অফিস">লামা সার্কেল অফিস</option>
+            <option value="রুমা সার্কেল অফিস">রুমা সার্কেল অফিস</option>
+            <option value="আরআই অফিস">আরআই অফিস</option>
+            <option value="মেজর অফিস">মেজর অফিস</option>
+            <option value="চিম্বুক ক্যাম্প">চিম্বুক ক্যাম্প</option>
+            <option value="মেঘলা ক্যাম্প">মেঘলা ক্যাম্প</option>
+            <option value="মিলনছড়ি ক্যাম্প">মিলনছড়ি ক্যাম্প</option>
+            <option value="হানসামপাড়া ক্যাম্প">হানসামপাড়া ক্যাম্প</option>
+            <option value="বেতছড়া ক্যাম্প">বেতছড়া ক্যাম্প</option>
+            <option value="তারাছামূখ ক্যাম্প">তারাছামূখ ক্যাম্প</option>
+            <option value="তালুকদারপাড়া ক্যাম্প">তালুকদারপাড়া ক্যাম্প</option>
+            <option value="মুরংবাজার ক্যাম্প">মুরংবাজার ক্যাম্প</option>
+            <option value="কৈক্ষ্যংঝিরি ক্যাম্প">কৈক্ষ্যংঝিরি ক্যাম্প</option>
+            <option value="কুমারী ক্যাম্প">কুমারী ক্যাম্প</option>
+            <option value="আজিজনগর ক্যাম্প">আজিজনগর ক্যাম্প</option>
+            <option value="আলীক্ষ্যং ক্যাম্প">আলীক্ষ্যং ক্যাম্প</option>
+            <option value="২৬-কিলো ক্যাম্প">২৬-কিলো ক্যাম্প</option>
+            <option value="রেইচা চেকপোষ্ট">রেইচা চেকপোষ্ট</option>
+            <option value="ডুলুপাড়া চেকপোষ্ট">ডুলুপাড়া চেকপোষ্ট</option>
+            <option value="ইয়াংছা চেকপোষ্ট">ইয়াংছা চেকপোষ্ট</option>
+            <option value="রুমা এসবি গার্ড">রুমা এসবি গার্ড</option>
+            <option value="রোয়াংছড়ি এসবি গার্ড">রোয়াংছড়ি এসবি গার্ড</option>
+            <option value="বেতার বেইজ">বেতার বেইজ</option>
+          </select>
+        </div>
+
+        <!-- Date -->
+
+        <div class="form-group">
+          <label> Date <span>*</span> </label>
+
+          <input type="date" id="Date" name="Date" required />
+        </div>
+
+        <!-- Jonno -->
+
+        <div class="form-group">
+          <label> Jonno <span>*</span> </label>
+
+          <select id="Jonno" name="Jonno" required>
+            <option value="">-- নির্বাচন করুন --</option>
+
+            <option value="আজিজ">আজিজ</option>
+            <option value="মেহেদী">মেহেদী</option>
+            <option value="অনান্য">অনান্য</option>
+          </select>
+        </div>
+
+        <!-- Amount -->
+
+        <div class="form-group">
+          <label> Amount <span>*</span> </label>
+
+          <input
+            type="number"
+            id="Amount"
+            name="Amount"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <!-- Method -->
+
+        <div class="form-group">
+          <label> Method <span>*</span> </label>
+
+          <select id="Method" name="Method" required>
+            <option value="">-- নির্বাচন করুন --</option>
+
+            <option value="CBBL">CBBL</option>
+            <option value="BIKASH">BIKASH</option>
+            <option value="NOGOD">NOGOD</option>
+            <option value="CASH">CASH</option>
+          </select>
+        </div>
+
+        <!-- Photo -->
+
+        <div class="form-group">
+          <label> Photo <span>*</span> </label>
+
+          <input
+            type="file"
+            id="Photo"
+            name="Photo"
+            accept=".jpg,.jpeg,image/jpeg"
+            required
+          />
+        </div>
+
+        <!-- Mobile -->
+
+        <div class="form-group">
+          <label> Mobile <span>*</span> </label>
+
+          <input type="tel" id="Mobile" name="Mobile" required />
+        </div>
+
+        <!-- Remark -->
+
+        <div class="form-group">
+          <label> Remark </label>
+
+          <textarea id="Remark" name="Remark"></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn">Submit</button>
+
+        <div id="loading" class="loading">
+          তথ্য সংরক্ষণ হচ্ছে, অপেক্ষা করুন...
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // =====================================
+      // Apps Script Web App URL
+      // =====================================
+
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzGqY-WZEhY7kRJu-W4fpJY1FMnJ6bVZOkylNpFbF08QnS-N_ZzzK6d2-t8cPFOuzAocw/exec";
+
+      // =====================================
+      // Elements
+      // =====================================
+
+      const form = document.getElementById("dataForm");
+
+      const bpInput = document.getElementById("BP");
+
+      const jonnoInput = document.getElementById("Jonno");
+
+      const idInput = document.getElementById("ID");
+
+      const message = document.getElementById("message");
+
+      const submitBtn = document.getElementById("submitBtn");
+
+      const loading = document.getElementById("loading");
+
+      // =====================================
+      // BP Auto Uppercase
+      // =====================================
+
+      bpInput.addEventListener("input", function () {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      });
+
+      // =====================================
+      // ID তৈরি
+      // BP + Jonno
+      // =====================================
+
+      function generateID() {
+        const bp = bpInput.value.trim().toUpperCase();
+
+        const jonno = jonnoInput.value.trim();
+
+        if (/^BP\d{10}$/.test(bp) && jonno !== "") {
+          idInput.value = bp + jonno;
+        } else {
+          idInput.value = "";
+        }
+      }
+
+      bpInput.addEventListener("input", generateID);
+
+      jonnoInput.addEventListener("change", generateID);
+
+      // =====================================
+      // Message
+      // =====================================
+
+      function showMessage(text, type) {
+        message.textContent = text;
+
+        message.className = "message " + type;
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      function clearMessage() {
+        message.textContent = "";
+
+        message.className = "message";
+      }
+
+      // =====================================
+      // Photo → Base64
+      // =====================================
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+
+          reader.onload = () => resolve(reader.result);
+
+          reader.onerror = () => reject(reader.error);
+
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // =======================Submit
+      // =====================================
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        clearMessage();
+
+        generateID();
+
+        // ------------------------------
+        // BP validation
+        // ------------------------------
+
+        const bp = bpInput.value.trim().toUpperCase();
+
+        if (!/^BP\d{10}$/.test(bp)) {
+          showMessage(
+            "BP অবশ্যই BP দিয়ে শুরু হয়ে মোট ১২টি character হতে হবে। উদাহরণ: BP1234567890",
+            "error",
+          );
+
+          bpInput.focus();
+
+          return;
+        }
+
+        // ------------------------------
+        // Photo
+        // ------------------------------
+
+        const photo = document.getElementById("Photo").files[0];
+
+        if (!photo) {
+          showMessage("Photo নির্বাচন করুন।", "error");
+
+          return;
+        }
+
+        // ------------------------------
+        // JPG/JPEG validation
+        // ------------------------------
+
+        const fileName = photo.name.toLowerCase();
+
+        if (!fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg")) {
+          showMessage("Photo শুধুমাত্র JPG অথবা JPEG হতে হবে।", "error");
+
+          return;
+        }
+
+        // MIME validation
+        if (photo.type && photo.type !== "image/jpeg") {
+          showMessage("শুধুমাত্র JPEG/JPG image গ্রহণ করা হবে।", "error");
+
+          return;
+        }
+
+        // ------------------------------
+        // File size
+        // ------------------------------
+
+        // 5 MB limit
+        const maxSize = 5 * 1024 * 1024;
+
+        if (photo.size > maxSize) {
+          showMessage("Photo-এর size সর্বোচ্চ 5 MB হতে পারবে।", "error");
+
+          return;
+        }
+
+        try {
+          submitBtn.disabled = true;
+
+          loading.style.display = "block";
+
+          // ------------------------------
+          // Base64
+          // ------------------------------
+
+          const photoData = await fileToBase64(photo);
+
+          // ------------------------------
+          // Form Data
+          // ------------------------------
+
+          const formData = new URLSearchParams();
+
+          formData.append("BP", bp);
+
+          formData.append("Rank", document.getElementById("Rank").value);
+
+          formData.append(
+            "Brush",
+            document.getElementById("Brush").value.trim(),
+          );
+
+          formData.append("Name", document.getElementById("Name").value.trim());
+
+          formData.append("Unit", document.getElementById("Unit").value);
+
+          formData.append("Date", document.getElementById("Date").value);
+
+          formData.append("Jonno", document.getElementById("Jonno").value);
+
+          formData.append("Amount", document.getElementById("Amount").value);
+
+          formData.append("Method", document.getElementById("Method").value);
+
+          formData.append(
+            "Mobile",
+            document.getElementById("Mobile").value.trim(),
+          );
+
+          formData.append(
+            "Remark",
+            document.getElementById("Remark").value.trim(),
+          );
+
+          // Hidden ID
+          formData.append("ID", idInput.value);
+
+          // Photo
+          formData.append("PhotoName", photo.name);
+
+          formData.append("PhotoData", photoData);
+
+          // ------------------------------
+          // Send to Apps Script
+          // ------------------------------
+
+          const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showMessage(
+              "তথ্য সফলভাবে সংরক্ষণ হয়েছে। ID: " + result.id,
+              "success",
+            );
+
+            form.reset();
+
+            idInput.value = "";
+          } else {
+            // Duplicate ID সহ server-এর error
+            showMessage(result.message || "তথ্য সংরক্ষণ করা যায়নি।", "error");
+          }
+        } catch (error) {
+          console.error(error);
+
+          showMessage(
+            "Server-এর সাথে যোগাযোগ করা যাচ্ছে না। আবার চেষ্টা করুন।",
+            "error",
+          );
+        } finally {
+          submitBtn.disabled = false;
+
+          loading.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
