@@ -1,425 +1,496 @@
 <!doctype html>
-
 <html lang="bn">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="batch2020logo.png">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&family=Noto+Sans:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-
-    <title>2020 Batch, BBan</title>
+    <title>BP Search System</title>
 
     <style>
-      /* =====================================================
-   GENERAL
-   ===================================================== */
-
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
       }
 
       body {
-        margin: 0;
-
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top left, #1e3a8a, transparent 35%),
+          radial-gradient(circle at bottom right, #0f766e, transparent 35%),
+          #07111f;
+        color: #fff;
         padding: 20px;
-
-        background: #f1f5f9;
-
-        color: #1e293b;
-
-        font-family: "Noto Sans Bengali", "Noto Sans", sans-serif;
       }
 
       .container {
         width: 100%;
-
         max-width: 1200px;
-
         margin: auto;
       }
 
-      /* =====================================================
-   SEARCH BOX
-   ===================================================== */
-
-      .search-box {
-        background: white;
-
-        padding: 25px;
-
-        border-radius: 12px;
-
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      }
-
-      .title {
-        text-align: center;
-
-        margin-top: 0;
-
-        margin-bottom: 20px;
-      }
-
-      /* =====================================================
-   SEARCH ROW
-   ===================================================== */
-
-      .search-row {
+      .topbar {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
 
+      .logo {
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
         gap: 10px;
       }
 
-      #bpInput {
-        flex: 1;
-
-        height: 48px;
-
-        padding: 0 14px;
-
-        border: 1px solid #cbd5e1;
-
-        border-radius: 7px;
-
-        font-size: 17px;
-
-        letter-spacing: 1px;
+      .clock {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 9px 14px;
+        border-radius: 12px;
+        font-size: 13px;
       }
 
-      #bpInput:focus {
-        outline: none;
-
-        border-color: #2563eb;
-      }
-
-      /* =====================================================
-   BUTTONS
-   ===================================================== */
-
-      button {
-        height: 48px;
-
-        padding: 0 25px;
-
-        border: none;
-
-        border-radius: 7px;
-
-        color: white;
-
-        font-size: 16px;
-
+      .switch-btn {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: #111827;
+        padding: 9px 14px;
+        border-radius: 12px;
+        font-size: 13px;
         font-weight: bold;
+        transition: 0.2s;
+      }
 
+      .switch-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .search-panel {
+        display: none;
+      }
+
+      .search-panel.active {
+        display: block;
+        animation: fade 0.3s ease;
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #cbd5e1;
+        margin-bottom: 25px;
+        font-size: 14px;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      button,
+      select {
+        border: none;
+        outline: none;
         cursor: pointer;
       }
 
-      #searchBtn {
-        background: #2563eb;
-      }
-
-      #searchBtn:hover {
-        background: #1d4ed8;
-      }
-
-      #addBtn {
-        background: #00C853;
-      }
-      #addBtn:hover {
-        background: #28A745;
-      }
-      #addBtn a {
-        text-decoration: none;
-      }
-      #printBtn {
-        background: #475569;
-      }
-
-      #printBtn:hover {
-        background: #334155;
-      }
-
-      button:disabled {
-        background: #94a3b8 !important;
-
-        cursor: not-allowed;
-      }
-
-      /* =====================================================
-   MESSAGE
-   ===================================================== */
-
-      .message {
-        display: none;
-
-        margin-top: 15px;
-
-        padding: 12px;
-
-        border-radius: 7px;
-
-        text-align: center;
-
-        font-weight: bold;
-      }
-
-      .message.error {
-        display: block;
-
-        background: #fee2e2;
-
-        color: #991b1b;
-
-        border: 1px solid #fecaca;
-      }
-
-      .message.success {
-        display: block;
-
-        background: #dcfce7;
-
-        color: #166534;
-
-        border: 1px solid #bbf7d0;
-      }
-
-      /* =====================================================
-   TOTAL AMOUNT
-   ===================================================== */
-
-      .total-box {
-        display: none;
-
-        margin-top: 15px;
-
+      .main-btn {
         padding: 18px;
-
-        background: #0f766e;
-
+        border-radius: 15px;
         color: white;
-
-        border-radius: 12px;
-
-        text-align: center;
+        font-size: 17px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #2563eb, #06b6d4);
+        transition: 0.2s;
       }
 
-      .total-title {
+      .main-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+      }
+
+      .admin-btn {
+        background: linear-gradient(135deg, #7c3aed, #db2777);
+      }
+
+      .search-box {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.25);
+        color: white;
         font-size: 16px;
       }
 
-      .total-amount {
-        margin-top: 5px;
+      select option {
+        background: #111827;
+        color: white;
+      }
 
-        font-size: 32px;
+      .search-btn {
+        min-width: 130px;
+        background: #10b981;
+        color: white;
+        border-radius: 12px;
+        font-weight: bold;
+        padding: 0 20px;
+      }
 
+      .search-btn:hover {
+        background: #059669;
+      }
+
+      .admin-menu {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .menu-btn {
+        padding: 13px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 10px;
         font-weight: bold;
       }
 
-      /* =====================================================
-   PRINT DATE TIME
-   ===================================================== */
-
-      .print-date-time {
-        display: none;
-
-        margin-top: 10px;
-
-        text-align: right;
-
-        font-size: 14px;
-
-        color: #334155;
+      .menu-btn.active {
+        background: linear-gradient(135deg, #2563eb, #06b6d4);
       }
 
-      /* =====================================================
-   RESULT TABLE
-   ===================================================== */
+      .total-box {
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 16px;
+        text-align: center;
+        background: linear-gradient(135deg, #064e3b, #047857);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
 
-      .result-box {
-        display: none;
+      .total-label {
+        font-size: 13px;
+        color: #a7f3d0;
+      }
 
-        margin-top: 20px;
+      .total-amount {
+        font-size: 32px;
+        font-weight: 800;
+        margin-top: 5px;
+      }
 
-        background: white;
-
-        padding: 15px;
-
-        border-radius: 12px;
-
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-
+      .table-wrapper {
+        width: 100%;
         overflow-x: auto;
+        border-radius: 15px;
+        margin-top: 20px;
       }
 
       table {
         width: 100%;
-
         border-collapse: collapse;
+        min-width: 1000px;
+        background: rgba(0, 0, 0, 0.18);
       }
 
       th {
-        background: #1e293b;
-
-        color: white;
-
-        padding: 11px;
-
+        background: linear-gradient(135deg, #1d4ed8, #0891b2);
+        padding: 14px 10px;
+        text-align: left;
         white-space: nowrap;
+        font-size: 13px;
       }
 
       td {
-        padding: 10px;
-
-        border-bottom: 1px solid #e2e8f0;
-
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 13px;
         white-space: nowrap;
       }
 
+      tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
       tr:hover {
-        background: #f8fafc;
+        background: rgba(59, 130, 246, 0.15);
       }
 
-      .amount {
-        text-align: right;
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
 
+      .action-btn {
+        padding: 12px 18px;
+        border-radius: 10px;
+        color: white;
         font-weight: bold;
+        background: #334155;
       }
 
-      /* =====================================================
-   MOBILE
-   ===================================================== */
+      .print-btn {
+        background: #f59e0b;
+        color: #111827;
+      }
 
-      @media (max-width: 700px) {
+      .reset-btn {
+        background: #ef4444;
+      }
+
+      .link-btn {
+        background: #8b5cf6;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 9999;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 430px;
+        background: #111827;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+        animation: modalIn 0.25s ease;
+      }
+
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .modal h2 {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .modal p {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 14px;
+        margin-bottom: 22px;
+      }
+
+      .modal input {
+        margin-bottom: 12px;
+      }
+
+      .modal-btn {
+        width: 100%;
+        padding: 14px;
+        margin-top: 8px;
+        border-radius: 12px;
+        color: white;
+        background: #2563eb;
+        font-weight: bold;
+        font-size: 15px;
+      }
+
+      .modal-cancel {
+        background: #374151;
+      }
+
+      .error {
+        color: #fca5a5;
+        font-size: 13px;
+        margin: 4px 0 8px;
+        display: none;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 30px;
+        color: #93c5fd;
+      }
+
+      @media (max-width: 600px) {
         body {
           padding: 10px;
         }
 
-        .search-box {
-          padding: 18px;
+        .card {
+          padding: 16px;
         }
 
-        .search-row {
+        .buttons,
+        .admin-menu {
+          grid-template-columns: 1fr;
+        }
+
+        .search-box {
           flex-direction: column;
         }
 
-        #searchBtn,
-        #printBtn {
+        .search-btn {
+          min-height: 48px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .topbar-right {
           width: 100%;
+          justify-content: space-between;
         }
       }
 
-      /* =====================================================
-   PRINT
-   ===================================================== */
+      .print-header {
+        display: none;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .print-time {
+        font-size: 12px;
+        color: #cbd5e1;
+      }
+
+      /* PRINT STYLES */
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
 
       @media print {
-        @page {
-          size: A4 landscape;
-
-          margin: 10mm;
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
 
         body {
-          background: white;
+          background: #07111f !important;
+          color: #ffffff !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
 
-          padding: 0;
-
-          margin: 0;
+        .no-print,
+        .topbar,
+        .actions,
+        .modal-overlay {
+          display: none !important;
         }
 
         .container {
-          width: 100%;
-
-          max-width: 100%;
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
-        .search-box {
-          box-shadow: none;
-
-          border: 1px solid #000;
-
-          border-radius: 0;
+        .card {
+          box-shadow: none !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+          color: #ffffff !important;
+          padding: 15px !important;
+          border-radius: 12px !important;
         }
 
-        /* Search ও Print button প্রিন্ট হবে না */
-
-        #searchBtn,
-        #printBtn {
-          display: none !important;
-        }
-
-        /* Error/Success message প্রিন্ট হবে না */
-
-        .message {
-          display: none !important;
-        }
-
-        /* Print Date Time */
-
-        .print-date-time {
+        .print-header {
           display: block !important;
-
-          text-align: right;
-
-          margin-top: 10px;
-
-          font-size: 12px;
-
-          color: #000;
+          color: #ffffff !important;
         }
-
-        /* Total Amount */
 
         .total-box {
-          display: block !important;
-
-          background: white !important;
-
-          color: black !important;
-
-          border: 2px solid #000;
-
-          box-shadow: none;
+          background: linear-gradient(135deg, #064e3b, #047857) !important;
+          color: #ffffff !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          padding: 12px !important;
+          margin: 10px 0 !important;
         }
 
-        /* Result */
-
-        .result-box {
-          display: block !important;
-
-          box-shadow: none;
-
-          border: 1px solid #000;
-
-          border-radius: 0;
-
-          overflow: visible;
+        .table-wrapper {
+          overflow: visible !important;
         }
 
         table {
-          width: 100%;
-
-          font-size: 9px;
+          width: 100% !important;
+          min-width: 100% !important;
+          background: rgba(0, 0, 0, 0.25) !important;
         }
 
         th {
-          background: #e5e7eb !important;
-
-          color: black !important;
-
-          border: 1px solid #000;
+          background: linear-gradient(135deg, #1d4ed8, #0891b2) !important;
+          color: #ffffff !important;
+          font-size: 11px !important;
+          padding: 8px 5px !important;
         }
 
         td {
-          border: 1px solid #000;
+          color: #ffffff !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+          font-size: 10px !important;
+          padding: 6px 5px !important;
         }
 
-        tr {
-          page-break-inside: avoid;
+        tr:nth-child(even) {
+          background: rgba(255, 255, 255, 0.05) !important;
         }
       }
     </style>
@@ -427,565 +498,625 @@
 
   <body>
     <div class="container">
-      <!-- =================================================
-       SEARCH BOX
-       ================================================= -->
-
-      <div class="search-box">
-        <h2 class="title">
-          বান্দরবান পার্বত্য জেলায় ২০২০ ব্যাচের কল্যাণ ফান্ডে আপনার ব্যাচমেটের
-          সাহায্যের জন্য আপনার প্রদানকৃত হিসাব দেখুন
-        </h2>
-        <a href="serch.html"></a>
-
-        <div class="search-row">
-          <input type="text" id="bpInput" placeholder="BP লিখুন BP1234567890" maxlength="12" autocomplete="off" spellcheck="false"/>
-
-          <button type="button" id="searchBtn">Search</button>
-
-          <button type="button" id="printBtn" disabled>🖨️ Print</button>
-          <button type="button" id="addBtn"><a href="add.html">➕ Entry</a></button>
+      <div class="topbar no-print">
+        <div class="logo">🔎 BP Search System</div>
+        <div class="topbar-right">
+          <button class="switch-btn" onclick="switchRoleModal()">
+            🔄 Switch Role
+          </button>
+          <div class="clock" id="clock"></div>
         </div>
-
-        <!-- MESSAGE -->
-
-        <div id="message" class="message"></div>
-
-        <!-- TOTAL -->
-
-        <div id="totalBox" class="total-box">
-          <div class="total-title">মোট Amount</div>
-
-          <div id="totalAmount" class="total-amount">0.00</div>
-        </div>
-
-        <!-- PRINT DATE TIME -->
-
-        <div id="printDateTime" class="print-date-time"></div>
       </div>
 
-      <!-- =================================================
-       RESULT
-       ================================================= -->
+      <div class="card">
+        <div class="print-header">
+          <h2>BP Search Result</h2>
+          <div class="print-time" id="printTime"></div>
+        </div>
 
-      <div id="resultBox" class="result-box">
-        <table>
-          <thead>
-            <tr>
-              <th>SL</th>
+        <!-- USER PANEL -->
+        <div id="userPanel" class="search-panel">
+          <h1>User Search</h1>
+          <div class="subtitle no-print">
+            ১২ ডিজিটের BP নম্বর দিয়ে সার্চ করুন
+          </div>
 
-              <th>BP</th>
+          <div class="search-box no-print">
+            <input
+              type="text"
+              id="userBP"
+              placeholder="যেমন: BP1234567890"
+              maxlength="12"
+              autocomplete="off"
+            />
+            <button class="search-btn" onclick="userSearch()">Search</button>
+          </div>
 
-              <th>Rank</th>
+          <div id="userError" class="error no-print">
+            সঠিক ১২ ডিজিটের BP নম্বর দিন।
+          </div>
+          <div id="userResult"></div>
+        </div>
 
-              <th>Brash</th>
+        <!-- ADMIN PANEL -->
+        <div id="adminPanel" class="search-panel">
+          <h1>Admin Search</h1>
+          <div class="subtitle no-print">Search option নির্বাচন করুন</div>
 
-              <th>Name</th>
+          <div class="admin-menu no-print">
+            <button
+              class="menu-btn active"
+              id="bpMenu"
+              onclick="adminMode('bp')"
+            >
+              BP
+            </button>
+            <button
+              class="menu-btn"
+              id="jonnoMenu"
+              onclick="adminMode('jonno')"
+            >
+              Jonno
+            </button>
+            <button
+              class="menu-btn"
+              id="methodMenu"
+              onclick="adminMode('method')"
+            >
+              Method
+            </button>
+            <button class="menu-btn" id="allMenu" onclick="adminMode('all')">
+              All
+            </button>
+          </div>
 
-              <th>Unit</th>
+          <!-- ADMIN BP -->
+          <div id="adminBPBox">
+            <div class="search-box no-print">
+              <input
+                type="text"
+                id="adminBP"
+                placeholder="যেমন: BP1234567890"
+                maxlength="12"
+                autocomplete="off"
+              />
+              <button class="search-btn" onclick="adminBPSearch()">
+                Search
+              </button>
+            </div>
+            <div id="adminBPError" class="error no-print">
+              সঠিক ১২ ডিজিটের BP নম্বর দিন।
+            </div>
+          </div>
 
-              <th>Date</th>
+          <!-- JONNO DROPDOWN -->
+          <div id="jonnoBox" class="hidden">
+            <div class="search-box no-print">
+              <select id="jonnoSelect">
+                <option value="">Jonno নির্বাচন করুন</option>
+              </select>
+              <button class="search-btn" onclick="jonnoSearch()">Search</button>
+            </div>
+          </div>
 
-              <th>Jonno</th>
+          <!-- METHOD DROPDOWN -->
+          <div id="methodBox" class="hidden">
+            <div class="search-box no-print">
+              <select id="methodSelect">
+                <option value="">Method নির্বাচন করুন</option>
+              </select>
+              <button class="search-btn" onclick="methodSearch()">
+                Search
+              </button>
+            </div>
+          </div>
 
-              <th>Amount</th>
+          <!-- ALL -->
+          <div id="allBox" class="hidden">
+            <div class="actions no-print">
+              <button class="action-btn search-btn" onclick="allSearch()">
+                Show All Data
+              </button>
+            </div>
+          </div>
 
-              <th>Method</th>
+          <div id="adminResult"></div>
+        </div>
+      </div>
+    </div>
 
-              <th>Mobile</th>
+    <!-- START / SWITCH MODAL -->
+    <div id="startModal" class="modal-overlay">
+      <div class="modal">
+        <h2>Welcome</h2>
+        <p>আপনি User অথবা Admin হিসেবে প্রবেশ করুন</p>
+        <div class="buttons">
+          <button class="main-btn" onclick="openUser()">👤 User</button>
+          <button class="main-btn admin-btn" onclick="openAdminLogin()">
+            🔐 Admin
+          </button>
+        </div>
+      </div>
+    </div>
 
-              <th>Remark</th>
-            </tr>
-          </thead>
-
-          <tbody id="resultBody"></tbody>
-        </table>
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="modal-overlay hidden">
+      <div class="modal">
+        <h2>Admin Login</h2>
+        <p>Admin ID এবং Password দিন</p>
+        <input
+          type="text"
+          id="adminId"
+          placeholder="Admin ID"
+          autocomplete="off"
+        />
+        <input
+          type="password"
+          id="adminPassword"
+          placeholder="Password"
+          autocomplete="off"
+        />
+        <div id="loginError" class="error">ID অথবা Password ভুল।</div>
+        <button class="modal-btn" onclick="adminLogin()">Login</button>
+        <button class="modal-btn modal-cancel" onclick="closeAdminLogin()">
+          Cancel
+        </button>
       </div>
     </div>
 
     <script>
-      // =====================================================
-      // APPS SCRIPT WEB APP URL
-      // =====================================================
-      //
-      // এখানে আপনার Apps Script Web App URL বসান
-      //
-      // =====================================================
+      // এখানে আপনার Apps Script-এর Web App URL দিন
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbyud2WjDi9iL7a3_LWtUvYlHs7YCWFOLltHhpgjpWtFjlgkD7bWc42Cnbl5HaV7KBVy/exec";
+      const OTHER_PAGE_URL = "https://example.com";
 
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbw48vnkEhT4D4aOHZVJ8Z9C4ZanFU6bpGbrVmiyXKmpLfHXfo-dnEYalh5LbahhJQJi/exec";
+      let currentRole = "";
+      let currentMode = "bp";
+      let resetTimer = null;
 
-      // =====================================================
-      // ELEMENTS
-      // =====================================================
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("clock").textContent = now.toLocaleString(
+          "en-BD",
+          { dateStyle: "medium", timeStyle: "medium" },
+        );
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
 
-      const bpInput = document.getElementById("bpInput");
-
-      const searchBtn = document.getElementById("searchBtn");
-
-      const printBtn = document.getElementById("printBtn");
-
-      const message = document.getElementById("message");
-
-      const totalBox = document.getElementById("totalBox");
-
-      const totalAmount = document.getElementById("totalAmount");
-
-      const resultBox = document.getElementById("resultBox");
-
-      const resultBody = document.getElementById("resultBody");
-
-      const printDateTime = document.getElementById("printDateTime");
-
-      // =====================================================
-      // MESSAGE
-      // =====================================================
-
-      function showMessage(text, type) {
-        message.textContent = text;
-
-        message.className = "message " + type;
+      function switchRoleModal() {
+        clearTimeout(resetTimer);
+        resetAllData();
+        document.getElementById("userPanel").classList.remove("active");
+        document.getElementById("adminPanel").classList.remove("active");
+        document.getElementById("startModal").classList.remove("hidden");
       }
 
-      function clearMessage() {
-        message.textContent = "";
-
-        message.className = "message";
+      function openUser() {
+        currentRole = "user";
+        document.getElementById("startModal").classList.add("hidden");
+        document.getElementById("userPanel").classList.add("active");
+        resetAllData();
+        document.getElementById("userBP").focus();
       }
 
-      // =====================================================
-      // CLEAR RESULT
-      // =====================================================
-
-      function clearResult() {
-        resultBody.innerHTML = "";
-
-        resultBox.style.display = "none";
-
-        totalBox.style.display = "none";
-
-        totalAmount.textContent = "0.00";
-
-        printDateTime.textContent = "";
-
-        printBtn.disabled = true;
+      function openAdminLogin() {
+        document.getElementById("startModal").classList.add("hidden");
+        document.getElementById("adminLoginModal").classList.remove("hidden");
+        document.getElementById("adminId").focus();
       }
 
-      // =====================================================
-      // BP FORMAT
-      // =====================================================
+      function closeAdminLogin() {
+        document.getElementById("adminLoginModal").classList.add("hidden");
+        document.getElementById("startModal").classList.remove("hidden");
+      }
 
-      function validateBP(bp) {
+      async function adminLogin() {
+        const id = document.getElementById("adminId").value.trim();
+        const password = document.getElementById("adminPassword").value;
+        const error = document.getElementById("loginError");
+        error.style.display = "none";
+
+        try {
+          const response = await fetch(
+            API_URL +
+              "?action=login&id=" +
+              encodeURIComponent(id) +
+              "&password=" +
+              encodeURIComponent(password),
+            { redirect: "follow" },
+          );
+          const result = await response.json();
+
+          if (result.success) {
+            currentRole = "admin";
+            document.getElementById("adminLoginModal").classList.add("hidden");
+            document.getElementById("adminPanel").classList.add("active");
+            resetAllData();
+            loadJonnoOptions();
+          } else {
+            error.style.display = "block";
+          }
+        } catch (err) {
+          error.textContent = "Server connection error.";
+          error.style.display = "block";
+        }
+      }
+
+      function validBP(bp) {
         return /^BP\d{10}$/.test(bp);
       }
 
-      // =====================================================
-      // LIVE VALIDATION
-      //
-      // লিখার সাথে সাথে Error
-      // =====================================================
+      async function userSearch() {
+        clearTimeout(resetTimer);
+        const input = document.getElementById("userBP");
+        const bp = input.value.trim();
+        const error = document.getElementById("userError");
+        error.style.display = "none";
 
-      bpInput.addEventListener("input", function () {
-        const value = this.value;
-
-        clearMessage();
-
-        clearResult();
-
-        // ---------------------------------------------
-        // Empty
-        // ---------------------------------------------
-
-        if (value.length === 0) {
+        if (!validBP(bp)) {
+          error.textContent =
+            "ভুল BP! অবশ্যই BP দিয়ে শুরু করে মোট ১২ ডিজিট দিতে হবে।";
+          error.style.display = "block";
+          input.focus();
           return;
         }
 
-        // ---------------------------------------------
-        // প্রথম character B
-        // ---------------------------------------------
-
-        if (value.charAt(0) !== "B") {
-          showMessage("Error: শুরুতে অবশ্যই বড় হাতের B দিতে হবে।", "error");
-
-          return;
-        }
-
-        // ---------------------------------------------
-        // দ্বিতীয় character P
-        // ---------------------------------------------
-
-        if (value.length >= 2 && value.substring(0, 2) !== "BP") {
-          showMessage("Error: শুরুতে অবশ্যই বড় হাতের BP দিতে হবে।", "error");
-
-          return;
-        }
-
-        // ---------------------------------------------
-        // BP-এর পরে শুধু সংখ্যা
-        // ---------------------------------------------
-
-        if (value.length > 2 && !/^BP\d*$/.test(value)) {
-          showMessage(
-            "Error: BP-এর পরে শুধু সংখ্যা দিতে হবে। কোনো Space বা চিহ্ন দেওয়া যাবে না।",
-            "error",
-          );
-
-          return;
-        }
-
-        // ---------------------------------------------
-        // 12-এর বেশি
-        // ---------------------------------------------
-
-        if (value.length > 12) {
-          showMessage("Error: BP অবশ্যই ১২টি character হতে হবে।", "error");
-
-          return;
-        }
-
-        // ---------------------------------------------
-        // সম্পূর্ণ BP সঠিক
-        // ---------------------------------------------
-
-        if (value.length === 12 && validateBP(value)) {
-          showMessage("BP সঠিক হয়েছে। এখন Search করুন।", "success");
-        }
-      });
-
-      // =====================================================
-      // SEARCH
-      // =====================================================
-
-      async function searchBP() {
-        clearMessage();
-
-        clearResult();
-
-        const bp = bpInput.value;
-
-        // ===============================================
-        // 1. খালি
-        // ===============================================
-
-        if (bp === "") {
-          showMessage("Error: BP লিখুন।", "error");
-
-          bpInput.focus();
-
-          return;
-        }
-
-        // ===============================================
-        // 2. শুরুতে BP নেই
-        // ===============================================
-
-        if (!bp.startsWith("BP")) {
-          showMessage(
-            "Error: BP অবশ্যই শুরুতে বড় হাতের BP দিয়ে শুরু হতে হবে।",
-            "error",
-          );
-
-          bpInput.focus();
-
-          return;
-        }
-
-        // ===============================================
-        // 3. ছোট হাতের bp
-        // ===============================================
-
-        if (bp.startsWith("bp") || bp.startsWith("Bp") || bp.startsWith("bP")) {
-          showMessage("Error: শুরুতে অবশ্যই বড় হাতের BP দিতে হবে।", "error");
-
-          bpInput.focus();
-
-          return;
-        }
-
-        // ===============================================
-        // 4. Length
-        // ===============================================
-
-        if (bp.length !== 12) {
-          showMessage("Error: BP অবশ্যই ১২টি character হতে হবে।", "error");
-
-          bpInput.focus();
-
-          return;
-        }
-
-        // ===============================================
-        // 5. Format
-        // ===============================================
-
-        if (!validateBP(bp)) {
-          showMessage(
-            "Error: BP-এর পরে অবশ্যই ১০টি সংখ্যা দিতে হবে। কোনো Space বা চিহ্ন দেওয়া যাবে না।",
-            "error",
-          );
-
-          bpInput.focus();
-
-          return;
-        }
-
-        // ===============================================
-        // SEARCHING
-        // ===============================================
-
-        searchBtn.disabled = true;
-
-        printBtn.disabled = true;
-
-        searchBtn.textContent = "Searching...";
-
+        showLoading("userResult");
         try {
-          // ---------------------------------------------
-          // URL
-          // ---------------------------------------------
-
-          const url = SCRIPT_URL + "?bp=" + encodeURIComponent(bp);
-
-          // ---------------------------------------------
-          // Request
-          // ---------------------------------------------
-
-          const response = await fetch(url, {
-            method: "GET",
-          });
-
-          if (!response.ok) {
-            throw new Error("Server response error");
-          }
-
-          // ---------------------------------------------
-          // JSON
-          // ---------------------------------------------
-
-          const data = await response.json();
-
-          // ---------------------------------------------
-          // Server Error
-          // ---------------------------------------------
-
-          if (!data.success) {
-            showMessage(data.message || "কোনো তথ্য পাওয়া যায়নি।", "error");
-
-            return;
-          }
-
-          // ---------------------------------------------
-          // Success
-          // ---------------------------------------------
-
-          showMessage(
-            "তথ্য পাওয়া গেছে। মোট " + data.count + "টি এন্ট্রি।",
-            "success",
-          );
-
-          // ---------------------------------------------
-          // Total Amount
-          // ---------------------------------------------
-
-          totalAmount.textContent = Number(
-            data.totalAmount || 0,
-          ).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-
-            maximumFractionDigits: 2,
-          });
-
-          totalBox.style.display = "block";
-
-          // ---------------------------------------------
-          // Table
-          // ---------------------------------------------
-
-          data.results.forEach(function (item, index) {
-            const tr = document.createElement("tr");
-
-            // SL
-
-            createCell(tr, index + 1);
-
-            // BP
-
-            createCell(tr, item.BP);
-
-            // Rank
-
-            createCell(tr, item.Rank);
-
-            // Brush
-
-            createCell(tr, item.Brush);
-
-            // Name
-
-            createCell(tr, item.Name);
-
-            // Unit
-
-            createCell(tr, item.Unit);
-
-            // Date
-
-            createCell(tr, item.Date);
-
-            // Jonno
-
-            createCell(tr, item.Jonno);
-
-            // Amount
-
-            const amountCell = createCell(
-              tr,
-
-              Number(item.Amount || 0).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-
-                maximumFractionDigits: 2,
-              }),
-            );
-
-            amountCell.className = "amount";
-
-            // Method
-
-            createCell(tr, item.Method);
-
-            // Mobile
-
-            createCell(tr, item.Mobile);
-
-            // Remark
-
-            createCell(tr, item.Remark);
-
-            resultBody.appendChild(tr);
-          });
-
-          // ---------------------------------------------
-          // Show Result
-          // ---------------------------------------------
-
-          resultBox.style.display = "block";
-
-          // ---------------------------------------------
-          // Enable Print
-          // ---------------------------------------------
-
-          printBtn.disabled = false;
-        } catch (error) {
-          console.error(error);
-
-          showMessage(
-            "Google Sheet-এর সাথে যোগাযোগ করা যাচ্ছে না। Apps Script Web App URL ও Deployment পরীক্ষা করুন।",
-            "error",
-          );
-        } finally {
-          searchBtn.disabled = false;
-
-          searchBtn.textContent = "Search";
+          const data = await getData("bp", bp);
+          renderResults(data, "userResult");
+          startAutoReset(10);
+        } catch (err) {
+          showError("userResult", "ডাটা পাওয়া যায়নি।");
         }
       }
 
-      // =====================================================
-      // CREATE TABLE CELL
-      // =====================================================
+      async function adminBPSearch() {
+        clearTimeout(resetTimer);
+        const bp = document.getElementById("adminBP").value.trim();
+        const error = document.getElementById("adminBPError");
+        error.style.display = "none";
 
-      function createCell(row, value) {
-        const td = document.createElement("td");
-
-        td.textContent = value ?? "";
-
-        row.appendChild(td);
-
-        return td;
-      }
-
-      // =====================================================
-      // PRINT DATE & TIME
-      // =====================================================
-
-      function getPrintDateTime() {
-        const now = new Date();
-
-        const day = String(now.getDate()).padStart(2, "0");
-
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-
-        const year = now.getFullYear();
-
-        let hours = now.getHours();
-
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-
-        const seconds = String(now.getSeconds()).padStart(2, "0");
-
-        const ampm = hours >= 12 ? "PM" : "AM";
-
-        hours = hours % 12 || 12;
-
-        hours = String(hours).padStart(2, "0");
-
-        return (
-          day +
-          "-" +
-          month +
-          "-" +
-          year +
-          " " +
-          hours +
-          ":" +
-          minutes +
-          ":" +
-          seconds +
-          " " +
-          ampm
-        );
-      }
-
-      // =====================================================
-      // PRINT
-      // =====================================================
-
-      function printPage() {
-        if (resultBody.children.length === 0) {
-          showMessage("Error: প্রথমে BP দিয়ে Search করুন।", "error");
-
+        if (!validBP(bp)) {
+          error.textContent =
+            "ভুল BP! অবশ্যই BP দিয়ে শুরু করে মোট ১২ ডিজিট দিতে হবে।";
+          error.style.display = "block";
           return;
         }
 
-        // Print-এর ঠিক সময়ের Date & Time
+        showLoading("adminResult");
+        try {
+          const data = await getData("bp", bp);
+          renderResults(data, "adminResult");
+          startAutoReset(30);
+        } catch (err) {
+          showError("adminResult", "ডাটা পাওয়া যায়নি।");
+        }
+      }
 
-        printDateTime.textContent =
-          "প্রিন্টের তারিখ ও সময়: " + getPrintDateTime();
+      function adminMode(mode) {
+        currentMode = mode;
+        clearTimeout(resetTimer);
+        resetResult();
+        document
+          .querySelectorAll(".menu-btn")
+          .forEach((btn) => btn.classList.remove("active"));
 
+        if (mode === "bp") {
+          document.getElementById("bpMenu").classList.add("active");
+          document.getElementById("adminBPBox").classList.remove("hidden");
+          document.getElementById("jonnoBox").classList.add("hidden");
+          document.getElementById("methodBox").classList.add("hidden");
+          document.getElementById("allBox").classList.add("hidden");
+        } else if (mode === "jonno") {
+          document.getElementById("jonnoMenu").classList.add("active");
+          document.getElementById("adminBPBox").classList.add("hidden");
+          document.getElementById("jonnoBox").classList.remove("hidden");
+          document.getElementById("methodBox").classList.add("hidden");
+          document.getElementById("allBox").classList.add("hidden");
+          loadJonnoOptions();
+        } else if (mode === "method") {
+          document.getElementById("methodMenu").classList.add("active");
+          document.getElementById("adminBPBox").classList.add("hidden");
+          document.getElementById("jonnoBox").classList.add("hidden");
+          document.getElementById("methodBox").classList.remove("hidden");
+          document.getElementById("allBox").classList.add("hidden");
+          loadMethodOptions();
+        } else if (mode === "all") {
+          document.getElementById("allMenu").classList.add("active");
+          document.getElementById("adminBPBox").classList.add("hidden");
+          document.getElementById("jonnoBox").classList.add("hidden");
+          document.getElementById("methodBox").classList.add("hidden");
+          document.getElementById("allBox").classList.remove("hidden");
+        }
+      }
+
+      async function loadJonnoOptions() {
+        const select = document.getElementById("jonnoSelect");
+        select.innerHTML = '<option value="">Loading...</option>';
+        try {
+          const response = await getData("jonnoList", "");
+          select.innerHTML = '<option value="">Jonno নির্বাচন করুন</option>';
+          response.forEach((value) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+        } catch (err) {
+          select.innerHTML = '<option value="">Load failed</option>';
+        }
+      }
+
+      async function loadMethodOptions() {
+        const select = document.getElementById("methodSelect");
+        select.innerHTML = '<option value="">Loading...</option>';
+        try {
+          const response = await getData("methodList", "");
+          select.innerHTML = '<option value="">Method নির্বাচন করুন</option>';
+          response.forEach((value) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+        } catch (err) {
+          select.innerHTML = '<option value="">Load failed</option>';
+        }
+      }
+
+      async function jonnoSearch() {
+        clearTimeout(resetTimer);
+        const value = document.getElementById("jonnoSelect").value;
+        if (!value) return alert("Jonno নির্বাচন করুন।");
+
+        showLoading("adminResult");
+        try {
+          const data = await getData("jonno", value);
+          renderResults(data, "adminResult");
+          startAutoReset(30);
+        } catch (err) {
+          showError("adminResult", "ডাটা পাওয়া যায়নি।");
+        }
+      }
+
+      async function methodSearch() {
+        clearTimeout(resetTimer);
+        const value = document.getElementById("methodSelect").value;
+        if (!value) return alert("Method নির্বাচন করুন।");
+
+        showLoading("adminResult");
+        try {
+          const data = await getData("method", value);
+          renderResults(data, "adminResult");
+          startAutoReset(30);
+        } catch (err) {
+          showError("adminResult", "ডাটা পাওয়া যায়নি।");
+        }
+      }
+
+      async function allSearch() {
+        clearTimeout(resetTimer);
+        showLoading("adminResult");
+        try {
+          const data = await getData("all", "");
+          renderResults(data, "adminResult");
+          startAutoReset(40);
+        } catch (err) {
+          showError("adminResult", "ডাটা পাওয়া যায়নি।");
+        }
+      }
+
+      async function getData(action, value) {
+        const url =
+          API_URL +
+          "?action=" +
+          encodeURIComponent(action) +
+          "&value=" +
+          encodeURIComponent(value);
+        const response = await fetch(url, { redirect: "follow" });
+        if (!response.ok) throw new Error("Network error");
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message || "Error");
+        return result.data;
+      }
+
+      // RENDER SEARCH RESULTS (নিখুঁত যোগফল ও তারিখ ফরম্যাট সহ)
+      function renderResults(data, targetId) {
+        const target = document.getElementById(targetId);
+
+        if (!data || data.length === 0) {
+          target.innerHTML = `
+        <div class="total-box">
+          <div class="total-amount">No Data</div>
+        </div>
+      `;
+          return;
+        }
+
+        let total = 0;
+
+        // Index 7 = Col H (Amount) কলামের মান হিসাব করা
+        data.forEach((row) => {
+          let rawAmount = row[7];
+          let num = 0;
+
+          if (typeof rawAmount === "number") {
+            num = rawAmount;
+          } else if (rawAmount) {
+            num = parseFloat(String(rawAmount).replace(/,/g, "").trim()) || 0;
+          }
+
+          total += num;
+        });
+
+        let html = `
+      <div class="total-box">
+        <div class="total-label">Total Amount</div>
+        <div class="total-amount">${formatNumber(total)}</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>SL</th>
+              <th>BP</th>
+              <th>Rank</th>
+              <th>Brash</th>
+              <th>Name</th>
+              <th>Unit</th>
+              <th>Date</th>
+              <th>Jonno</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Mobile</th>
+              <th>Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+        data.forEach((row, index) => {
+          html += "<tr>";
+          html += `<td>${index + 1}</td>`;
+
+          for (let i = 0; i < 11; i++) {
+            let value = row[i] ?? "";
+
+            // Index 5 (Col F = Date) ফরম্যাট
+            if (i === 5) {
+              value = formatDate(value);
+            }
+
+            // Index 7 (Col H = Amount) ফরম্যাট
+            if (i === 7) {
+              let amtNum =
+                parseFloat(String(value).replace(/,/g, "").trim()) || 0;
+              value = formatNumber(amtNum);
+            }
+
+            html += `<td>${escapeHTML(String(value))}</td>`;
+          }
+
+          html += "</tr>";
+        });
+
+        html += `
+          </tbody>
+        </table>
+      </div>
+
+      <div class="actions no-print">
+        <button class="action-btn print-btn" onclick="printResults()">🖨 Print</button>
+        <button class="action-btn reset-btn" onclick="resetResult()">↻ Reset</button>
+        <button class="action-btn link-btn" onclick="openOtherPage()">🔗 Other Page</button>
+      </div>
+    `;
+
+        target.innerHTML = html;
+      }
+
+      // DATE FORMATTER (dd/mm/yyyy)
+      function formatDate(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
+
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+      }
+
+      function escapeHTML(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function formatNumber(number) {
+        return new Intl.NumberFormat("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(number);
+      }
+
+      function startAutoReset(seconds) {
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => {
+          resetAllData();
+        }, seconds * 1000);
+      }
+
+      function resetResult() {
+        document.getElementById("userResult").innerHTML = "";
+        document.getElementById("adminResult").innerHTML = "";
+        document.getElementById("userError").style.display = "none";
+        document.getElementById("adminBPError").style.display = "none";
+        clearTimeout(resetTimer);
+      }
+
+      function resetAllData() {
+        resetResult();
+        const user = document.getElementById("userBP");
+        const admin = document.getElementById("adminBP");
+        if (user) user.value = "";
+        if (admin) admin.value = "";
+      }
+
+      function showLoading(id) {
+        document.getElementById(id).innerHTML =
+          `<div class="loading">⏳ Searching...</div>`;
+      }
+
+      function showError(id, message) {
+        document.getElementById(id).innerHTML = `
+      <div class="total-box">
+        <div class="total-amount">${escapeHTML(message)}</div>
+      </div>
+    `;
+      }
+
+      function printResults() {
+        const now = new Date();
+        document.getElementById("printTime").textContent =
+          "Printed: " +
+          now.toLocaleString("en-BD", {
+            dateStyle: "full",
+            timeStyle: "medium",
+          });
         window.print();
       }
 
-      // =====================================================
-      // SEARCH BUTTON
-      // =====================================================
+      function openOtherPage() {
+        window.open("add.html", "_blank");
+      }
 
-      searchBtn.addEventListener("click", searchBP);
-
-      // =====================================================
-      // PRINT BUTTON
-      // =====================================================
-
-      printBtn.addEventListener("click", printPage);
-
-      // =====================================================
-      // ENTER KEY
-      // =====================================================
-
-      bpInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          searchBP();
-        }
+      document.getElementById("userBP").addEventListener("input", function () {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
       });
+
+      document.getElementById("adminBP").addEventListener("input", function () {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      });
+
+      document
+        .getElementById("userBP")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") userSearch();
+        });
+
+      document
+        .getElementById("adminBP")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") adminBPSearch();
+        });
     </script>
   </body>
 </html>
