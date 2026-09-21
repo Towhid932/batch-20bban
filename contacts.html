@@ -1,111 +1,404 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>২০২০ ব্যাচ, বান্দরবান পার্বত্য জেলা</title>
 
-    <!-- DataTable CSS  -->
+    <!-- Bootstrap 5 CSS & Icons -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
     />
     <link
       rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
 
-    <title>2020 Batch, Contacts</title>
     <style>
-      h1 {
-        text-align: center;
+      :root {
+        --primary-gradient: linear-gradient(135deg, #0d6efd 0%, #004085 100%);
+      }
+
+      body {
+        background: #f0f4f8;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 12px 0;
+      }
+
+      .main-title {
+        color: #0d6efd;
+        font-weight: 800;
+      }
+
+      /* সেন্ট্রাল কন্টেইনার - মোবাইলে পুরো উইডথ নিবে */
+      .center-wrapper {
+        width: 100%;
+        max-width: 520px; /* ডেক্সটপ ও বড় স্ক্রিনের জন্য সাইজ কিছুটা বাড়ানো হয়েছে */
+        padding: 0 10px;
+      }
+
+      /* কার্ড স্টাইলিং */
+      .contact-card {
+        border: none;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+      }
+
+      .card-header-graphic {
+        background: var(--primary-gradient);
+        color: #ffffff;
+        padding: 22px 18px;
+        position: relative;
+      }
+
+      .card-header-graphic::after {
+        content: '';
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 110px;
+        height: 110px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .avatar-box {
+        width: 62px;
+        height: 62px;
+        background: #ffffff;
+        color: #0d6efd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        border: 3px solid rgba(255, 255, 255, 0.85);
+        flex-shrink: 0;
+      }
+
+      .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .icon-shape {
+        width: 38px;
+        height: 38px;
+        background-color: #eef5ff;
+        color: #0d6efd;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 14px;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+      }
+
+      .info-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 1px;
+      }
+
+      .info-value {
+        font-size: 1.05rem; /* নাম ও তথ্য আরও বড় দেখানো হবে */
+        font-weight: 600;
+        color: #2b303a;
+        margin-bottom: 0;
+      }
+
+      .phone-btn {
+        background: linear-gradient(135deg, #198754 0%, #0f5132 100%);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 30px;
+        padding: 10px 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
+      }
+
+      .phone-btn:hover {
+        color: #ffffff;
+      }
+
+      .nav-controls {
+        width: 100%;
+        margin-top: 18px;
+      }
+
+      .nav-btn {
+        padding: 10px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      /* কার্ড ট্রানজিশন কন্টেইনার */
+      .card-slider-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+      }
+
+      .card-item {
+        display: none;
+        width: 100%;
+      }
+
+      .card-item.active {
+        display: block;
+      }
+
+      /* স্লাইড ও ফেড অ্যানিমেশন */
+      .slide-next {
+        animation: slideNext 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+
+      .slide-prev {
+        animation: slidePrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+
+      @keyframes slideNext {
+        from {
+          opacity: 0;
+          transform: translateX(60px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+      }
+
+      @keyframes slidePrev {
+        from {
+          opacity: 0;
+          transform: translateX(-60px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+      }
+
+      /* মোবাইল ডিভাইসের জন্য বিশেষ স্টাইল */
+      @media (max-width: 576px) {
+        body {
+          padding: 8px 0;
+        }
+
+        .center-wrapper {
+          padding: 0 8px; /* স্ক্রিনের দুই পাশে জায়গা বাড়িয়ে কার্ড বড় করা হয়েছে */
+        }
+
+        .contact-card .card-body {
+          padding: 1.25rem !important; /* ভেতরের খালি জায়গা একটু কমিয়ে কন্টেন্ট বড় দেখানো হচ্ছে */
+        }
+
+        .main-title {
+          font-size: 1.5rem !important;
+        }
+
+        .info-value {
+          font-size: 1rem;
+        }
       }
     </style>
   </head>
 
   <body>
-    <!-- Main Content -->
-    <div class="container p-3 my-5 bg-light border border-primary">
-      <!-- DataTable Code starts -->
+    <div class="center-wrapper">
+      <!-- শিরোনাম -->
+      <div class="text-center mb-3">
+        <h1 class="main-title mb-1 fs-3">২০২০ ব্যাচ, বান্দরবান</h1>
+        <p class="text-muted small mb-0">যোগাযোগ নির্দেশিকা ও পরিচিতি ডাটাবেজ</p>
+      </div>
 
-      <h1>২০২০ ব্যাচ, বান্দরবান পার্বত্য জেলা।</h1>
-      <table
-        id="example"
-        class="table table-striped nowrap"
-        style="width: 100%"
-      >
-        <thead>
-          <tr>
-            <th><a href="index.html">Home</a></th>
-            <th>দপ্তর/শাখা</th>
-            <th>পদবি</th>
-            <th>নাম</th>
-            <th>বিপি</th>
-            <th>পদ</th>
-            <th>মোবাইল</th>
-            <th>নিজ থানা ও জেলা</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!----- এর উপরে কাজ করার দরকার নাই নিচে এড করতে হবে------->
-          <!--
-                <tr>
-                    <td><a href="index.html">Home</a></td>
-                    <td>তারিখ</td>
-                    <td>সারক</td>
-                    <td>অভ্যন্তরীণ বদলি বার্তা</td>
-                    <td>জন</td>
-                    <td></td>
-                    <td><a href="লিংক">download</a></td>
-                    <td>onesectionnkl@gmail.com</td>
-                </tr>
-            -->
+      <!-- কার্ড স্লাইডার কন্টেইনার -->
+      <div class="card-slider-wrapper">
+        <div id="cardSlider"></div>
+      </div>
 
-          <tr>
-            <td>1</td>
-            <td>রিজার্ভ অফিস</td>
-            <td>কনস্টেবল</td>
-            <td>আব্দুর রাকিব</td>
-            <td>0020230363</td>
-            <td>অপারেটর</td>
-            <td>01616029889</td>
-            <td>চরজব্বর, নোয়াখালী</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>রিজার্ভ অফিস</td>
-            <td>কনস্টেবল</td>
-            <td>মোঃ তৌহিদুল ইসলাম</td>
-            <td>9920229921</td>
-            <td>অপারেটর</td>
-            <td>01641663596</td>
-            <td>পেকুয়া, কক্সবাজার</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>আরআই অফিস</td>
-            <td>কনস্টেবল</td>
-            <td>মোহাম্মদ তৌহিদুল ইসলাম</td>
-            <td>0020229938</td>
-            <td>এলসি</td>
-            <td>01879252643</td>
-            <td>পেকুয়া, কক্সবাজার</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Next & Previous বাটন -->
+      <div class="nav-controls d-flex justify-content-between align-items-center px-1">
+        <button id="prevBtn" class="btn btn-primary nav-btn rounded-pill shadow-sm" onclick="changeCard(-1)" disabled>
+          <i class="bi bi-arrow-left me-1"></i> পূর্ববর্তী
+        </button>
+
+        <span id="pageIndicator" class="fw-bold text-secondary fs-5">
+          ০ / ০
+        </span>
+
+        <button id="nextBtn" class="btn btn-primary nav-btn rounded-pill shadow-sm" onclick="changeCard(1)" disabled>
+          পরবর্তী <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- DataTable JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+    <!-- JavaScript Segment -->
+    <script>
+      // জেসন ডাটা
+      const contactData = [
+        {
+          "id": 1,
+          "name": "আব্দুর রাকিব",
+          "designation": "কনস্টেবল",
+          "post": "অপারেটর",
+          "office": "রিজার্ভ অফিস",
+          "bp": "0020230363",
+          "address": "চরজব্বর, নোয়াখালী",
+          "phone": "01616029889"
+        },
+        {
+          "id": 2,
+          "name": "মোঃ তৌহিদুল ইসলাম",
+          "designation": "কনস্টেবল",
+          "post": "অপারেটর",
+          "office": "রিজার্ভ অফিস",
+          "bp": "9920229921",
+          "address": "পেকুয়া, কক্সবাজার",
+          "phone": "01641663596"
+        },
+        {
+          "id": 3,
+          "name": "মোহাম্মদ তৌহিদুল ইসলাম",
+          "designation": "কনস্টেবল",
+          "post": "এলসি",
+          "office": "আরআই অফিস",
+          "bp": "0020229938",
+          "address": "পেকুয়া, কক্সবাজার",
+          "phone": "01879252643"
+        }
+      ];
 
-    <!-- Custom JS -->
-    <script src="script.js"></script>
+      let currentIndex = 0;
+      const totalCards = contactData.length;
+
+      // বাংলা সংখ্যা রূপান্তর
+      function toBanglaNumber(num) {
+        const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        return num.toString().replace(/\d/g, (x) => banglaDigits[x]);
+      }
+
+      // কার্ড রেন্ডার
+      function renderCards() {
+        const sliderContainer = document.getElementById('cardSlider');
+        sliderContainer.innerHTML = '';
+
+        contactData.forEach((data, index) => {
+          const activeClass = index === 0 ? 'active' : '';
+          const cardHTML = `
+            <div class="card-item ${activeClass}" id="card-${index}">
+              <div class="contact-card">
+                <div class="card-header-graphic d-flex align-items-center gap-3">
+                  <div class="avatar-box">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <span class="badge bg-light text-primary rounded-pill px-2 py-1 mb-1 fs-6"># ${toBanglaNumber(index + 1)}</span>
+                    <h5 class="mb-0 fw-bold fs-5">${data.name}</h5>
+                  </div>
+                </div>
+
+                <div class="card-body p-4">
+                  <div class="info-row">
+                    <div class="icon-shape"><i class="bi bi-person-badge"></i></div>
+                    <div>
+                      <p class="info-label">পদবি ও পদ</p>
+                      <p class="info-value">${data.designation} (${data.post})</p>
+                    </div>
+                  </div>
+
+                  <div class="info-row">
+                    <div class="icon-shape"><i class="bi bi-building"></i></div>
+                    <div>
+                      <p class="info-label">দপ্তর/শাখা</p>
+                      <p class="info-value">${data.office}</p>
+                    </div>
+                  </div>
+
+                  <div class="info-row">
+                    <div class="icon-shape"><i class="bi bi-shield-check"></i></div>
+                    <div>
+                      <p class="info-label">বিপি নম্বর</p>
+                      <p class="info-value">${data.bp}</p>
+                    </div>
+                  </div>
+
+                  <div class="info-row">
+                    <div class="icon-shape"><i class="bi bi-geo-alt"></i></div>
+                    <div>
+                      <p class="info-label">নিজ থানা ও জেলা</p>
+                      <p class="info-value">${data.address}</p>
+                    </div>
+                  </div>
+
+                  <hr class="my-3 text-secondary opacity-25" />
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="info-label fs-6 fw-semibold">কল দিন</span>
+                    <a href="tel:${data.phone}" class="phone-btn">
+                      <i class="bi bi-telephone-fill"></i> ${data.phone}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          sliderContainer.innerHTML += cardHTML;
+        });
+
+        updateNavState();
+      }
+
+      // স্লাইড নেভিগেশন
+      function changeCard(direction) {
+        const cards = document.querySelectorAll('.card-item');
+        
+        cards[currentIndex].classList.remove('active', 'slide-next', 'slide-prev');
+
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= totalCards) currentIndex = totalCards - 1;
+
+        const nextCard = cards[currentIndex];
+        nextCard.classList.add('active');
+
+        if (direction === 1) {
+          nextCard.classList.add('slide-next');
+        } else {
+          nextCard.classList.add('slide-prev');
+        }
+
+        updateNavState();
+      }
+
+      // বাটনের অবস্থা ও পেজিং টেক্সট আপডেট
+      function updateNavState() {
+        document.getElementById('pageIndicator').innerText = 
+          toBanglaNumber(currentIndex + 1) + ' / ' + toBanglaNumber(totalCards);
+
+        document.getElementById('prevBtn').disabled = (currentIndex === 0);
+        document.getElementById('nextBtn').disabled = (currentIndex === totalCards - 1);
+      }
+
+      window.onload = renderCards;
+    </script>
   </body>
 </html>
