@@ -1,292 +1,1714 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>BP Search</title>
-
-<style>
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.search-area {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#bp {
-    flex: 1;
-    padding: 8px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-button {
-    padding: 8px 25px;
-    background: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #0d5ca8;
-}
-
-.total {
-    margin-bottom: 10px;
-}
-
-.total label {
-    /*display: block;*/
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-#totalTK {
-    width: 220px;
-    padding: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #08752d;
-    background: #e8f5e9;
-    border: 2px solid #4caf50;
-    border-radius: 6px;
-}
-
-.table-box {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th {
-    background: #1976d2;
-    color: white;
-    padding: 10px;
-}
-
-td {
-    padding: 9px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-tr:nth-child(even) {
-    background: #f5f5f5;
-}
-
-#message {
-    text-align: center;
-    padding: 20px;
-}
-
-@media(max-width:600px) {
-
-    .search-area {
-        flex-direction: column;
-    }
-
-    button {
-        width: 100%;
-    }
-
-    #totalTK {
-        width: 100%;
-        box-sizing: border-box;
-    }
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="search-area">
-    <h2>BP Search</h2>
-    <input type="text" id="bp" placeholder="Enter BP" onkeydown="if(event.key==='Enter') searchBP()">
-    <button onclick="searchBP()">Search</button>
-</div>
-
-<div class="total">
-    <label>Total TK</label>
-    <input type="text" id="totalTK" value="0" readonly>
-</div>
-
-
-<div id="message"></div>
-
-<div class="table-box">
-    <table id="resultTable">
-        <thead>   
-        </thead>
-
-        <tbody>   
-        </tbody>
-    </table>
-</div>
-
-</div>
-
-
-<script>
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxwncq-1Q9YwJs4czdH4aX_nJHA1jb-9EufEEJ_YewwRmEfWXVmfN3ZDLkyIn-42bbU/exec";
-
-
-function searchBP() {
-
-    const bp =
-        document.getElementById("bp").value.trim();
-
-    if (!bp) {
-        alert("BP লিখুন");
-        return;
-    }
-
-    document.getElementById("message").innerHTML =
-        "Searching...";
-
-    document.getElementById("totalTK").value = "0";
-
-    document.querySelector("#resultTable thead").innerHTML = "";
-    document.querySelector("#resultTable tbody").innerHTML = "";
-
-
-    fetch(
-        API_URL + "?bp=" + encodeURIComponent(bp)
-    )
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        if (!data.success) {
-
-            document.getElementById("message").innerHTML =
-                data.message || "Error";
-
-            return;
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>পুলিশ সার্টিফিকেট ভেরিফিকেশন ও ম্যানেজমেন্ট সিস্টেম</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Hind Siliguri", sans-serif;
+      }
+      @media print {
+        body * {
+          visibility: hidden;
         }
-
-        document.getElementById("message").innerHTML = "";
-
-
-        // Total TK
-        document.getElementById("totalTK").value =
-            Number(data.totalTK).toLocaleString();
-
-
-        if (!data.rows || data.rows.length === 0) {
-
-            document.getElementById("message").innerHTML =
-                "এই BP-এর কোনো Data পাওয়া যায়নি।";
-
-            return;
+        #printable-area,
+        #printable-area * {
+          visibility: visible;
         }
+        #printable-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 min-h-screen flex flex-col justify-between">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white py-4 shadow-md no-print">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <h1 class="text-xl md:text-2xl font-bold">
+          বাংলাদেশ পুলিশ - সার্টিফিকেট ম্যানেজমেন্ট সিস্টেম
+        </h1>
+        <div id="nav-buttons">
+          <button
+            onclick="showHome()"
+            class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded text-sm font-semibold transition"
+          >
+            হোম
+          </button>
+        </div>
+      </div>
+    </header>
 
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+      <!-- Home View -->
+      <div
+        id="home-view"
+        class="flex flex-col items-center justify-center h-full space-y-6 my-16"
+      >
+        <div
+          class="bg-white p-8 rounded-xl shadow-lg text-center max-w-md w-full space-y-4 border-t-4 border-blue-900"
+        >
+          <h2 class="text-2xl font-bold text-gray-800">সিস্টেমে স্বাগতম</h2>
+          <p class="text-gray-600 text-sm">
+            অনুগ্রহ করে আপনার পোর্টাল নির্বাচন করুন
+          </p>
+          <div class="flex flex-col space-y-3 pt-4">
+            <button
+              onclick="openUserPortal()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow transition"
+            >
+              ইউজার পোর্টাল (সার্চ)
+            </button>
+            <button
+              onclick="openAdminLoginModal()"
+              class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow transition"
+            >
+              লগইন (Admin / Master)
+            </button>
+          </div>
+        </div>
+      </div>
 
-        createTable(data.headers, data.rows);
+      <!-- User Portal View -->
+      <div
+        id="user-portal-view"
+        class="hidden bg-white p-6 rounded-xl shadow-md max-w-4xl mx-auto"
+      >
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+          <h2 class="text-xl font-bold text-blue-900">ইউজার সার্চ প্যানেল</h2>
+          <button
+            onclick="showHome()"
+            class="text-gray-500 hover:text-red-500 font-bold"
+          >
+            ✕ বন্ধ করুন
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >BP নম্বর (১২ ডিজিট, শুরুতে BP)</label
+            >
+            <input
+              type="text"
+              id="search-bp"
+              placeholder="BP1234567890"
+              maxlength="12"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >সার্টিফিকেট নির্বাচন করুন</label
+            >
+            <select
+              id="search-certificate"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="">-- সার্টিফিকেট সিলেক্ট করুন --</option>
+            </select>
+          </div>
+        </div>
+        <button
+          onclick="performUserSearch()"
+          class="bg-blue-900 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-lg shadow"
+        >
+          সার্চ করুন
+        </button>
+        <div id="user-search-result" class="mt-8 overflow-x-auto"></div>
+      </div>
 
-    })
+      <!-- Admin Dashboard View -->
+      <div id="admin-dashboard-view" class="hidden">
+        <!-- Admin Tabs Navigation -->
+        <div
+          class="flex flex-wrap gap-2 border-b pb-3 mb-6 bg-white p-4 rounded-xl shadow-sm no-print items-center"
+        >
+          <!-- Admin-only Tabs -->
+          <button
+            onclick="switchAdminTab('tab-apply')"
+            id="btn-tab-apply"
+            class="admin-only-tab admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-blue-900 text-white shadow"
+          >
+            আবেদন গ্রহণ
+          </button>
+          <button
+            onclick="switchAdminTab('tab-board')"
+            id="btn-tab-board"
+            class="admin-only-tab admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            বোর্ডে প্রেরণ
+          </button>
+          <button
+            onclick="switchAdminTab('tab-receive')"
+            id="btn-tab-receive"
+            class="admin-only-tab admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            ভেরিফাইড সনদ রিসিভ
+          </button>
+          <button
+            onclick="switchAdminTab('tab-office')"
+            id="btn-tab-office"
+            class="admin-only-tab admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            অফিস আদেশ
+          </button>
 
-    .catch(error => {
+          <!-- Common / Master Tabs -->
+          <button
+            onclick="switchAdminTab('tab-database')"
+            id="btn-tab-database"
+            class="admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            ডাটাবেইজ
+          </button>
+          <button
+            onclick="switchAdminTab('tab-trash')"
+            id="btn-tab-trash"
+            class="master-only-tab admin-tab-btn px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+          >
+            রিসাইকেল বিন / ট্র্যাশ
+          </button>
 
-        console.error(error);
+          <div class="ml-auto flex items-center gap-3">
+            <span
+              id="logged-user-badge"
+              class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300"
+            ></span>
+            <button
+              onclick="adminLogout()"
+              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold text-sm"
+            >
+              লগআউট
+            </button>
+          </div>
+        </div>
 
-        document.getElementById("message").innerHTML =
-            "Server error. আবার চেষ্টা করুন।";
+        <!-- Tab 1: আবেদন গ্রহণ -->
+        <div
+          id="tab-apply"
+          class="admin-tab-content admin-only-content bg-white p-6 rounded-xl shadow-md"
+        >
+          <h3 class="text-lg font-bold text-blue-900 mb-4 border-b pb-2">
+            আবেদন গ্রহণ ফরম
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >BP (১২ ডিজিট, শুরুতে BP)*</label
+              >
+              <input
+                type="text"
+                id="app-bp"
+                placeholder="BPXXXXXXXXX"
+                maxlength="12"
+                class="w-full border rounded-lg px-3 py-2"
+                oninput="checkExistingBP(this.value)"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Rank*</label
+              >
+              <select id="app-rank" class="w-full border rounded-lg px-3 py-2">
+                <option value="">র্যাংক নির্বাচন করুন</option>
+                <option>কনস্টেবল</option>
+                <option>নায়েক</option>
+                <option>এএসআই (নিরস্ত্র)</option>
+                <option>এএসআই (সশস্ত্র)</option>
+                <option>এটিএসআই</option>
+                <option>এসআই (নিরস্ত্র)</option>
+                <option>এসআই (সশস্ত্র)</option>
+                <option>টিএসআই</option>
+                <option>সার্জেন্ট</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Brash (অপশনাল)</label
+              >
+              <input
+                type="number"
+                id="app-brash"
+                placeholder="সংখ্যা দিন"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Name*</label
+              >
+              <input
+                type="text"
+                id="app-name"
+                placeholder="নাম লিখুন"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Unit*</label
+              >
+              <select id="app-unit" class="w-full border rounded-lg px-3 py-2">
+                <option value="সদর থানা">সদর থানা</option>
+                <option value="রুমা থানা">রুমা থানা</option>
+                <option value="রোয়াংছড়ি থানা">রোয়াংছড়ি থানা</option>
+                <option value="নাইক্ষংছড়ি থানা">নাইক্ষংছড়ি থানা</option>
+                <option value="আলীকদম থানা">আলীকদম থানা</option>
+                <option value="থানচি থানা">থানচি থানা</option>
+                <option value="লামা থানা">লামা থানা</option>
+                <option value="ঘুমধুম তদন্ত কেন্দ্র">
+                  ঘুমধুম তদন্ত কেন্দ্র
+                </option>
+                <option value="বাইশারী তদন্ত কেন্দ্র">
+                  বাইশারী তদন্ত কেন্দ্র
+                </option>
+                <option value="টংকাবতি তদন্ত কেন্দ্র">
+                  টংকাবতি তদন্ত কেন্দ্র
+                </option>
+                <option value="সদর ফাঁড়ি">সদর ফাঁড়ি</option>
+                <option value="বাইশারী ফাঁড়ি">বাইশারী ফাঁড়ি</option>
+                <option value="কেয়াজুপাড়া ফাঁড়ি">কেয়াজুপাড়া ফাঁড়ি</option>
+                <option value="গজালিয়া ফাঁড়ি">গজালিয়া ফাঁড়ি</option>
+                <option value="সোনাইছড়ি ফাঁড়ি">সোনাইছড়ি ফাঁড়ি</option>
+                <option value="ফাইতং ফাঁড়ি">ফাইতং ফাঁড়ি</option>
+                <option value="রাজবিল্লা ফাঁড়ি">রাজবিল্লা ফাঁড়ি</option>
+                <option value="ডিবি">ডিবি</option>
+                <option value="ডিএসবি">ডিএসবি</option>
+                <option value="সদর কোর্ট">সদর কোর্ট</option>
+                <option value="লামা কোর্ট">লামা কোর্ট</option>
+                <option value="সদর ট্রাফিক">সদর ট্রাফিক</option>
+                <option value="লামা ট্রাফিক">লামা ট্রাফিক</option>
+                <option value="আলীকদম ট্রাফিক">আলীকদম ট্রাফিক</option>
+                <option value="নাইক্ষ্যংছড়ি ট্রাফিক">
+                  নাইক্ষ্যংছড়ি ট্রাফিক
+                </option>
+                <option value="পুলিশ সুপারের কার্যালয়">
+                  পুলিশ সুপারের কার্যালয়
+                </option>
+                <option value="এমটি">এমটি</option>
+                <option value="পুলিশ কন্ট্রোল রুম">পুলিশ কন্ট্রোল রুম</option>
+                <option value="ডিপার্টমেন্টাল স্টোর">
+                  ডিপার্টমেন্টাল স্টোর
+                </option>
+                <option value="অস্ত্রাগার">অস্ত্রাগার</option>
+                <option value="রেশন স্টোর">রেশন স্টোর</option>
+                <option value="ব্যান্ড গ্রুপ">ব্যান্ড গ্রুপ</option>
+                <option value="রিজার্ভ অফিস">রিজার্ভ অফিস</option>
+                <option value="সদর সার্কেল অফিস">সদর সার্কেল অফিস</option>
+                <option value="লামা সার্কেল অফিস">লামা সার্কেল অফিস</option>
+                <option value="রুমা সার্কেল অফিস">রুমা সার্কেল অফিস</option>
+                <option value="আরআই অফিস">আরআই অফিস</option>
+                <option value="মেজর অফিস">মেজর অফিস</option>
+                <option value="চিম্বুক ক্যাম্প">চিম্বুক ক্যাম্প</option>
+                <option value="মেঘলা ক্যাম্প">মেঘলা ক্যাম্প</option>
+                <option value="মিলনছড়ি ক্যাম্প">মিলনছড়ি ক্যাম্প</option>
+                <option value="হানসামপাড়া ক্যাম্প">হানসামপাড়া ক্যাম্প</option>
+                <option value="বেতছড়া ক্যাম্প">বেতছড়া ক্যাম্প</option>
+                <option value="তারাছামূখ ক্যাম্প">তারাছামূখ ক্যাম্প</option>
+                <option value="তালুকদারপাড়া ক্যাম্প">
+                  তালুকদারপাড়া ক্যাম্প
+                </option>
+                <option value="মুরংবাজার ক্যাম্প">মুরংবাজার ক্যাম্প</option>
+                <option value="কৈক্ষ্যংঝিরি ক্যাম্প">
+                  কৈক্ষ্যংঝিরি ক্যাম্প
+                </option>
+                <option value="কুমারী ক্যাম্প">কুমারী ক্যাম্প</option>
+                <option value="আজিজনগর ক্যাম্প">আজিজনগর ক্যাম্প</option>
+                <option value="আলীক্ষ্যং ক্যাম্প">আলীক্ষ্যং ক্যাম্প</option>
+                <option value="২৬-কিলো ক্যাম্প">২৬-কিলো ক্যাম্প</option>
+                <option value="রেইচা চেকপোষ্ট">রেইচা চেকপোষ্ট</option>
+                <option value="ডুলুপাড়া চেকপোষ্ট">ডুলুপাড়া চেকপোষ্ট</option>
+                <option value="ইয়াংছা চেকপোষ্ট">ইয়াংছা চেকপোষ্ট</option>
+                <option value="রুমা এসবি গার্ড">রুমা এসবি গার্ড</option>
+                <option value="রোয়াংছড়ি এসবি গার্ড">রোয়াংছড়ি এসবি গার্ড</option>
+                <option value="বেতার বেইজ">বেতার বেইজ</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Certificate*</label
+              >
+              <select
+                id="app-certificate"
+                class="w-full border rounded-lg px-3 py-2"
+              >
+                <option value="">সার্টিফিকেট নির্বাচন করুন</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >aRDate (আবেদনের তারিখ)*</label
+              >
+              <input
+                type="date"
+                id="app-ardate"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+          </div>
+          <div class="mt-6">
+            <button
+              onclick="saveApplication()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-lg shadow"
+            >
+              সংরক্ষণ করুন (Save)
+            </button>
+          </div>
+        </div>
 
-    });
+        <!-- Tab 2: বোর্ডে প্রেরণ -->
+        <div
+          id="tab-board"
+          class="admin-tab-content admin-only-content hidden bg-white p-6 rounded-xl shadow-md"
+        >
+          <h3 class="text-lg font-bold text-blue-900 mb-4 border-b pb-2">
+            সার্টিফিকেট যাচাইয়ের জন্য প্রেরণ ফরম
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >BP*</label
+              >
+              <input
+                type="text"
+                id="board-bp"
+                placeholder="BP দিন"
+                maxlength="12"
+                class="w-full border rounded-lg px-3 py-2"
+                onblur="fetchBoardDetails()"
+                oninput="fetchBoardDetails()"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Certificate*</label
+              >
+              <select
+                id="board-certificate"
+                class="w-full border rounded-lg px-3 py-2"
+                onchange="fetchBoardDetails()"
+              >
+                <option value="">প্রথমে BP দিন</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Rank (মিউট)</label
+              >
+              <input
+                type="text"
+                id="board-rank"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Brash No (মিউট)</label
+              >
+              <input
+                type="text"
+                id="board-brash"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Name (মিউট)</label
+              >
+              <input
+                type="text"
+                id="board-name"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Unit (মিউট)</label
+              >
+              <input
+                type="text"
+                id="board-unit"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >cInvNo (নাম্বার)*</label
+              >
+              <input
+                type="number"
+                id="board-cinvno"
+                placeholder="ইনভয়েস নম্বর"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >cInvDate (তারিখ)*</label
+              >
+              <input
+                type="date"
+                id="board-cinvdate"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Bord (বোর্ড নির্বাচন)*</label
+              >
+              <select
+                id="board-bord"
+                class="w-full border rounded-lg px-3 py-2"
+              >
+                <option value="">বোর্ড নির্বাচন করুন</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button
+              onclick="saveBoardDispatch()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-lg shadow"
+            >
+              বোর্ডে প্রেরণ সংরক্ষণ
+            </button>
+          </div>
+        </div>
 
-}
+        <!-- Tab 3: ভেরিফাইড সনদ রিসিভ -->
+        <div
+          id="tab-receive"
+          class="admin-tab-content admin-only-content hidden bg-white p-6 rounded-xl shadow-md"
+        >
+          <h3 class="text-lg font-bold text-blue-900 mb-4 border-b pb-2">
+            ভেরিফাইড সনদ রিসিভ ফরম
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >BP*</label
+              >
+              <input
+                type="text"
+                id="recv-bp"
+                placeholder="BP দিন"
+                maxlength="12"
+                class="w-full border rounded-lg px-3 py-2"
+                onblur="fetchReceiveDetails()"
+                oninput="fetchReceiveDetails()"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Certificate*</label
+              >
+              <select
+                id="recv-certificate"
+                class="w-full border rounded-lg px-3 py-2"
+                onchange="fetchReceiveDetails()"
+              >
+                <option value="">প্রথমে BP দিন</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Bord (মিউট)</label
+              >
+              <input
+                type="text"
+                id="recv-bord"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Rank (মিউট)</label
+              >
+              <input
+                type="text"
+                id="recv-rank"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Brash No (মিউট)</label
+              >
+              <input
+                type="text"
+                id="recv-brash"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Name (মিউট)</label
+              >
+              <input
+                type="text"
+                id="recv-name"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Unit (মিউট)</label
+              >
+              <input
+                type="text"
+                id="recv-unit"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >cVerifiedRNo (নাম্বার)*</label
+              >
+              <input
+                type="number"
+                id="recv-verifno"
+                placeholder="ভেরিফিকেশন নম্বর"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >cVerifiedRDate (তারিখ)*</label
+              >
+              <input
+                type="date"
+                id="recv-verifdate"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+          </div>
+          <div class="mt-6">
+            <button
+              onclick="saveVerifiedReceive()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-lg shadow"
+            >
+              ভেরিফাইড সনদ সংরক্ষণ
+            </button>
+          </div>
+        </div>
 
+        <!-- Tab 4: অফিস আদেশ -->
+        <div
+          id="tab-office"
+          class="admin-tab-content admin-only-content hidden bg-white p-6 rounded-xl shadow-md"
+        >
+          <h3 class="text-lg font-bold text-blue-900 mb-4 border-b pb-2">
+            অফিস আদেশ (Office Order) ফরম
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >BP*</label
+              >
+              <input
+                type="text"
+                id="oo-bp"
+                placeholder="BP দিন"
+                maxlength="12"
+                class="w-full border rounded-lg px-3 py-2"
+                onblur="fetchOfficeOrderDetails()"
+                oninput="fetchOfficeOrderDetails()"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Certificate*</label
+              >
+              <select
+                id="oo-certificate"
+                class="w-full border rounded-lg px-3 py-2"
+                onchange="fetchOfficeOrderDetails()"
+              >
+                <option value="">প্রথমে BP দিন</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Rank (মিউট)</label
+              >
+              <input
+                type="text"
+                id="oo-rank"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Name (মিউট)</label
+              >
+              <input
+                type="text"
+                id="oo-name"
+                readonly
+                class="w-full border bg-gray-100 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >oONo (অফিস আদেশ নম্বর)*</label
+              >
+              <input
+                type="text"
+                id="oo-oono"
+                placeholder="অফিস আদেশ নম্বর"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >oDate (অফিস আদেশের তারিখ)*</label
+              >
+              <input
+                type="date"
+                id="oo-oodate"
+                class="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+          </div>
+          <div class="mt-6">
+            <button
+              onclick="saveOfficeOrder()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2 rounded-lg shadow"
+            >
+              অফিস আদেশ সংরক্ষণ
+            </button>
+          </div>
+        </div>
 
-function createTable(headers, rows) {
+        <!-- Tab 5: ডাটাবেইজ -->
+        <div
+          id="tab-database"
+          class="admin-tab-content hidden bg-white p-6 rounded-xl shadow-md"
+        >
+          <div id="printable-area">
+            <div
+              class="flex flex-col md:flex-row justify-between items-center mb-4 border-b pb-3 gap-3"
+            >
+              <div>
+                <h3 class="text-lg font-bold text-blue-900">
+                  সম্পূর্ণ JSON ডাটাবেইজ তালিকা
+                </h3>
+                <p class="text-xs text-gray-600 mt-1">
+                  মোট ডাটা সংখ্যা:
+                  <span
+                    id="data-count"
+                    class="font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded"
+                    >0</span
+                  >
+                </p>
+              </div>
+              <div class="flex items-center gap-2 no-print">
+                <div>
+                  <select
+                    id="status-filter"
+                    onchange="loadDatabaseTable()"
+                    class="border rounded-lg px-3 py-1.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+                  >
+                    <option value="">সকল স্ট্যাটাস (All)</option>
+                    <option value="প্রক্রিয়াধীন">প্রক্রিয়াধীন</option>
+                    <option value="আবেদন গৃহিত">আবেদন গৃহিত</option>
+                    <option value="সার্টিফিকেট বোর্ডে প্রেরন">
+                      সার্টিফিকেট বোর্ডে প্রেরন
+                    </option>
+                    <option value="সার্টিফিকেট ভেরিফাইড">
+                      সার্টিফিকেট ভেরিফাইড
+                    </option>
+                    <option value="ডিও সম্পন্ন">ডিও সম্পন্ন</option>
+                  </select>
+                </div>
+                <button
+                  onclick="window.print()"
+                  class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-1 shadow transition"
+                >
+                  🖨️ প্রিন্ট করুন
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table
+                class="w-full border-collapse border border-gray-300 text-sm text-left"
+              >
+                <thead>
+                  <tr class="bg-blue-900 text-white">
+                    <th class="border p-2 text-center w-12">SL</th>
+                    <th class="border p-2">BP</th>
+                    <th class="border p-2">Rank</th>
+                    <th class="border p-2">Brash</th>
+                    <th class="border p-2">Name</th>
+                    <th class="border p-2">Unit</th>
+                    <th class="border p-2">Certificate</th>
+                    <th class="border p-2">Action Date</th>
+                    <th class="border p-2">Inv No & Date</th>
+                    <th class="border p-2">Ver No & Date</th>
+                    <th class="border p-2">OO No & Date</th>
+                    <th class="border p-2">Status</th>
+                    <th class="border p-2 text-center no-print">ডিলিট অপশন</th>
+                  </tr>
+                </thead>
+                <tbody id="database-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-    const thead =
-        document.querySelector("#resultTable thead");
+        <!-- Tab 6: রিসাইকেল বিন / ট্র্যাশ (ডিলিট হওয়া ডাটা) -->
+        <div
+          id="tab-trash"
+          class="admin-tab-content hidden bg-white p-6 rounded-xl shadow-md"
+        >
+          <div class="flex justify-between items-center mb-4 border-b pb-3">
+            <h3 class="text-lg font-bold text-red-700">
+              রিসাইকেল বিন / ট্র্যাশ শিট (ডিলিট করা ডাটা)
+            </h3>
+            <p class="text-xs text-gray-600">
+              মোট ডিলিটকৃত ডাটা:
+              <span
+                id="trash-count"
+                class="font-bold text-red-800 bg-red-100 px-2 py-0.5 rounded"
+                >0</span
+              >
+            </p>
+          </div>
+          <div class="overflow-x-auto">
+            <table
+              class="w-full border-collapse border border-gray-300 text-sm text-left"
+            >
+              <thead>
+                <tr class="bg-red-900 text-white">
+                  <th class="border p-2 text-center w-12">SL</th>
+                  <th class="border p-2">BP</th>
+                  <th class="border p-2">Rank</th>
+                  <th class="border p-2">Name</th>
+                  <th class="border p-2">Unit</th>
+                  <th class="border p-2">Certificate</th>
+                  <th class="border p-2">Status</th>
+                  <th class="border p-2 text-center">মুছে ফেলার সময়</th>
+                </tr>
+              </thead>
+              <tbody id="trash-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
 
-    const tbody =
-        document.querySelector("#resultTable tbody");
+    <!-- Congratulations Animation Modal (3 Seconds) -->
+    <div
+      id="congrats-modal"
+      class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 transition-opacity duration-300"
+    >
+      <div
+        class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full space-y-4 transform scale-100 animate-pulse"
+      >
+        <div class="text-emerald-500 text-6xl">🎉</div>
+        <h3 class="text-2xl font-bold text-gray-800">অভিনন্দন!</h3>
+        <p class="text-sm text-gray-600">
+          আপনার ডিও সম্পন্ন হয়েছে এবং সফলভাবে প্রসেস করা হয়েছে।
+        </p>
+        <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mt-4">
+          <div
+            id="congrats-progress"
+            class="bg-emerald-500 h-full w-full transition-all duration-3000 ease-linear"
+          ></div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Admin Login Modal -->
+    <div
+      id="admin-login-modal"
+      class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full relative">
+        <h3 class="text-xl font-bold text-blue-900 mb-4">লগইন প্যানেল</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >ID (Admin / Master)</label
+            >
+            <input
+              type="text"
+              id="admin-id-input"
+              placeholder="BP9920229921"
+              class="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="admin-pass-input"
+              placeholder="পাসওয়ার্ড দিন"
+              class="w-full border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div class="flex justify-end space-x-2 pt-2">
+            <button
+              onclick="closeAdminLoginModal()"
+              class="bg-gray-300 px-4 py-2 rounded-lg text-sm"
+            >
+              বাতিল
+            </button>
+            <button
+              onclick="verifyAdminLogin()"
+              class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-bold"
+            >
+              লগইন
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    let headerHTML = "<tr>";
+    <!-- BP Existing Confirmation Modal -->
+    <div
+      id="bp-confirm-modal"
+      class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full text-center space-y-4"
+      >
+        <div class="text-blue-900 text-3xl">ℹ️</div>
+        <h3 class="text-lg font-bold text-gray-800">
+          পূর্বের তথ্য পাওয়া গেছে!
+        </h3>
+        <p class="text-sm text-gray-600">
+          এই BP নম্বরের পূর্বের তথ্য ডাটাবেইজে রয়েছে। আপনি কি আগের তথ্যগুলো
+          ব্যবহার করতে চান?
+        </p>
+        <div class="flex justify-center space-x-3 pt-2">
+          <button
+            onclick="handleBpChoice(false)"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold"
+          >
+            না, নতুন এন্ট্রি দেব
+          </button>
+          <button
+            onclick="handleBpChoice(true)"
+            class="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-bold"
+          >
+            হ্যাঁ, ব্যবহার করব
+          </button>
+        </div>
+      </div>
+    </div>
 
-    headers.forEach(header => {
+    <!-- Footer -->
+    <footer
+      class="bg-slate-800 text-slate-300 text-center py-4 mt-8 text-sm no-print"
+    >
+      <p>&copy; ২০২৬ বাংলাদেশ পুলিশ। সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
 
-        headerHTML +=
-            "<th>" + escapeHTML(header) + "</th>";
+    <!-- JavaScript Logic -->
+    <script>
+      const certificateOptions = [
+        "এইচএসসি (HSC)",
+        "বিএ (BA)",
+        "বিএসএস (BSS)",
+        "বিএসসি (BSc)",
+        "বিবিএস (BBS)",
+        "বিএ (সম্মান) / BA (Honours)",
+        "বিএসএস (সম্মান) / BSS (Honours)",
+        "বিএসসি (সম্মান) / BSc (Honours)",
+        "বিবিএ / BBA",
+        "এমএ (MA)",
+        "এমএসএস (MSS)",
+        "এমএসসি (MSc)",
+        "এমএস (MS)",
+        "এমবিএ (MBA)",
+        "এমবিএস (MBS)",
+        "ইএমবিএ (EMBA)",
+        "এলএলএম (LLM)",
+        "এমইডি (MEd)",
+        "এমপিএইচ (MPH)",
+        "আলিম (Alim)",
+        "ফাজিল (Fazil)",
+        "কামিল (Kamil)",
+        "এইচএসসি (ভোকেশনাল)",
+        "এইচএসসি (বিজনেস ম্যানেজমেন্ট)",
+        "ডিপ্লোমা-ইন-ইঞ্জিনিয়ারিং",
+        "ডিপ্লোমা সনদ",
+        "ট্রেড সার্টিফিকেট ও ন্যাশনাল স্কিল সার্টিফিকেট",
+        "ড্রাইভিং লাইসেন্স",
+      ];
 
-    });
+      const boardOptions = [
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, ঢাকা",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, রাজশাহী",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, চট্টগ্রাম",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, কুমিল্লা",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, যশোর",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, বরিশাল",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, সিলেট",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, দিনাজপুর",
+        "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, ময়মনসিংহ",
+        "বাংলাদেশ মাদ্রাসা শিক্ষা বোর্ড (ঢাকা)",
+        "বাংলাদেশ কারিগরি শিক্ষা বোর্ড (ঢাকা)",
+        "জাতীয় বিশ্ববিদ্যালয়, গাজীপুর",
+        "বাংলাদেশ উন্মুক্ত বিশ্ববিদ্যালয়, গাজীপুর",
+        "বিআরটিএ, ঢাকা মেট্রো সার্কেল-১: মিরপুর (প্রধান কার্যালয় সংলগ্ন)",
+        "বিআরটিএ, ঢাকা মেট্রো সার্কেল-২: ইকুরিয়া (কেরানীগঞ্জ)",
+        "বিআরটিএ, ঢাকা মেট্রো সার্কেল-৩: উত্তরা (দিয়াবাড়ী)",
+        "বিআরটিএ, ঢাকা মেট্রো সার্কেল-৪: পূর্বাচল (নতুন সার্কেল)",
+        "বিআরটিএ, চট্টগ্রাম মেট্রো সার্কেল-১: নতুনপাড়া, চট্টগ্রাম",
+        "বিআরটিএ, চট্টগ্রাম মেট্রো সার্কেল-২: হাটহাজারী রোড, চট্টগ্রাম",
+        "বিআরটিএ, ঢাকা জেলা সার্কেল (সাভার)",
+        "বিআরটিএ, গাজীপুর জেলা সার্কেল",
+        "বিআরটিএ, নারায়ণগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, নরসিংদী জেলা সার্কেল",
+        "বিআরটিএ, মানিকগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, মুন্সিগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, কিশোরগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, টাঙ্গাইল জেলা সার্কেল",
+        "বিআরটিএ, ফরিদপুর জেলা সার্কেল",
+        "বিআরটিএ, মাদারীপুর জেলা সার্কেল",
+        "বিআরটিএ, শরীয়তপুর জেলা সার্কেল",
+        "বিআরটিএ, গোপালগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, রাজবাড়ী জেলা সার্কেল",
+        "বিআরটিএ, চট্টগ্রাম জেলা সার্কেল",
+        "বিআরটিএ, কক্সবাজার জেলা সার্কেল",
+        "বিআরটিএ, কুমিল্লা জেলা সার্কেল",
+        "বিআরটিএ, ফেনী জেলা সার্কেল",
+        "বিআরটিএ, নোয়াখালী জেলা সার্কেল",
+        "বিআরটিএ, লক্ষ্মীপুর জেলা সার্কেল",
+        "বিআরটিএ, চাঁদপুর জেলা সার্কেল",
+        "বিআরটিএ, ব্রাহ্মণবাড়ীয়া জেলা সার্কেল",
+        "বিআরটিএ, রাঙ্গামাটি জেলা সার্কেল",
+        "বিআরটিএ, খাগড়াছড়ি জেলা সার্কেল",
+        "বিআরটিএ, বান্দরবান জেলা সার্কেল",
+        "বিআরটিএ, রাজশাহী সার্কেল (মেট্রো ও জেলা)",
+        "বিআরটিএ, বগুড়া জেলা সার্কেল",
+        "বিআরটিএ, পাবনা জেলা সার্কেল",
+        "বিআরটিএ, সিরাজগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, নাটোর জেলা সার্কেল",
+        "বিআরটিএ, নওগাঁ জেলা সার্কেল",
+        "বিআরটিএ, চাঁপাইনবাবগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, জয়পুরহাট জেলা সার্কেল",
+        "বিআরটিএ, খুলনা সার্কেল (মেট্রো ও জেলা)",
+        "বিআরটিএ, যশোর জেলা সার্কেল",
+        "বিআরটিএ, কুষ্টিয়া জেলা সার্কেল",
+        "বিআরটিএ, ঝিনাইদহ জেলা সার্কেল",
+        "বিআরটিএ, মাগুরা জেলা সার্কেল",
+        "বিআরটিএ, নড়াইল জেলা সার্কেল",
+        "বিআরটিএ, সাতক্ষীরা জেলা সার্কেল",
+        "বিআরটিএ, বাগেরহাট জেলা সার্কেল",
+        "বিআরটিএ, মেহেরপুর জেলা সার্কেল",
+        "বিআরটিএ, চুয়াডাঙ্গা জেলা সার্কেল",
+        "বিআরটিএ, সিলেট সার্কেল (মেট্রো ও জেলা)",
+        "বিআরটিএ, সুনামগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, মৌলভীবাজার (মৌলভীবাজার) জেলা সার্কেল",
+        "বিআরটিএ, হবিগঞ্জ জেলা সার্কেল",
+        "বিআরটিএ, বরিশাল সার্কেল (মেট্রো ও জেলা)",
+        "বিআরটিএ, পটুয়াখালী জেলা সার্কেল",
+        "বিআরটিএ, ভোলা জেলা সার্কেল",
+        "বিআরটিএ, পিরোজপুর জেলা সার্কেল",
+        "বিআরটিএ, বরগুনা জেলা সার্কেল",
+        "বিআরটিএ, ঝালকাঠি জেলা সার্কেল",
+        "বিআরটিএ, রংপুর জেলা সার্কেল",
+        "বিআরটিএ, দিনাজপুর জেলা সার্কেল",
+        "বিআরটিএ, কুড়িগ্রাম জেলা সার্কেল",
+        "বিআরটিএ, গাইবান্ধা জেলা সার্কেল",
+        "বিআরটিএ, নীলফামারী জেলা সার্কেল",
+        "বিআরটিএ, লালমনিরহাট জেলা সার্কেল",
+        "বিআরটিএ, পঞ্চগড় জেলা সার্কেল",
+        "বিআরটিএ, ঠাকুরগাঁও জেলা সার্কেল",
+        "বিআরটিএ, ময়মনসিংহ জেলা সার্কেল",
+        "বিআরটিএ, জামালপুর জেলা সার্কেল",
+        "বিআরটিএ, শেরপুর জেলা সার্কেল",
+        "বিআরটিএ, নেত্রকোনা জেলা সার্কেল",
+      ];
 
-    headerHTML += "</tr>";
+      let dbData = [
+        {
+          BP: "BP9920229921",
+          Rank: "কনস্টেবল",
+          Brash: "1231",
+          Name: "মো: তৌহিদুল ইসলাম",
+          Unit: "রিজার্ভ অফিস",
+          Certificate: "এইচএসসি (HSC)",
+          aRDate: "2026-01-10",
+          cInvNo: "",
+          cInvDate: "",
+          Bord: "",
+          cVerifiedRNo: "",
+          cVerifiedRDate: "",
+          oONo: "",
+          oDate: "",
+          Stetus: "",
+          adminRequestedDelete: false,
+        },
+        {
+          BP: "BP9920229920",
+          Rank: "কনস্টেবল",
+          Brash: "101",
+          Name: "মো: রহিম উদ্দিন",
+          Unit: "রিজার্ভ অফিস",
+          Certificate: "এইচএসসি (HSC)",
+          aRDate: "2026-01-10",
+          cInvNo: "",
+          cInvDate: "",
+          Bord: "",
+          cVerifiedRNo: "",
+          cVerifiedRDate: "",
+          oONo: "",
+          oDate: "",
+          Stetus: "",
+          adminRequestedDelete: false,
+        },
+      ];
 
-    thead.innerHTML = headerHTML;
+      let trashData = [];
+      let currentRole = "";
+      let foundCachedRecord = null;
+      let lastCheckedBpLength12 = "";
 
+      window.onload = function () {
+        populateDropdowns();
+        updateStatuses();
+      };
 
-    let bodyHTML = "";
-
-    rows.forEach(row => {
-
-        bodyHTML += "<tr>";
-
-        row.forEach(cell => {
-
-            bodyHTML +=
-                "<td>" + escapeHTML(cell) + "</td>";
-
+      function populateDropdowns() {
+        const certSelects = ["search-certificate", "app-certificate"];
+        certSelects.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            certificateOptions.forEach((opt) => {
+              let option = document.createElement("option");
+              option.value = opt;
+              option.textContent = opt;
+              el.appendChild(option);
+            });
+          }
         });
 
-        bodyHTML += "</tr>";
+        const boardEl = document.getElementById("board-bord");
+        if (boardEl) {
+          boardOptions.forEach((opt) => {
+            let option = document.createElement("option");
+            option.value = opt;
+            option.textContent = opt;
+            boardEl.appendChild(option);
+          });
+        }
+      }
 
-    });
+      function updateStatuses() {
+        dbData.forEach((item) => {
+          if (item.oDate && item.oDate.trim() !== "") {
+            item.Stetus = "ডিও সম্পন্ন";
+          } else if (item.cVerifiedRDate && item.cVerifiedRDate.trim() !== "") {
+            item.Stetus = "সার্টিফিকেট ভেরিফাইড";
+          } else if (item.cInvDate && item.cInvDate.trim() !== "") {
+            item.Stetus = "সার্টিফিকেট বোর্ডে প্রেরন";
+          } else if (item.aRDate && item.aRDate.trim() !== "") {
+            item.Stetus = "আবেদন গৃহিত";
+          } else {
+            item.Stetus = "প্রক্রিয়াধীন";
+          }
+        });
+      }
 
-    tbody.innerHTML = bodyHTML;
-}
+      // Reusable Congratulations Animation Function (3 Seconds)
+      function showCongratsAnimation(callback) {
+        const modal = document.getElementById("congrats-modal");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          if (callback) callback();
+        }, 3000);
+      }
 
+      function showHome() {
+        document.getElementById("home-view").classList.remove("hidden");
+        document.getElementById("user-portal-view").classList.add("hidden");
+        document.getElementById("admin-dashboard-view").classList.add("hidden");
+      }
 
-function escapeHTML(value) {
+      function openUserPortal() {
+        document.getElementById("home-view").classList.add("hidden");
+        document.getElementById("user-portal-view").classList.remove("hidden");
+      }
 
-    if (value === null || value === undefined) {
-        return "";
-    }
+      function openAdminLoginModal() {
+        document.getElementById("admin-login-modal").classList.remove("hidden");
+      }
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+      function closeAdminLoginModal() {
+        document.getElementById("admin-login-modal").classList.add("hidden");
+      }
 
-</script>
+      function verifyAdminLogin() {
+        const id = document.getElementById("admin-id-input").value.trim();
+        const pass = document.getElementById("admin-pass-input").value.trim();
 
-</body>
+        if (id === "BP9920229921" && pass === "asdf12345") {
+          currentRole = "Admin";
+        } else if (id === "BP9920229921" && pass === "ASDF12345") {
+          currentRole = "Master";
+        } else {
+          alert("ভুল আইডি অথবা পাসওয়ার্ড!");
+          return;
+        }
 
+        closeAdminLoginModal();
+        document.getElementById("admin-id-input").value = "";
+        document.getElementById("admin-pass-input").value = "";
+        document.getElementById("home-view").classList.add("hidden");
+        document
+          .getElementById("admin-dashboard-view")
+          .classList.remove("hidden");
+
+        const badge = document.getElementById("logged-user-badge");
+
+        if (currentRole === "Master") {
+          badge.textContent = "লগইন রোল: Master ID (Trash Visible)";
+          badge.className =
+            "text-xs font-bold px-3 py-1 bg-red-100 text-red-800 rounded-full border border-red-300";
+
+          document
+            .querySelectorAll(".admin-only-tab")
+            .forEach((el) => el.classList.add("hidden"));
+          document
+            .querySelectorAll(".admin-only-content")
+            .forEach((el) => el.classList.add("hidden"));
+          document.querySelector(".master-only-tab").classList.remove("hidden");
+
+          switchAdminTab("tab-database");
+        } else {
+          badge.textContent = "লগইন রোল: Admin ID";
+          badge.className =
+            "text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full border border-amber-300";
+
+          document
+            .querySelectorAll(".admin-only-tab")
+            .forEach((el) => el.classList.remove("hidden"));
+          document.querySelector(".master-only-tab").classList.add("hidden");
+          switchAdminTab("tab-apply");
+        }
+      }
+
+      function adminLogout() {
+        currentRole = "";
+        showHome();
+      }
+
+      function switchAdminTab(tabId) {
+        if (currentRole === "Admin" && tabId === "tab-trash") {
+          alert("এডমিন আইডিতে রিসাইকেল বিন দেখার অনুমতি নেই!");
+          return;
+        }
+
+        document
+          .querySelectorAll(".admin-tab-content")
+          .forEach((el) => el.classList.add("hidden"));
+        document.querySelectorAll(".admin-tab-btn").forEach((el) => {
+          el.classList.remove("bg-blue-900", "text-white", "shadow");
+          el.classList.add("bg-gray-200", "text-gray-700");
+        });
+
+        document.getElementById(tabId).classList.remove("hidden");
+        const activeBtn = document.getElementById("btn-" + tabId);
+        if (activeBtn) {
+          activeBtn.classList.remove("bg-gray-200", "text-gray-700");
+          activeBtn.classList.add("bg-blue-900", "text-white", "shadow");
+        }
+
+        if (tabId === "tab-board") {
+          document.getElementById("board-bp").value = "";
+          document.getElementById("board-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+          clearBoardFields();
+        } else if (tabId === "tab-receive") {
+          document.getElementById("recv-bp").value = "";
+          document.getElementById("recv-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+          clearReceiveFields();
+        } else if (tabId === "tab-office") {
+          document.getElementById("oo-bp").value = "";
+          document.getElementById("oo-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+          clearOfficeOrderFields();
+        } else if (tabId === "tab-database") {
+          loadDatabaseTable();
+        } else if (tabId === "tab-trash") {
+          loadTrashTable();
+        }
+      }
+
+      function checkExistingBP(bpVal) {
+        bpVal = bpVal.trim();
+        if (bpVal.length === 12 && bpVal !== lastCheckedBpLength12) {
+          lastCheckedBpLength12 = bpVal;
+          let record = dbData.find((i) => i.BP === bpVal);
+          if (record) {
+            foundCachedRecord = record;
+            document
+              .getElementById("bp-confirm-modal")
+              .classList.remove("hidden");
+          } else {
+            foundCachedRecord = null;
+            enableAppFields(true);
+          }
+        } else if (bpVal.length < 12) {
+          lastCheckedBpLength12 = "";
+          foundCachedRecord = null;
+          enableAppFields(true);
+        }
+      }
+
+      function handleBpChoice(useExisting) {
+        document.getElementById("bp-confirm-modal").classList.add("hidden");
+        if (useExisting && foundCachedRecord) {
+          document.getElementById("app-rank").value = foundCachedRecord.Rank;
+          document.getElementById("app-brash").value =
+            foundCachedRecord.Brash || "";
+          document.getElementById("app-name").value = foundCachedRecord.Name;
+          document.getElementById("app-unit").value = foundCachedRecord.Unit;
+
+          ["app-rank", "app-brash", "app-name", "app-unit"].forEach((id) => {
+            document.getElementById(id).disabled = true;
+            document.getElementById(id).classList.add("bg-gray-100");
+          });
+        } else if (!useExisting && foundCachedRecord) {
+          enableAppFields(true);
+          document.getElementById("app-name").value = foundCachedRecord.Name;
+          document.getElementById("app-name").disabled = true;
+          document.getElementById("app-name").classList.add("bg-gray-100");
+        } else {
+          enableAppFields(true);
+        }
+      }
+
+      function enableAppFields(clearValues = false) {
+        ["app-rank", "app-brash", "app-name", "app-unit"].forEach((id) => {
+          document.getElementById(id).disabled = false;
+          document.getElementById(id).classList.remove("bg-gray-100");
+          if (clearValues) document.getElementById(id).value = "";
+        });
+      }
+
+      // User Search with 3-second Congratulations Animation if status is "ডিও সম্পন্ন"
+      function performUserSearch() {
+        updateStatuses();
+        const bp = document.getElementById("search-bp").value.trim();
+        const cert = document.getElementById("search-certificate").value;
+        const resDiv = document.getElementById("user-search-result");
+
+        if (!bp || !cert) {
+          alert("দয়া করে সঠিক BP এবং সার্টিফিকেট সিলেক্ট করুন।");
+          return;
+        }
+
+        const found = dbData.filter(
+          (item) => item.BP === bp && item.Certificate === cert,
+        );
+        if (found.length === 0) {
+          resDiv.innerHTML = `<p class="text-red-500 font-semibold text-center">কোনো তথ্য পাওয়া যায়নি।</p>`;
+          return;
+        }
+
+        const hasDioCompleted = found.some(
+          (item) => item.Stetus === "ডিও সম্পন্ন",
+        );
+
+        if (hasDioCompleted) {
+          resDiv.innerHTML = `<p class="text-blue-600 font-semibold text-center">যাচাই করা হচ্ছে...</p>`;
+          showCongratsAnimation(() => {
+            renderUserSearchResult(found, resDiv);
+          });
+        } else {
+          renderUserSearchResult(found, resDiv);
+        }
+      }
+
+      function renderUserSearchResult(found, resDiv) {
+        let html = `<table class="w-full border-collapse border border-gray-300 text-sm">
+                <tr class="bg-blue-900 text-white">
+                    <th class="border p-2">BP</th><th class="border p-2">Rank</th><th class="border p-2">Brash</th>
+                    <th class="border p-2">Name</th><th class="border p-2">Unit</th><th class="border p-2">Certificate</th><th class="border p-2">Status</th>
+                </tr>`;
+        found.forEach((i) => {
+          html += `<tr>
+                    <td class="border p-2">${i.BP}</td><td class="border p-2">${i.Rank}</td><td class="border p-2">${i.Brash || "-"}</td>
+                    <td class="border p-2">${i.Name}</td><td class="border p-2">${i.Unit}</td><td class="border p-2">${i.Certificate}</td><td class="border p-2 font-bold text-blue-700">${i.Stetus}</td>
+                </tr>`;
+        });
+        html += `</table>`;
+        resDiv.innerHTML = html;
+      }
+
+      function saveApplication() {
+        const bp = document.getElementById("app-bp").value.trim();
+        const rank = document.getElementById("app-rank").value;
+        const brash = document.getElementById("app-brash").value.trim();
+        const name = document.getElementById("app-name").value.trim();
+        const unit = document.getElementById("app-unit").value;
+        const cert = document.getElementById("app-certificate").value;
+        const ardate = document.getElementById("app-ardate").value;
+
+        if (!bp.startsWith("BP") || bp.length !== 12) {
+          alert("BP অবশ্যই 'BP' দিয়ে শুরু হতে হবে এবং ১২ ডিজিটের হতে হবে।");
+          return;
+        }
+        if (!rank || !name || !unit || !cert || !ardate) {
+          alert("দয়া করে সকল বাধ্যতামূলক (*) ফিল্ড পূরণ করুন।");
+          return;
+        }
+
+        let newEntry = {
+          BP: bp,
+          Rank: rank,
+          Brash: brash,
+          Name: name,
+          Unit: unit,
+          Certificate: cert,
+          aRDate: ardate,
+          cInvNo: "",
+          cInvDate: "",
+          Bord: "",
+          cVerifiedRNo: "",
+          cVerifiedRDate: "",
+          oONo: "",
+          oDate: "",
+          Stetus: "আবেদন গৃহিত",
+          adminRequestedDelete: false,
+        };
+
+        dbData.push(newEntry);
+        alert("সফলভাবে আবেদন সংরক্ষিত হয়েছে!");
+
+        document.getElementById("app-bp").value = "";
+        enableAppFields(true);
+        document.getElementById("app-certificate").value = "";
+        document.getElementById("app-ardate").value = "";
+        lastCheckedBpLength12 = "";
+        foundCachedRecord = null;
+      }
+
+      function fetchBoardDetails() {
+        const bp = document.getElementById("board-bp").value.trim();
+        const certSelect = document.getElementById("board-certificate");
+        const matched = dbData.filter(
+          (i) => i.BP === bp && i.Stetus === "আবেদন গৃহিত",
+        );
+        let currentSelected = certSelect.value;
+        certSelect.innerHTML =
+          '<option value="">সার্টিফিকেট সিলেক্ট করুন</option>';
+        matched.forEach((m) => {
+          let opt = document.createElement("option");
+          opt.value = m.Certificate;
+          opt.textContent = m.Certificate;
+          certSelect.appendChild(opt);
+        });
+        if (currentSelected) certSelect.value = currentSelected;
+        const record = matched.find((i) => i.Certificate === certSelect.value);
+        if (record) {
+          document.getElementById("board-rank").value = record.Rank;
+          document.getElementById("board-brash").value = record.Brash || "";
+          document.getElementById("board-name").value = record.Name;
+          document.getElementById("board-unit").value = record.Unit;
+        } else {
+          clearBoardFields(false);
+        }
+      }
+
+      function clearBoardFields(clearBp = true) {
+        if (clearBp) document.getElementById("board-bp").value = "";
+        document.getElementById("board-rank").value = "";
+        document.getElementById("board-brash").value = "";
+        document.getElementById("board-name").value = "";
+        document.getElementById("board-unit").value = "";
+        document.getElementById("board-cinvno").value = "";
+        document.getElementById("board-cinvdate").value = "";
+        document.getElementById("board-bord").value = "";
+      }
+
+      function saveBoardDispatch() {
+        const bp = document.getElementById("board-bp").value.trim();
+        const cert = document.getElementById("board-certificate").value;
+        const record = dbData.find(
+          (i) => i.BP === bp && i.Certificate === cert,
+        );
+        if (record) {
+          record.cInvNo = document.getElementById("board-cinvno").value.trim();
+          record.cInvDate = document.getElementById("board-cinvdate").value;
+          record.Bord = document.getElementById("board-bord").value;
+          updateStatuses();
+          alert("বোর্ডে প্রেরণ সফলভাবে আপডেট হয়েছে!");
+          clearBoardFields();
+          document.getElementById("board-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+        } else {
+          alert("সঠিক তথ্য পাওয়া যায়নি!");
+        }
+      }
+
+      function fetchReceiveDetails() {
+        const bp = document.getElementById("recv-bp").value.trim();
+        const matched = dbData.filter(
+          (i) => i.BP === bp && i.Stetus === "সার্টিফিকেট বোর্ডে প্রেরন",
+        );
+        const certSelect = document.getElementById("recv-certificate");
+
+        let currentSelected = certSelect.value;
+        certSelect.innerHTML =
+          '<option value="">সার্টিফিকেট সিলেক্ট করুন</option>';
+
+        matched.forEach((m) => {
+          let opt = document.createElement("option");
+          opt.value = m.Certificate;
+          opt.textContent = m.Certificate;
+          certSelect.appendChild(opt);
+        });
+
+        if (currentSelected) certSelect.value = currentSelected;
+
+        const record = matched.find((i) => i.Certificate === certSelect.value);
+        if (record) {
+          document.getElementById("recv-bord").value = record.Bord || "";
+          document.getElementById("recv-rank").value = record.Rank || "";
+          document.getElementById("recv-brash").value = record.Brash || "";
+          document.getElementById("recv-name").value = record.Name || "";
+          document.getElementById("recv-unit").value = record.Unit || "";
+        } else {
+          clearReceiveFields(false);
+        }
+      }
+
+      function clearReceiveFields(clearBp = true) {
+        if (clearBp) document.getElementById("recv-bp").value = "";
+        document.getElementById("recv-bord").value = "";
+        document.getElementById("recv-rank").value = "";
+        document.getElementById("recv-brash").value = "";
+        document.getElementById("recv-name").value = "";
+        document.getElementById("recv-unit").value = "";
+        document.getElementById("recv-verifno").value = "";
+        document.getElementById("recv-verifdate").value = "";
+      }
+
+      function saveVerifiedReceive() {
+        const bp = document.getElementById("recv-bp").value.trim();
+        const cert = document.getElementById("recv-certificate").value;
+        const record = dbData.find(
+          (i) => i.BP === bp && i.Certificate === cert,
+        );
+        if (record) {
+          record.cVerifiedRNo = document
+            .getElementById("recv-verifno")
+            .value.trim();
+          record.cVerifiedRDate =
+            document.getElementById("recv-verifdate").value;
+          updateStatuses();
+          alert("ভেরিফাইড সনদ সংরক্ষিত হয়েছে!");
+          clearReceiveFields();
+          document.getElementById("recv-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+        } else {
+          alert("সঠিক তথ্য পাওয়া যায়নি!");
+        }
+      }
+
+      function fetchOfficeOrderDetails() {
+        const bp = document.getElementById("oo-bp").value.trim();
+        const matched = dbData.filter(
+          (i) => i.BP === bp && i.Stetus === "সার্টিফিকেট ভেরিফাইড",
+        );
+        const certSelect = document.getElementById("oo-certificate");
+
+        let currentSelected = certSelect.value;
+        certSelect.innerHTML =
+          '<option value="">সার্টিফিকেট সিলেক্ট করুন</option>';
+
+        matched.forEach((m) => {
+          let opt = document.createElement("option");
+          opt.value = m.Certificate;
+          opt.textContent = m.Certificate;
+          certSelect.appendChild(opt);
+        });
+
+        if (currentSelected) certSelect.value = currentSelected;
+
+        const record = matched.find((i) => i.Certificate === certSelect.value);
+        if (record) {
+          document.getElementById("oo-rank").value = record.Rank || "";
+          document.getElementById("oo-name").value = record.Name || "";
+        } else {
+          clearOfficeOrderFields(false);
+        }
+      }
+
+      function clearOfficeOrderFields(clearBp = true) {
+        if (clearBp) document.getElementById("oo-bp").value = "";
+        document.getElementById("oo-rank").value = "";
+        document.getElementById("oo-name").value = "";
+        document.getElementById("oo-oono").value = "";
+        document.getElementById("oo-oodate").value = "";
+      }
+
+      // Office Order Save with Congratulations Animation trigger
+      function saveOfficeOrder() {
+        const bp = document.getElementById("oo-bp").value.trim();
+        const cert = document.getElementById("oo-certificate").value;
+        const record = dbData.find(
+          (i) => i.BP === bp && i.Certificate === cert,
+        );
+        if (record) {
+          record.oONo = document.getElementById("oo-oono").value.trim();
+          record.oDate = document.getElementById("oo-oodate").value;
+          updateStatuses();
+
+          showCongratsAnimation(() => {
+            alert("অফিস আদেশ সফলভাবে সংরক্ষিত হয়েছে!");
+          });
+
+          clearOfficeOrderFields();
+          document.getElementById("oo-certificate").innerHTML =
+            '<option value="">প্রথমে BP দিন</option>';
+        } else {
+          alert("সঠিক তথ্য পাওয়া যায়নি!");
+        }
+      }
+
+      // Database Table with Admin Delete Hidden condition for "ডিও সম্পন্ন"
+      function loadDatabaseTable() {
+        updateStatuses();
+        const filterValue = document.getElementById("status-filter").value;
+        const tbody = document.getElementById("database-table-body");
+        tbody.innerHTML = "";
+
+        let filteredData = dbData;
+        if (filterValue !== "") {
+          filteredData = dbData.filter((item) => item.Stetus === filterValue);
+        }
+
+        document.getElementById("data-count").textContent = filteredData.length;
+
+        if (filteredData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="13" class="border p-4 text-center text-gray-500">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
+          return;
+        }
+
+        filteredData.forEach((item, index) => {
+          let originalIndex = dbData.indexOf(item);
+          let tr = document.createElement("tr");
+
+          let deleteButtonHTML = "";
+          if (currentRole === "Admin") {
+            if (item.Stetus === "ডিও সম্পন্ন") {
+              deleteButtonHTML = ""; // Hidden completely if status is "ডিও সম্পন্ন"
+            } else if (item.adminRequestedDelete) {
+              deleteButtonHTML = `<button disabled class="bg-gray-300 text-gray-500 px-3 py-1 rounded text-xs font-semibold cursor-not-allowed">ডিসএবল্ড</button>`;
+            } else {
+              deleteButtonHTML = `<button onclick="handleAdminDelete(${originalIndex})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-semibold shadow transition">ডিলিট</button>`;
+            }
+          } else if (currentRole === "Master") {
+            if (item.adminRequestedDelete) {
+              deleteButtonHTML = `<button onclick="handleMasterDelete(${originalIndex})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-semibold shadow transition">ডিলিট</button>`;
+            } else {
+              deleteButtonHTML = `<button disabled class="bg-gray-300 text-gray-500 px-3 py-1 rounded text-xs font-semibold cursor-not-allowed" title="Admin থেকে অনুরোধ করা হয়নি">ডিলিট (Disabled)</button>`;
+            }
+          }
+
+          tr.innerHTML = `
+                    <td class="border p-2 text-center font-bold text-gray-600">${index + 1}</td>
+                    <td class="border p-2">${item.BP}</td>
+                    <td class="border p-2">${item.Rank}</td>
+                    <td class="border p-2">${item.Brash || "-"}</td>
+                    <td class="border p-2">${item.Name}</td>
+                    <td class="border p-2">${item.Unit}</td>
+                    <td class="border p-2">${item.Certificate}</td>
+                    <td class="border p-2 text-xs">${item.aRDate || "-"}</td>
+                    <td class="border p-2 text-xs">No: ${item.cInvNo || "-"}<br>Dt: ${item.cInvDate || "-"}</td>
+                    <td class="border p-2 text-xs">No: ${item.cVerifiedRNo || "-"}<br>Dt: ${item.cVerifiedRDate || "-"}</td>
+                    <td class="border p-2 text-xs">No: ${item.oONo || "-"}<br>Dt: ${item.oDate || "-"}</td>
+                    <td class="border p-2 font-semibold text-emerald-700">${item.Stetus}</td>
+                    <td class="border p-2 text-center no-print">${deleteButtonHTML}</td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function handleAdminDelete(index) {
+        dbData[index].adminRequestedDelete = true;
+        alert(
+          "এডমিন আইডি থেকে ডিলিট রিকোয়েস্ট পাঠানো হয়েছে! এখন মাস্টার আইডি থেকে এই ডাটা ডিলিট করা যাবে।",
+        );
+        loadDatabaseTable();
+      }
+
+      function handleMasterDelete(index) {
+        if (
+          confirm(
+            "আপনি কি নিশ্চিতভাবে এই ডাটাটি রিমুভ করে রিসাইকেল বিন শিটে পাঠাতে চান?",
+          )
+        ) {
+          let deletedItem = dbData.splice(index, 1)[0];
+          deletedItem.deletedAt = new Date().toLocaleString();
+          trashData.push(deletedItem);
+
+          alert(
+            "ডাটা সফলভাবে উভয় ডাটাবেজ থেকে রিমুভ করে ট্র্যাশ শিটে পাঠানো হয়েছে!",
+          );
+          loadDatabaseTable();
+        }
+      }
+
+      function loadTrashTable() {
+        const tbody = document.getElementById("trash-table-body");
+        tbody.innerHTML = "";
+        document.getElementById("trash-count").textContent = trashData.length;
+
+        if (trashData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" class="border p-4 text-center text-gray-500">রিসাইকেল বিন খালি আছে</td></tr>`;
+          return;
+        }
+
+        trashData.forEach((item, index) => {
+          let tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td class="border p-2 text-center font-bold text-gray-600">${index + 1}</td>
+                    <td class="border p-2">${item.BP}</td>
+                    <td class="border p-2">${item.Rank}</td>
+                    <td class="border p-2">${item.Name}</td>
+                    <td class="border p-2">${item.Unit}</td>
+                    <td class="border p-2">${item.Certificate}</td>
+                    <td class="border p-2 font-semibold text-red-600">${item.Stetus}</td>
+                    <td class="border p-2 text-xs text-gray-600">${item.deletedAt}</td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+    </script>
+  </body>
 </html>
