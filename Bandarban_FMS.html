@@ -1,1875 +1,2104 @@
 <!doctype html>
 <html lang="bn">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-
-    <title>বান্দরবান জেলা পুলিশ - Force Management System</title>
-
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      :root {
-        --primary: #075b3c;
-        --primary-dark: #03432d;
-        --secondary: #d7a928;
-        --danger: #c62828;
-        --warning: #ef8d00;
-        --bg: #f3f6f5;
-        --card: #fff;
-        --text: #1e293b;
-        --border: #d9e1dd;
-      }
-
-      body {
-        margin: 0;
-        font-family: "Noto Sans Bengali", "SolaimanLipi", Arial, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-      }
-
-      button,
-      input,
-      select,
-      textarea {
-        font-family: inherit;
-      }
-      button {
-        cursor: pointer;
-      }
-
-      .page {
-        display: none;
-        min-height: 100vh;
-      }
-      .page.active {
-        display: block;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      /* WELCOME */
-
-      #welcomePage {
-        background: linear-gradient(
-          rgba(0, 60, 40, 0.82),
-          rgba(0, 30, 20, 0.92)
-        );
-      }
-
-      .welcome-overlay {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-
-      .welcome-card {
-        width: min(700px, 96%);
-        background: #fff;
-        border-radius: 22px;
-        padding: 45px;
-        text-align: center;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-      }
-
-      .logo {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: var(--primary);
-        border: 4px solid var(--secondary);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: auto;
-        font-weight: bold;
-        font-size: 25px;
-      }
-
-      .welcome-card h1 {
-        color: var(--primary);
-        margin: 15px 0 5px;
-      }
-
-      .welcome-card h2 {
-        margin: 0 0 10px;
-        color: #555;
-      }
-
-      .search-box {
-        display: flex;
-        gap: 10px;
-        margin-top: 30px;
-      }
-
-      .search-box input {
-        flex: 1;
-        padding: 14px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
-
-      .search-box button {
-        background: var(--primary);
-        color: #fff;
-        border: 0;
-        padding: 0 25px;
-        border-radius: 8px;
-      }
-
-      .login-button {
-        width: 100%;
-        padding: 15px;
-        border: 0;
-        background: var(--secondary);
-        border-radius: 8px;
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 17px;
-      }
-
-      .public-result {
-        margin-top: 10px;
-        text-align: left;
-      }
-
-      /* LOGIN */
-
-      #loginPage {
-        background: linear-gradient(135deg, #064b34, #021e14);
-      }
-
-      .login-wrapper {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-
-      .login-card {
-        width: min(430px, 96%);
-        background: white;
-        border-radius: 20px;
-        padding: 35px;
-        text-align: center;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-      }
-
-      .login-card label {
-        display: block;
-        text-align: left;
-        font-weight: bold;
-        margin: 15px 0 6px;
-      }
-
-      .login-card input {
-        width: 100%;
-        padding: 13px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
-
-      .primary {
-        background: var(--primary);
-        color: white;
-        border: 0;
-        padding: 12px 20px;
-        border-radius: 8px;
-      }
-
-      .secondary {
-        background: #e9eeeb;
-        color: #222;
-        border: 0;
-        padding: 12px 20px;
-        border-radius: 8px;
-      }
-
-      .login-card .primary {
-        width: 100%;
-        margin-top: 20px;
-      }
-
-      .back {
-        margin-top: 15px;
-        border: 0;
-        background: none;
-        color: var(--primary);
-      }
-
-      /* HEADER */
-
-      .header {
-        background: var(--primary);
-        color: white;
-        padding: 12px 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .header-logo {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 3px solid var(--secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-      }
-
-      .brand h2 {
-        margin: 0;
-      }
-      .brand small {
-        opacity: 0.8;
-      }
-
-      .user-box {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .logout {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        color: white;
-        padding: 8px 15px;
-        border-radius: 7px;
-      }
-
-      /* DASHBOARD */
-
-      .dashboard {
-        max-width: 1900px;
-        margin: auto;
-        padding: 25px;
-      }
-
-      .dashboard-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      .dashboard-title h2 {
-        color: var(--primary);
-      }
-
-      .tabs {
-        display: flex;
-        gap: 5px;
-        border-bottom: 2px solid var(--border);
-        margin-bottom: 20px;
-        overflow-x: auto;
-      }
-
-      .tab {
-        border: 0;
-        background: #e8eeeb;
-        padding: 12px 20px;
-        border-radius: 8px 8px 0 0;
-        white-space: nowrap;
-      }
-
-      .tab.active {
-        background: var(--primary);
-        color: white;
-      }
-
-      .tab-content {
-        display: none;
-      }
-      .tab-content.active {
-        display: block;
-      }
-
-      /* FORM */
-
-      .card {
-        background: white;
-        border-radius: 14px;
-        padding: 25px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-      }
-
-      .field {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .field.full {
-        grid-column: 1/-1;
-      }
-
-      .field label {
-        font-weight: bold;
-        margin-bottom: 6px;
-      }
-
-      .field input,
-      .field select,
-      .field textarea {
-        padding: 12px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        outline: none;
-      }
-
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        border-color: var(--primary);
-      }
-
-      .field small {
-        color: #777;
-        margin-top: 4px;
-      }
-
-      .form-actions {
-        margin-top: 20px;
-        display: flex;
-        gap: 10px;
-      }
-
-      /* TOOLBAR */
-
-      .toolbar {
-        background: white;
-        padding: 12px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 15px;
-      }
-
-      .toolbar select {
-        padding: 9px;
-        border: 1px solid var(--border);
-        border-radius: 7px;
-      }
-
-      .toolbar button {
-        background: var(--primary);
-        color: white;
-        border: 0;
-        padding: 9px 13px;
-        border-radius: 7px;
-      }
-
-      /* TABLE */
-
-      .table-container {
-        overflow: auto;
-        background: white;
-        border-radius: 10px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 1100px;
-      }
-
-      th,
-      td {
-        padding: 9px 10px;
-        border-bottom: 1px solid #e4e9e6;
-        text-align: left;
-        white-space: nowrap;
-      }
-
-      th {
-        background: var(--primary);
-        color: white;
-        position: sticky;
-        top: 0;
-      }
-
-      tbody tr:hover {
-        background: #f5faf7;
-      }
-
-      .edit-btn {
-        background: #1565c0;
-        color: white;
-        border: 0;
-        padding: 6px 10px;
-        border-radius: 5px;
-      }
-
-      .delete-btn {
-        background: var(--danger);
-        color: white;
-        border: 0;
-        padding: 6px 10px;
-        border-radius: 5px;
-      }
-
-      .disabled-btn {
-        background: #aaa;
-        color: white;
-        border: 0;
-        padding: 6px 10px;
-        border-radius: 5px;
-      }
-
-      /* MODAL */
-
-      .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-      }
-
-      .modal.show {
-        display: flex;
-      }
-
-      .modal-box {
-        width: min(550px, 96%);
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        position: relative;
-        max-height: 90vh;
-        overflow: auto;
-      }
-
-      .close {
-        position: absolute;
-        right: 12px;
-        top: 8px;
-        background: none;
-        border: 0;
-        font-size: 25px;
-      }
-
-      .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      /* MOBILE */
-
-      @media (max-width: 900px) {
-        .grid {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .welcome-card {
-          padding: 25px;
-        }
-
-        .search-box {
-          flex-direction: column;
-        }
-
-        .search-box button {
-          padding: 13px;
-        }
-
-        .grid {
-          grid-template-columns: 1fr;
-        }
-
-        .field.full {
-          grid-column: auto;
-        }
-
-        .header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .user-box {
-          width: 100%;
-          justify-content: space-between;
-        }
-
-        .dashboard {
-          padding: 12px;
-        }
-      }
-
-      /* PRINT */
-
-      @media print {
-        body * {
-          visibility: hidden;
-        }
-
-        .print-area,
-        .print-area * {
-          visibility: visible;
-        }
-
-        .print-area {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <!-- =========================================================
-     WELCOME
-========================================================= -->
-
-    <section id="welcomePage" class="page active">
-      <div class="welcome-overlay">
-        <div class="welcome-card">
-          <div class="logo">BP</div>
-
-          <h1>বান্দরবান জেলা পুলিশ</h1>
-
-          <h2>Force Management System</h2>
-
-          <p>Personnel Data Management System</p>
-
-          <div class="search-box">
-            <input
-              id="publicSearchBP"
-              type="text"
-              maxlength="12"
-              placeholder="১২ ডিজিটের BP নম্বর লিখুন"
-              autocomplete="off"
-            />
-
-            <button onclick="publicSearch()">Search</button>
-          </div>
-
-          <div id="publicResult" class="public-result"></div>
-
-          <button class="login-button" onclick="showLogin()">Login</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-     LOGIN
-========================================================= -->
-
-    <section id="loginPage" class="page">
-      <div class="login-wrapper">
-        <div class="login-card">
-          <div class="logo">BP</div>
-
-          <h2>Force Management System</h2>
-
-          <p>Secure Login</p>
-
-          <form id="loginForm">
-            <label>User ID / BP</label>
-
-            <input id="loginUser" required placeholder="BP / Entry ID" />
-
-            <label>Password</label>
-
-            <input
-              id="loginPassword"
-              type="password"
-              required
-              placeholder="Password"
-            />
-
-            <button class="primary" type="submit">Login</button>
-          </form>
-
-          <button class="back" onclick="showWelcome()">← Back</button>
-
-          <div id="loginMessage"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-     MAIN APPLICATION
-========================================================= -->
-
-    <section id="appPage" class="page">
-      <header class="header">
-        <div class="brand">
-          <div class="header-logo">BP</div>
-
-          <div>
-            <h2>বান্দরবান জেলা পুলিশ</h2>
-            <small>Force Management System</small>
-          </div>
-        </div>
-
-        <div class="user-box">
-          <span id="loggedUser"></span>
-
-          <button class="logout" onclick="logout()">Logout</button>
-        </div>
-      </header>
-
-      <!-- =========================================================
-     DATA ENTRY DASHBOARD
-========================================================= -->
-
-      <main id="dataEntryDashboard" class="dashboard hidden">
-        <div class="dashboard-title">
-          <h2>Data Entry Dashboard</h2>
-
-          <strong id="entryUnit"></strong>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active" onclick="openTab('entryForm', this)">
-            DataEntry Form
-          </button>
-
-          <button class="tab" onclick="openTab('submittedList', this)">
-            Data Submitted List
-          </button>
-        </div>
-
-        <section id="entryForm" class="tab-content active">
-          <div class="card">
-            <h3>Personnel Data Entry</h3>
-
-            <form id="personnelForm">
-              <div class="grid">
-                <div class="field">
-                  <label>BP *</label>
-
-                  <input id="bp" maxlength="12" inputmode="text" required />
-
-                  <small> Format: BP1234567890 </small>
-                </div>
-
-                <div class="field">
-                  <label>Rank *</label>
-
-                  <select id="rank" required>
-                    <option value="">Select Rank</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label>Brash</label>
-
-                  <input id="brash" maxlength="4" inputmode="numeric" />
-                </div>
-
-                <div class="field">
-                  <label>Name *</label>
-
-                  <input id="name" required />
-                </div>
-
-                <div class="field">
-                  <label>Unit</label>
-
-                  <input id="unit" readonly />
-                </div>
-
-                <div class="field">
-                  <label>Mobile *</label>
-
-                  <input
-                    id="mobile"
-                    maxlength="11"
-                    inputmode="numeric"
-                    required
-                  />
-                </div>
-
-                <div class="field full">
-                  <label>Remark</label>
-
-                  <textarea id="remark" rows="3"></textarea>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button class="primary" type="submit">Save Data</button>
-
-                <button class="secondary" type="button" onclick="resetForm()">
-                  Reset
-                </button>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        <section id="submittedList" class="tab-content">
-          <div class="toolbar">
-            <select id="entryRankFilter" onchange="renderSubmitted()">
-              <option value="">All Rank</option>
-            </select>
-
-            <button onclick="printTable('submittedTable')">Print</button>
-
-            <strong>
-              Total:
-              <span id="entryTotal">0</span>
-            </strong>
-          </div>
-
-          <div class="table-container">
-            <table id="submittedTable">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>BP</th>
-                  <th>Rank</th>
-                  <th>Brash</th>
-                  <th>Name</th>
-                  <th>Unit</th>
-                  <th>Mobile</th>
-                  <th>Remark</th>
-                  <th>Current Date & Time</th>
-                </tr>
-              </thead>
-
-              <tbody id="submittedBody"></tbody>
-            </table>
-          </div>
-        </section>
-      </main>
-
-      <!-- =========================================================
-     ADMIN
-========================================================= -->
-
-      <main id="adminDashboard" class="dashboard hidden">
-        <div class="dashboard-title">
-          <h2>Admin Dashboard</h2>
-
-          <strong>Administrator</strong>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active" onclick="openTab('adminData', this)">
-            All Personnel Data
-          </button>
-
-          <button class="tab" onclick="openTab('adminSummary', this)">
-            Unit Summary
-          </button>
-        </div>
-
-        <section id="adminData" class="tab-content active">
-          <div class="toolbar">
-            <select id="adminRank" onchange="renderAdmin()">
-              <option value="">All Rank</option>
-            </select>
-
-            <select id="adminUnit" onchange="renderAdmin()">
-              <option value="">All Unit</option>
-            </select>
-
-            <button onclick="downloadCSV('adminTable', 'Admin_Data')">
-              Excel Download
-            </button>
-
-            <button onclick="printTable('adminTable')">Print</button>
-
-            <strong>
-              Total:
-              <span id="adminTotal">0</span>
-            </strong>
-          </div>
-
-          <div class="table-container">
-            <table id="adminTable">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>BP</th>
-                  <th>Rank</th>
-                  <th>Brash</th>
-                  <th>Name</th>
-                  <th>Unit</th>
-                  <th>Mobile</th>
-                  <th>Remark</th>
-                  <th>User</th>
-                  <th>Current Date & Time</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-
-              <tbody id="adminBody"></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="adminSummary" class="tab-content">
-          <div class="toolbar">
-            <button onclick="printTable('summaryTable')">Print Summary</button>
-
-            <button onclick="downloadCSV('summaryTable', 'Unit_Rank_Summary')">
-              Excel Download
-            </button>
-          </div>
-
-          <div class="table-container">
-            <table id="summaryTable">
-              <thead id="summaryHead"></thead>
-
-              <tbody id="summaryBody"></tbody>
-
-              <tfoot id="summaryFoot"></tfoot>
-            </table>
-          </div>
-        </section>
-      </main>
-
-      <!-- =========================================================
-     SUPER ADMIN
-========================================================= -->
-
-      <main id="superDashboard" class="dashboard hidden">
-        <div class="dashboard-title">
-          <h2>Super Admin Dashboard</h2>
-
-          <strong>Super Administrator</strong>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active" onclick="openTab('superData', this)">
-            All Personnel
-          </button>
-
-          <button class="tab" onclick="openTab('recycleData', this)">
-            Recycle Data
-          </button>
-
-          <button class="tab" onclick="openTab('superSummary', this)">
-            Unit & Rank Summary
-          </button>
-        </div>
-
-        <section id="superData" class="tab-content active">
-          <div class="toolbar">
-            <select id="superRank" onchange="renderSuper()">
-              <option value="">All Rank</option>
-            </select>
-
-            <select id="superUnit" onchange="renderSuper()">
-              <option value="">All Unit</option>
-            </select>
-
-            <button onclick="downloadCSV('superTable', 'SuperAdmin_Data')">
-              Excel Download
-            </button>
-
-            <button onclick="printTable('superTable')">Print</button>
-
-            <strong>
-              Total:
-              <span id="superTotal">0</span>
-            </strong>
-          </div>
-
-          <div class="table-container">
-            <table id="superTable">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>BP</th>
-                  <th>Rank</th>
-                  <th>Brash</th>
-                  <th>Name</th>
-                  <th>Unit</th>
-                  <th>Mobile</th>
-                  <th>Remark</th>
-                  <th>User</th>
-                  <th>Current Date & Time</th>
-                  <th>Delete</th>
-                  <th>Delete Request</th>
-                </tr>
-              </thead>
-
-              <tbody id="superBody"></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="recycleData" class="tab-content">
-          <div class="toolbar">
-            <button onclick="downloadCSV('recycleTable', 'Recycle_Data')">
-              Excel Download
-            </button>
-
-            <button onclick="printTable('recycleTable')">Print</button>
-          </div>
-
-          <div class="table-container">
-            <table id="recycleTable">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>BP</th>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Unit</th>
-                  <th>Mobile</th>
-                  <th>Remark</th>
-                  <th>User</th>
-                  <th>Original Date</th>
-                  <th>Delete Request</th>
-                  <th>Deleted At</th>
-                </tr>
-              </thead>
-
-              <tbody id="recycleBody"></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="superSummary" class="tab-content">
-          <div class="toolbar">
-            <button onclick="printTable('superSummaryTable')">Print</button>
-
-            <button
-              onclick="downloadCSV('superSummaryTable', 'SuperAdmin_Summary')"
-            >
-              Excel Download
-            </button>
-          </div>
-
-          <div class="table-container">
-            <table id="superSummaryTable">
-              <thead id="superSummaryHead"></thead>
-
-              <tbody id="superSummaryBody"></tbody>
-
-              <tfoot id="superSummaryFoot"></tfoot>
-            </table>
-          </div>
-        </section>
-      </main>
-    </section>
-
-    <!-- =========================================================
-     MODAL
-========================================================= -->
-
-    <div id="modal" class="modal">
-      <div class="modal-box">
-        <button class="close" onclick="closeModal()">×</button>
-
-        <h3 id="modalTitle"></h3>
-
-        <div id="modalContent"></div>
-
-        <div class="modal-actions">
-          <button class="secondary" onclick="closeModal()">Cancel</button>
-
-          <button id="modalOK" class="primary">OK</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- =========================================================
-     GITHUB HTML -> GOOGLE APPS SCRIPT API
-========================================================= -->
-
-    <script>
-      /******************************************************
-       * BANDARBAN POLICE FMS
-       * GitHub HTML -> Google Apps Script -> Google Sheet
-       ******************************************************/
-      const API_URL =
-        "https://script.google.com/macros/s/AKfycbz4RLNa4BRzN7f5T78M8AFKZEZK3-lgOIqArNNzmlv98-yCBTCD999nL59P5fDTIn34bw/exec";
-
-      let currentUser = null;
-      let authToken = null;
-      let searchTimer;
-
-      /* =====================================================
-       * API
-       * ===================================================== */
-
-      function apiRequest(action, params = {}) {
-        return new Promise((resolve, reject) => {
-          const callbackName =
-            "jsonpCallback_" +
-            Date.now() +
-            "_" +
-            Math.floor(Math.random() * 100000);
-
-          const script = document.createElement("script");
-
-          const timeout = setTimeout(() => {
-            cleanup();
-            reject(new Error("Server response timeout."));
-          }, 30000);
-
-          function cleanup() {
-            clearTimeout(timeout);
-
-            if (script.parentNode) {
-              script.parentNode.removeChild(script);
-            }
-
-            try {
-              delete window[callbackName];
-            } catch (e) {
-              window[callbackName] = undefined;
-            }
-          }
-
-          window[callbackName] = function (result) {
-            cleanup();
-            resolve(result);
-          };
-
-          const query = new URLSearchParams();
-
-          query.set("action", action);
-          query.set("callback", callbackName);
-
-          Object.keys(params).forEach((key) => {
-            const value = params[key];
-
-            if (value !== undefined && value !== null) {
-              query.set(key, String(value));
-            }
-          });
-
-          script.src = API_URL + "?" + query.toString();
-
-          script.onerror = function () {
-            cleanup();
-            reject(new Error("Google Apps Script API connection failed."));
-          };
-
-          document.body.appendChild(script);
-        });
-      }
-
-      function apiMessage(result) {
-        return result && result.message
-          ? result.message
-          : "Server থেকে কোনো তথ্য পাওয়া যায়নি।";
-      }
-
-      async function getConfig() {
-        return await apiRequest("config");
-      }
-
-      async function loginUser(id, password) {
-        return await apiRequest("login", { id, password });
-      }
-
-      async function publicSearchAPI(bp) {
-        return await apiRequest("publicSearch", { bp });
-      }
-
-      async function getSubmittedAPI(rank = "") {
-        return await apiRequest("getSubmitted", {
-          token: authToken,
-          rank,
-        });
-      }
-
-      async function getAllAPI(rank = "", unit = "") {
-        return await apiRequest("getAll", {
-          token: authToken,
-          rank,
-          unit,
-        });
-      }
-
-      async function savePersonnelAPI(data) {
-        return await apiRequest("save", {
-          token: authToken,
-          bp: data.bp,
-          rank: data.rank,
-          brash: data.brash,
-          name: data.name,
-          unit: data.unit,
-          mobile: data.mobile,
-          remark: data.remark,
-        });
-      }
-
-      async function editPersonnelAPI(data) {
-        return await apiRequest("edit", {
-          token: authToken,
-          id: data.id,
-          rank: data.rank,
-          brash: data.brash,
-          name: data.name,
-          mobile: data.mobile,
-          remark: data.remark,
-        });
-      }
-
-      async function deleteRequestAPI(id, remark) {
-        return await apiRequest("deleteRequest", {
-          token: authToken,
-          id,
-          remark,
-        });
-      }
-
-      async function superDeleteAPI(id) {
-        return await apiRequest("superDelete", {
-          token: authToken,
-          id,
-        });
-      }
-
-      async function getRecycleAPI() {
-        return await apiRequest("getRecycle", {
-          token: authToken,
-        });
-      }
-
-      async function getSummaryAPI() {
-        return await apiRequest("summary", {
-          token: authToken,
-        });
-      }
-
-      /* =====================================================
-       * SESSION
-       * ===================================================== */
-
-      function saveSession(user, token) {
-        currentUser = user;
-        authToken = token;
-
-        sessionStorage.setItem("fmsUser", JSON.stringify(user));
-        sessionStorage.setItem("fmsToken", token);
-      }
-
-      function clearSession() {
-        currentUser = null;
-        authToken = null;
-
-        sessionStorage.removeItem("fmsUser");
-        sessionStorage.removeItem("fmsToken");
-      }
-
-      function restoreSession() {
-        try {
-          const user = sessionStorage.getItem("fmsUser");
-          const token = sessionStorage.getItem("fmsToken");
-
-          if (!user || !token) return false;
-
-          currentUser = JSON.parse(user);
-          authToken = token;
-
-          return true;
-        } catch (e) {
-          clearSession();
-          return false;
-        }
-      }
-
-      function getLoggedInUser() {
-        return currentUser;
-      }
-
-      /* =====================================================
-       * INIT
-       * ===================================================== */
-
-      document.addEventListener("DOMContentLoaded", async function () {
-        document.getElementById("loginForm").addEventListener("submit", login);
-
-        document
-          .getElementById("personnelForm")
-          .addEventListener("submit", savePersonnel);
-
-        document.getElementById("bp").addEventListener("input", bpInput);
-
-        document
-          .getElementById("publicSearchBP")
-          .addEventListener("input", publicSearch);
-
-        try {
-          const result = await getConfig();
-
-          if (!result.success) {
-            console.error(apiMessage(result));
-            return;
-          }
-
-          window.SYSTEM_CONFIG = result;
-          loadRanks();
-
-          if (restoreSession()) {
-            await enterApplication();
-          }
-        } catch (error) {
-          console.error("API connection failed:", error);
-        }
-      });
-
-      /* =====================================================
-       * NAVIGATION
-       * ===================================================== */
-
-      function showLogin() {
-        document.getElementById("welcomePage").classList.remove("active");
-        document.getElementById("loginPage").classList.add("active");
-      }
-
-      function showWelcome() {
-        document.getElementById("loginPage").classList.remove("active");
-        document.getElementById("welcomePage").classList.add("active");
-      }
-
-      function logout() {
-        clearSession();
-
-        document.getElementById("appPage").classList.remove("active");
-        document.getElementById("loginPage").classList.remove("active");
-        document.getElementById("welcomePage").classList.add("active");
-        document.getElementById("loginForm").reset();
-        document.getElementById("loginMessage").innerHTML = "";
-      }
-
-      /* =====================================================
-       * PUBLIC SEARCH
-       * ===================================================== */
-
-      async function publicSearch() {
-        clearTimeout(searchTimer);
-
-        const bp = document
-          .getElementById("publicSearchBP")
-          .value.trim()
-          .toUpperCase();
-
-        const resultBox = document.getElementById("publicResult");
-
-        if (!bp) {
-          resultBox.innerHTML = "";
-          return;
-        }
-
-        if (!/^BP\d{10}$/.test(bp)) {
-          resultBox.innerHTML = `
-<div style="
-color:#c62828;
-background:#ffebee;
-padding:10px;
-border-radius:8px">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>বান্দরবান জেলা পুলিশ - Force Management System</title>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+  --primary:#075b3c;
+  --primary-dark:#03432d;
+  --secondary:#d7a928;
+  --danger:#c62828;
+  --warning:#ef8d00;
+  --blue:#1565c0;
+  --bg:#f3f6f5;
+  --card:#fff;
+  --text:#1e293b;
+  --border:#d9e1dd;
+}
+
+body{
+  margin:0;
+  font-family:"Noto Sans Bengali","SolaimanLipi",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+.hidden{display:none!important}
+
+/* WELCOME */
+
+#welcomePage{
+  background:linear-gradient(rgba(0,60,40,.84),rgba(0,30,20,.94))
+}
+
+.welcome-overlay{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px
+}
+
+.welcome-card{
+  width:min(700px,96%);
+  background:white;
+  border-radius:22px;
+  padding:40px;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.3)
+}
+
+.logo{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:var(--primary);
+  border:4px solid var(--secondary);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  font-weight:bold;
+  font-size:25px
+}
+
+.welcome-card h1{
+  color:var(--primary);
+  margin:15px 0 5px
+}
+
+.welcome-card h2{
+  margin:0 0 10px;
+  color:#555
+}
+
+.search-box{
+  display:flex;
+  gap:10px;
+  margin-top:30px
+}
+
+.search-box input{
+  flex:1;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:8px
+}
+
+.search-box button{
+  background:var(--primary);
+  color:white;
+  border:0;
+  padding:0 25px;
+  border-radius:8px
+}
+
+.login-button{
+  width:100%;
+  padding:15px;
+  border:0;
+  background:var(--secondary);
+  border-radius:8px;
+  margin-top:20px;
+  font-weight:bold;
+  font-size:17px
+}
+
+.public-result{
+  margin-top:10px;
+  text-align:left
+}
+
+/* LOGIN */
+
+#loginPage{
+  background:linear-gradient(135deg,#064b34,#021e14)
+}
+
+.login-wrapper{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px
+}
+
+.login-card{
+  width:min(430px,96%);
+  background:white;
+  border-radius:20px;
+  padding:35px;
+  text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.3)
+}
+
+.login-card label{
+  display:block;
+  text-align:left;
+  font-weight:bold;
+  margin:15px 0 6px
+}
+
+.login-card input{
+  width:100%;
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:8px
+}
+
+.primary{
+  background:var(--primary);
+  color:white;
+  border:0;
+  padding:12px 20px;
+  border-radius:8px
+}
+
+.secondary{
+  background:#e9eeeb;
+  color:#222;
+  border:0;
+  padding:12px 20px;
+  border-radius:8px
+}
+
+.login-card .primary{
+  width:100%;
+  margin-top:20px
+}
+
+.back{
+  margin-top:15px;
+  border:0;
+  background:none;
+  color:var(--primary)
+}
+
+/* HEADER */
+
+.header{
+  background:var(--primary);
+  color:white;
+  padding:12px 25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.header-logo{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:3px solid var(--secondary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold
+}
+
+.brand h2{margin:0}
+.brand small{opacity:.8}
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.logout{
+  background:transparent;
+  border:1px solid rgba(255,255,255,.6);
+  color:white;
+  padding:8px 15px;
+  border-radius:7px
+}
+
+/* DASHBOARD */
+
+.dashboard{
+  max-width:1900px;
+  margin:auto;
+  padding:25px
+}
+
+.dashboard-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px
+}
+
+.dashboard-title h2{color:var(--primary)}
+
+.tabs{
+  display:flex;
+  gap:5px;
+  border-bottom:2px solid var(--border);
+  margin-bottom:20px;
+  overflow-x:auto
+}
+
+.tab{
+  border:0;
+  background:#e8eeeb;
+  padding:12px 20px;
+  border-radius:8px 8px 0 0;
+  white-space:nowrap
+}
+
+.tab.active{
+  background:var(--primary);
+  color:white
+}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CARD */
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:25px;
+  box-shadow:0 3px 15px rgba(0,0,0,.06)
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px
+}
+
+.field{
+  display:flex;
+  flex-direction:column
+}
+
+.field.full{grid-column:1/-1}
+
+.field label{
+  font-weight:bold;
+  margin-bottom:6px
+}
+
+.field input,
+.field select,
+.field textarea{
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  outline:none
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--primary)
+}
+
+.form-actions{
+  margin-top:20px;
+  display:flex;
+  gap:10px
+}
+
+/* TOOLBAR */
+
+.toolbar{
+  background:white;
+  padding:12px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px
+}
+
+.toolbar select{
+  padding:9px;
+  border:1px solid var(--border);
+  border-radius:7px
+}
+
+.toolbar button{
+  background:var(--primary);
+  color:white;
+  border:0;
+  padding:9px 13px;
+  border-radius:7px
+}
+
+/* TABLE */
+
+.table-container{
+  overflow:auto;
+  background:white;
+  border-radius:10px
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1100px
+}
+
+th,td{
+  padding:9px 10px;
+  border-bottom:1px solid #e4e9e6;
+  text-align:left;
+  white-space:nowrap
+}
+
+th{
+  background:var(--primary);
+  color:white;
+  position:sticky;
+  top:0
+}
+
+tbody tr:hover{background:#f5faf7}
+
+.edit-btn{
+  background:var(--blue);
+  color:white;
+  border:0;
+  padding:6px 10px;
+  border-radius:5px
+}
+
+.delete-btn{
+  background:var(--danger);
+  color:white;
+  border:0;
+  padding:6px 10px;
+  border-radius:5px
+}
+
+.disabled-btn{
+  background:#aaa;
+  color:white;
+  border:0;
+  padding:6px 10px;
+  border-radius:5px
+}
+
+/* MODAL */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+
+.modal.show{display:flex}
+
+.modal-box{
+  width:min(600px,96%);
+  background:white;
+  border-radius:15px;
+  padding:25px;
+  position:relative;
+  max-height:90vh;
+  overflow:auto
+}
+
+.close{
+  position:absolute;
+  right:12px;
+  top:8px;
+  background:none;
+  border:0;
+  font-size:25px
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px
+}
+
+.status{
+  padding:12px;
+  border-radius:8px;
+  margin-top:12px;
+  white-space:pre-wrap
+}
+
+.success{
+  background:#edf8f2;
+  color:#075b3c
+}
+
+.error{
+  background:#ffebee;
+  color:#c62828
+}
+
+.info{
+  background:#fff8e1;
+  color:#795548
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:600px){
+  .welcome-card{padding:25px}
+  .search-box{flex-direction:column}
+  .search-box button{padding:13px}
+  .grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .header{
+    flex-direction:column;
+    align-items:flex-start
+  }
+  .user-box{
+    width:100%;
+    justify-content:space-between
+  }
+  .dashboard{padding:12px}
+}
+
+@media print{
+  body *{visibility:hidden}
+  .print-area,.print-area *{visibility:visible}
+  .print-area{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- WELCOME -->
+<section id="welcomePage" class="page active">
+<div class="welcome-overlay">
+<div class="welcome-card">
+
+<div class="logo">BP</div>
+
+<h1>বান্দরবান জেলা পুলিশ</h1>
+<h2>Force Management System</h2>
+<p>Personnel Data Management System</p>
+
+<div class="search-box">
+<input
+  id="publicSearchBP"
+  maxlength="12"
+  placeholder="১২ ডিজিটের BP নম্বর লিখুন"
+  autocomplete="off">
+<button onclick="publicSearch()">Search</button>
+</div>
+
+<div id="publicResult"></div>
+
+<button class="login-button" onclick="showLogin()">Login</button>
+
+</div>
+</div>
+</section>
+
+<!-- LOGIN -->
+<section id="loginPage" class="page">
+<div class="login-wrapper">
+<div class="login-card">
+
+<div class="logo">BP</div>
+
+<h2>Force Management System</h2>
+<p>Secure Login</p>
+
+<form id="loginForm">
+
+<label>User ID / BP</label>
+<input id="loginUser" required autocomplete="username">
+
+<label>Password</label>
+<input
+  id="loginPassword"
+  type="password"
+  required
+  autocomplete="current-password">
+
+<button class="primary" type="submit">Login</button>
+
+</form>
+
+<button class="back" onclick="showWelcome()">← Back</button>
+
+<div id="loginMessage"></div>
+
+</div>
+</div>
+</section>
+
+<!-- APPLICATION -->
+<section id="appPage" class="page">
+
+<header class="header">
+
+<div class="brand">
+<div class="header-logo">BP</div>
+<div>
+<h2>বান্দরবান জেলা পুলিশ</h2>
+<small>Force Management System</small>
+</div>
+</div>
+
+<div class="user-box">
+<span id="loggedUser"></span>
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+
+</header>
+
+<!-- DATA ENTRY -->
+<main id="dataEntryDashboard" class="dashboard hidden">
+
+<div class="dashboard-title">
+<h2>Data Entry Dashboard</h2>
+<strong id="entryUnit"></strong>
+</div>
+
+<div class="tabs">
+
+<button class="tab active"
+onclick="openTab('entryForm',this)">
+Data Entry
+</button>
+
+<button class="tab"
+onclick="openTab('submittedList',this)">
+Submitted List
+</button>
+
+</div>
+
+<section id="entryForm" class="tab-content active">
+
+<div class="card">
+
+<h3>Personnel Data Entry</h3>
+
+<form id="personnelForm">
+
+<div class="grid">
+
+<div class="field">
+<label>BP *</label>
+<input id="bp" maxlength="12" required>
+</div>
+
+<div class="field">
+<label>Rank *</label>
+<select id="rank" required>
+<option value="">Select Rank</option>
+</select>
+</div>
+
+<div class="field">
+<label>Brash</label>
+<input id="brash" maxlength="4" inputmode="numeric">
+</div>
+
+<div class="field">
+<label>Name *</label>
+<input id="name" required>
+</div>
+
+<div class="field">
+<label>Unit</label>
+<input id="unit" readonly>
+</div>
+
+<div class="field">
+<label>Mobile *</label>
+<input id="mobile" maxlength="11" inputmode="numeric" required>
+</div>
+
+<div class="field full">
+<label>Remark</label>
+<textarea id="remark" rows="3"></textarea>
+</div>
+
+</div>
+
+<div class="form-actions">
+<button class="primary" type="submit">Save Data</button>
+<button class="secondary" type="button" onclick="resetForm()">Reset</button>
+</div>
+
+</form>
+
+</div>
+</section>
+
+<section id="submittedList" class="tab-content">
+
+<div class="toolbar">
+
+<select id="entryRankFilter" onchange="renderSubmitted()">
+<option value="">All Rank</option>
+</select>
+
+<button onclick="printTable('submittedTable')">Print</button>
+
+<strong>
+Total: <span id="entryTotal">0</span>
+</strong>
+
+</div>
+
+<div class="table-container">
+
+<table id="submittedTable">
+
+<thead>
+<tr>
+<th>SL</th>
+<th>BP</th>
+<th>Rank</th>
+<th>Brash</th>
+<th>Name</th>
+<th>Unit</th>
+<th>Mobile</th>
+<th>Remark</th>
+<th>Date & Time</th>
+</tr>
+</thead>
+
+<tbody id="submittedBody"></tbody>
+
+</table>
+
+</div>
+</section>
+
+</main>
+
+<!-- ADMIN -->
+<main id="adminDashboard" class="dashboard hidden">
+
+<div class="dashboard-title">
+<h2>Admin Dashboard</h2>
+<strong>Administrator</strong>
+</div>
+
+<div class="tabs">
+
+<button class="tab active"
+onclick="openTab('adminData',this)">
+All Personnel
+</button>
+
+<button class="tab"
+onclick="openTab('adminSummary',this)">
+Unit Summary
+</button>
+
+</div>
+
+<section id="adminData" class="tab-content active">
+
+<div class="toolbar">
+
+<select id="adminRank" onchange="renderAdmin()">
+<option value="">All Rank</option>
+</select>
+
+<select id="adminUnit" onchange="renderAdmin()">
+<option value="">All Unit</option>
+</select>
+
+<button onclick="downloadCSV('adminTable','Admin_Data')">
+Excel Download
+</button>
+
+<button onclick="printTable('adminTable')">
+Print
+</button>
+
+<strong>
+Total: <span id="adminTotal">0</span>
+</strong>
+
+</div>
+
+<div class="table-container">
+
+<table id="adminTable">
+
+<thead>
+<tr>
+<th>SL</th>
+<th>BP</th>
+<th>Rank</th>
+<th>Brash</th>
+<th>Name</th>
+<th>Unit</th>
+<th>Mobile</th>
+<th>Remark</th>
+<th>User</th>
+<th>Date & Time</th>
+<th>Edit</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="adminBody"></tbody>
+
+</table>
+</div>
+
+</section>
+
+<section id="adminSummary" class="tab-content">
+
+<div class="toolbar">
+<button onclick="printTable('summaryTable')">Print</button>
+<button onclick="downloadCSV('summaryTable','Unit_Rank_Summary')">
+Excel Download
+</button>
+</div>
+
+<div class="table-container">
+<table id="summaryTable">
+<thead id="summaryHead"></thead>
+<tbody id="summaryBody"></tbody>
+<tfoot id="summaryFoot"></tfoot>
+</table>
+</div>
+
+</section>
+
+</main>
+
+<!-- SUPER ADMIN -->
+<main id="superDashboard" class="dashboard hidden">
+
+<div class="dashboard-title">
+<h2>Super Admin Dashboard</h2>
+<strong>Super Administrator</strong>
+</div>
+
+<div class="tabs">
+
+<button class="tab active"
+onclick="openTab('superData',this)">
+All Personnel
+</button>
+
+<button class="tab"
+onclick="openTab('recycleData',this)">
+Recycle Data
+</button>
+
+<button class="tab"
+onclick="openTab('superSummary',this)">
+Unit & Rank Summary
+</button>
+
+</div>
+
+<section id="superData" class="tab-content active">
+
+<div class="toolbar">
+
+<select id="superRank" onchange="renderSuper()">
+<option value="">All Rank</option>
+</select>
+
+<select id="superUnit" onchange="renderSuper()">
+<option value="">All Unit</option>
+</select>
+
+<button onclick="downloadCSV('superTable','SuperAdmin_Data')">
+Excel Download
+</button>
+
+<button onclick="printTable('superTable')">Print</button>
+
+<strong>
+Total: <span id="superTotal">0</span>
+</strong>
+
+</div>
+
+<div class="table-container">
+
+<table id="superTable">
+
+<thead>
+<tr>
+<th>SL</th>
+<th>BP</th>
+<th>Rank</th>
+<th>Brash</th>
+<th>Name</th>
+<th>Unit</th>
+<th>Mobile</th>
+<th>Remark</th>
+<th>User</th>
+<th>Date & Time</th>
+<th>Delete</th>
+<th>Request Date</th>
+</tr>
+</thead>
+
+<tbody id="superBody"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section id="recycleData" class="tab-content">
+
+<div class="toolbar">
+
+<button onclick="downloadCSV('recycleTable','Recycle_Data')">
+Excel Download
+</button>
+
+<button onclick="printTable('recycleTable')">
+Print
+</button>
+
+</div>
+
+<div class="table-container">
+
+<table id="recycleTable">
+
+<thead>
+<tr>
+<th>SL</th>
+<th>BP</th>
+<th>Rank</th>
+<th>Name</th>
+<th>Unit</th>
+<th>Mobile</th>
+<th>Remark</th>
+<th>User</th>
+<th>Original Date</th>
+<th>Request Date</th>
+<th>Deleted At</th>
+</tr>
+</thead>
+
+<tbody id="recycleBody"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section id="superSummary" class="tab-content">
+
+<div class="toolbar">
+<button onclick="printTable('superSummaryTable')">
+Print
+</button>
+
+<button onclick="downloadCSV('superSummaryTable','SuperAdmin_Summary')">
+Excel Download
+</button>
+</div>
+
+<div class="table-container">
+
+<table id="superSummaryTable">
+
+<thead id="superSummaryHead"></thead>
+<tbody id="superSummaryBody"></tbody>
+<tfoot id="superSummaryFoot"></tfoot>
+
+</table>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+<!-- MODAL -->
+
+<div id="modal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal()">×</button>
+
+<h3 id="modalTitle"></h3>
+
+<div id="modalContent"></div>
+
+<div class="modal-actions">
+
+<button class="secondary" onclick="closeModal()">
+Cancel
+</button>
+
+<button id="modalOK" class="primary">
+OK
+</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* =====================================================
+   IMPORTANT
+   =====================================================
+
+   এখানে আপনার নতুন Apps Script Web App-এর /exec URL বসাবেন।
+
+   Example:
+   https://script.google.com/macros/s/XXXXXXXX/exec
+*/
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwHQkuwI9YNSoMQHhlq4WOt-nBb7PPW0HXVjCdk89Um5TO3G7WwU97npXul0mIpKnmxcg/exec";
+
+
+let currentUser=null;
+let authToken=null;
+let SYSTEM_CONFIG={ranks:[],units:[]};
+
+
+/* =====================================================
+   API
+   ===================================================== */
+
+function apiRequest(action,params={}){
+
+return new Promise((resolve,reject)=>{
+
+const callbackName=
+"fmsCallback_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+
+const script=document.createElement("script");
+
+let finished=false;
+
+const timeout=setTimeout(()=>{
+
+if(finished)return;
+
+finished=true;
+cleanup();
+
+reject(new Error(
+"API timeout: "+action+
+"\nGoogle Apps Script থেকে response পাওয়া যায়নি।"
+));
+
+},30000);
+
+
+function cleanup(){
+
+clearTimeout(timeout);
+
+if(script.parentNode){
+script.parentNode.removeChild(script);
+}
+
+try{
+delete window[callbackName];
+}catch(e){
+window[callbackName]=undefined;
+}
+
+}
+
+
+window[callbackName]=function(result){
+
+if(finished)return;
+
+finished=true;
+cleanup();
+
+resolve(result);
+
+};
+
+
+const query=new URLSearchParams();
+
+query.set("action",action);
+query.set("callback",callbackName);
+
+Object.keys(params).forEach(key=>{
+
+const value=params[key];
+
+if(value!==undefined && value!==null){
+query.set(key,String(value));
+}
+
+});
+
+
+script.src=API_URL+"?"+query.toString();
+
+script.onerror=function(){
+
+if(finished)return;
+
+finished=true;
+cleanup();
+
+reject(new Error(
+"Google Apps Script API connection failed.\n"+
+"Action: "+action+
+"\n\nWeb App deployment, /exec URL এবং access setting পরীক্ষা করুন।"
+));
+
+};
+
+document.body.appendChild(script);
+
+});
+
+}
+
+
+function apiMessage(result){
+
+return result && result.message
+?result.message
+:"Server থেকে কোনো তথ্য পাওয়া যায়নি।";
+
+}
+
+
+/* =====================================================
+   INIT
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+document.getElementById("loginForm")
+.addEventListener("submit",login);
+
+document.getElementById("personnelForm")
+.addEventListener("submit",savePersonnel);
+
+document.getElementById("bp")
+.addEventListener("input",bpInput);
+
+document.getElementById("publicSearchBP")
+.addEventListener("input",publicSearch);
+
+try{
+
+const result=await apiRequest("health");
+
+if(!result.success){
+throw new Error(apiMessage(result));
+}
+
+const config=await apiRequest("config");
+
+if(!config.success){
+throw new Error(apiMessage(config));
+}
+
+SYSTEM_CONFIG=config;
+
+loadRanks();
+
+restoreSession();
+
+if(currentUser && authToken){
+await enterApplication();
+}
+
+}catch(error){
+
+console.error(error);
+
+showStartupError(error.message);
+
+}
+
+});
+
+
+function showStartupError(message){
+
+document.getElementById("publicResult").innerHTML=
+`
+<div class="status error">
+<b>Server connection error</b>
+
+${safe(message)}
+
+<br><br>
+
+Google Apps Script Web App deployment এবং API URL পরীক্ষা করুন।
+</div>
+`;
+
+}
+
+
+/* =====================================================
+   SESSION
+   ===================================================== */
+
+function saveSession(user,token){
+
+currentUser=user;
+authToken=token;
+
+sessionStorage.setItem(
+"fmsUser",
+JSON.stringify(user)
+);
+
+sessionStorage.setItem(
+"fmsToken",
+token
+);
+
+}
+
+
+function restoreSession(){
+
+try{
+
+const user=sessionStorage.getItem("fmsUser");
+const token=sessionStorage.getItem("fmsToken");
+
+if(!user || !token)return false;
+
+currentUser=JSON.parse(user);
+authToken=token;
+
+return true;
+
+}catch(e){
+
+clearSession();
+return false;
+
+}
+
+}
+
+
+function clearSession(){
+
+currentUser=null;
+authToken=null;
+
+sessionStorage.removeItem("fmsUser");
+sessionStorage.removeItem("fmsToken");
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
+
+function showLogin(){
+
+document.getElementById("welcomePage")
+.classList.remove("active");
+
+document.getElementById("loginPage")
+.classList.add("active");
+
+}
+
+
+function showWelcome(){
+
+document.getElementById("loginPage")
+.classList.remove("active");
+
+document.getElementById("welcomePage")
+.classList.add("active");
+
+}
+
+
+function logout(){
+
+clearSession();
+
+document.getElementById("appPage")
+.classList.remove("active");
+
+document.getElementById("loginPage")
+.classList.remove("active");
+
+document.getElementById("welcomePage")
+.classList.add("active");
+
+document.getElementById("loginForm").reset();
+
+document.getElementById("loginMessage").innerHTML="";
+
+}
+
+
+/* =====================================================
+   PUBLIC SEARCH
+   ===================================================== */
+
+async function publicSearch(){
+
+const input=document.getElementById("publicSearchBP");
+const box=document.getElementById("publicResult");
+
+let bp=input.value
+.trim()
+.toUpperCase()
+.replace(/[^A-Z0-9]/g,"");
+
+input.value=bp;
+
+if(!bp){
+
+box.innerHTML="";
+return;
+
+}
+
+if(!/^BP\d{10}$/.test(bp)){
+
+box.innerHTML=
+`<div class="status error">
 BP অবশ্যই BP + ১০ ডিজিট হতে হবে।
 </div>`;
 
-          return;
-        }
+return;
 
-        resultBox.innerHTML = `
-<div style="
-background:#fff8e1;
-padding:10px;
-border-radius:8px">
-তথ্য খোঁজা হচ্ছে...
-</div>`;
+}
 
-        try {
-          const response = await publicSearchAPI(bp);
+box.innerHTML=
+`<div class="status info">তথ্য খোঁজা হচ্ছে...</div>`;
 
-          if (!response.success) {
-            resultBox.innerHTML = `
-<div style="
-background:#fff3f3;
-color:#c62828;
-padding:12px;
-border-radius:8px">
-${safe(apiMessage(response))}
-</div>`;
-          } else {
-            const found = response.data;
+try{
 
-            resultBox.innerHTML = `
-<div style="
-background:#edf8f2;
-padding:15px;
-border-radius:10px">
+const result=await apiRequest(
+"publicSearch",
+{bp}
+);
 
-<b>BP:</b> ${safe(found.bp)}<br>
-<b>Rank:</b> ${safe(found.rank)}<br>
-<b>Brash:</b> ${safe(found.brash || "-")}<br>
-<b>Name:</b> ${safe(found.name)}<br>
-<b>Unit:</b> ${safe(found.unit)}<br>
-<b>Mobile:</b> ${safe(found.mobile)}<br>
-<b>Remark:</b> ${safe(found.remark || "-")}
+if(!result.success){
 
-</div>`;
-          }
-        } catch (error) {
-          console.error(error);
-
-          resultBox.innerHTML = `
-<div style="
-background:#fff3f3;
-color:#c62828;
-padding:12px;
-border-radius:8px">
-Server connection failed.
-</div>`;
-        }
-
-        searchTimer = setTimeout(function () {
-          document.getElementById("publicSearchBP").value = "";
-          resultBox.innerHTML = "";
-        }, 10000);
-      }
-
-      /* =====================================================
-       * LOGIN
-       * ===================================================== */
-
-      async function login(e) {
-        e.preventDefault();
-
-        const id = document.getElementById("loginUser").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        const message = document.getElementById("loginMessage");
-
-        message.innerHTML = "";
-
-        try {
-          const result = await loginUser(id, password);
-
-          if (!result.success) {
-            message.innerHTML = `
-<div style="
-margin-top:15px;
-background:#ffebee;
-color:#c62828;
-padding:10px;
-border-radius:7px">
+box.innerHTML=
+`<div class="status error">
 ${safe(apiMessage(result))}
 </div>`;
 
-            return;
-          }
+return;
 
-          saveSession(result.user, result.token);
+}
 
-          document.getElementById("loginPage").classList.remove("active");
-          document.getElementById("appPage").classList.add("active");
+const x=result.data;
 
-          await enterApplication();
-        } catch (error) {
-          console.error(error);
+box.innerHTML=
+`
+<div class="status success">
 
-          message.innerHTML = `
-<div style="
-margin-top:15px;
-background:#ffebee;
-color:#c62828;
-padding:10px;
-border-radius:7px">
-Server connection error.
+<b>BP:</b> ${safe(x.bp)}<br>
+<b>Rank:</b> ${safe(x.rank)}<br>
+<b>Brash:</b> ${safe(x.brash||"-")}<br>
+<b>Name:</b> ${safe(x.name)}<br>
+<b>Unit:</b> ${safe(x.unit)}<br>
+<b>Mobile:</b> ${safe(x.mobile)}<br>
+<b>Remark:</b> ${safe(x.remark||"-")}
+
+</div>
+`;
+
+}catch(error){
+
+console.error(error);
+
+box.innerHTML=
+`<div class="status error">
+${safe(error.message)}
 </div>`;
-        }
-      }
 
-      async function enterApplication() {
-        document.getElementById("appPage").classList.add("active");
+}
 
-        document.getElementById("loggedUser").textContent =
-          `${currentUser.name} | ${currentUser.type}`;
+}
 
-        hideDashboards();
 
-        if (currentUser.type === "DataEntry") {
-          await showDataEntry();
-        } else if (currentUser.type === "Admin") {
-          await showAdmin();
-        } else {
-          await showSuperAdmin();
-        }
-      }
+/* =====================================================
+   LOGIN
+   ===================================================== */
 
-      /* =====================================================
-       * DASHBOARDS
-       * ===================================================== */
+async function login(e){
 
-      function hideDashboards() {
-        ["dataEntryDashboard", "adminDashboard", "superDashboard"].forEach(
-          (id) => {
-            document.getElementById(id).classList.add("hidden");
-          },
-        );
-      }
+e.preventDefault();
 
-      async function showDataEntry() {
-        document
-          .getElementById("dataEntryDashboard")
-          .classList.remove("hidden");
+const id=document.getElementById("loginUser")
+.value.trim();
 
-        document.getElementById("entryUnit").textContent =
-          currentUser.unit || "";
+const password=document.getElementById("loginPassword")
+.value;
 
-        document.getElementById("unit").value = currentUser.unit || "";
+const box=document.getElementById("loginMessage");
 
-        loadEntryRankFilter();
+box.innerHTML="";
 
-        resetForm();
-        await renderSubmitted();
-      }
+try{
 
-      async function showAdmin() {
-        document.getElementById("adminDashboard").classList.remove("hidden");
+const result=await apiRequest(
+"login",
+{id,password}
+);
 
-        loadAdminFilters();
+if(!result.success){
 
-        await renderAdmin();
-        await renderSummary("summaryHead", "summaryBody", "summaryFoot");
-      }
+box.innerHTML=
+`<div class="status error">
+${safe(apiMessage(result))}
+</div>`;
 
-      async function showSuperAdmin() {
-        document.getElementById("superDashboard").classList.remove("hidden");
+return;
 
-        loadSuperFilters();
+}
 
-        await renderSuper();
-        await renderRecycle();
-        await renderSummary(
-          "superSummaryHead",
-          "superSummaryBody",
-          "superSummaryFoot",
-        );
-      }
+saveSession(
+result.user,
+result.token
+);
 
-      /* =====================================================
-       * TABS
-       * ===================================================== */
+document.getElementById("loginPage")
+.classList.remove("active");
 
-      function openTab(id, button) {
-        const dashboard = button.closest(".dashboard");
+document.getElementById("appPage")
+.classList.add("active");
 
-        dashboard
-          .querySelectorAll(".tab-content")
-          .forEach((x) => x.classList.remove("active"));
+await enterApplication();
 
-        dashboard
-          .querySelectorAll(".tab")
-          .forEach((x) => x.classList.remove("active"));
+}catch(error){
 
-        document.getElementById(id).classList.add("active");
-        button.classList.add("active");
-      }
+console.error(error);
 
-      /* =====================================================
-       * RANK / UNIT CONFIG
-       * ===================================================== */
+box.innerHTML=
+`<div class="status error">
+<b>Server connection error</b><br>
+${safe(error.message)}
+</div>`;
 
-      function loadRanks() {
-        const select = document.getElementById("rank");
+}
 
-        select.innerHTML = `<option value="">Select Rank</option>`;
+}
 
-        (window.SYSTEM_CONFIG?.ranks || []).forEach((rank) => {
-          const option = document.createElement("option");
-          option.value = rank;
-          option.textContent = rank;
-          select.appendChild(option);
-        });
-      }
 
-      function loadEntryRankFilter() {
-        const select = document.getElementById("entryRankFilter");
+/* =====================================================
+   APPLICATION
+   ===================================================== */
 
-        select.innerHTML = `<option value="">All Rank</option>`;
+async function enterApplication(){
 
-        (window.SYSTEM_CONFIG?.ranks || []).forEach((rank) => {
-          select.innerHTML += `
-<option value="${safe(rank)}">${safe(rank)}</option>`;
-        });
-      }
+document.getElementById("appPage")
+.classList.add("active");
 
-      function loadAdminFilters() {
-        const rank = document.getElementById("adminRank");
-        const unit = document.getElementById("adminUnit");
+document.getElementById("loggedUser")
+.textContent=
+`${currentUser.name} | ${currentUser.type}`;
 
-        rank.innerHTML = `<option value="">All Rank</option>`;
-        unit.innerHTML = `<option value="">All Unit</option>`;
+hideDashboards();
 
-        (window.SYSTEM_CONFIG?.ranks || []).forEach((x) => {
-          rank.innerHTML += `<option value="${safe(x)}">${safe(x)}</option>`;
-        });
+try{
 
-        (window.SYSTEM_CONFIG?.units || []).forEach((x) => {
-          unit.innerHTML += `<option value="${safe(x)}">${safe(x)}</option>`;
-        });
-      }
+if(currentUser.type==="DataEntry"){
 
-      function loadSuperFilters() {
-        const rank = document.getElementById("superRank");
-        const unit = document.getElementById("superUnit");
+await showDataEntry();
 
-        rank.innerHTML = `<option value="">All Rank</option>`;
-        unit.innerHTML = `<option value="">All Unit</option>`;
+}else if(currentUser.type==="Admin"){
 
-        (window.SYSTEM_CONFIG?.ranks || []).forEach((x) => {
-          rank.innerHTML += `<option value="${safe(x)}">${safe(x)}</option>`;
-        });
+await showAdmin();
 
-        (window.SYSTEM_CONFIG?.units || []).forEach((x) => {
-          unit.innerHTML += `<option value="${safe(x)}">${safe(x)}</option>`;
-        });
-      }
+}else if(currentUser.type==="SuperAdmin"){
 
-      /* =====================================================
-       * BP
-       * ===================================================== */
+await showSuperAdmin();
 
-      async function bpInput() {
-        const input = document.getElementById("bp");
+}else{
 
-        let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+throw new Error("Unknown user type.");
 
-        if (!value.startsWith("BP")) {
-          value = "BP" + value.replace(/B|P/g, "");
-        }
+}
 
-        input.value = value.substring(0, 12);
+}catch(error){
 
-        if (/^BP\d{10}$/.test(input.value)) {
-          try {
-            const result = await publicSearchAPI(input.value);
+console.error(error);
 
-            if (result.success && result.data) {
-              const existing = result.data;
+alert(error.message);
 
-              showModal(
-                "Duplicate BP",
-                `
-<p>এই BP নম্বরের তথ্য আগে থেকেই এন্ট্রি করা আছে।</p>
-<p><b>BP:</b> ${safe(existing.bp)}</p>
-<p><b>Unit:</b> ${safe(existing.unit)}</p>
+}
+
+}
+
+
+function hideDashboards(){
+
+[
+"dataEntryDashboard",
+"adminDashboard",
+"superDashboard"
+].forEach(id=>{
+document.getElementById(id)
+.classList.add("hidden");
+});
+
+}
+
+
+/* =====================================================
+   DASHBOARDS
+   ===================================================== */
+
+async function showDataEntry(){
+
+document.getElementById("dataEntryDashboard")
+.classList.remove("hidden");
+
+document.getElementById("entryUnit")
+.textContent=currentUser.unit||"";
+
+document.getElementById("unit")
+.value=currentUser.unit||"";
+
+loadEntryRankFilter();
+
+resetForm();
+
+await renderSubmitted();
+
+}
+
+
+async function showAdmin(){
+
+document.getElementById("adminDashboard")
+.classList.remove("hidden");
+
+loadAdminFilters();
+
+await renderAdmin();
+
+await renderSummary(
+"summaryHead",
+"summaryBody",
+"summaryFoot"
+);
+
+}
+
+
+async function showSuperAdmin(){
+
+document.getElementById("superDashboard")
+.classList.remove("hidden");
+
+loadSuperFilters();
+
+await renderSuper();
+
+await renderRecycle();
+
+await renderSummary(
+"superSummaryHead",
+"superSummaryBody",
+"superSummaryFoot"
+);
+
+}
+
+
+/* =====================================================
+   TABS
+   ===================================================== */
+
+function openTab(id,button){
+
+const dashboard=button.closest(".dashboard");
+
+dashboard
+.querySelectorAll(".tab-content")
+.forEach(x=>x.classList.remove("active"));
+
+dashboard
+.querySelectorAll(".tab")
+.forEach(x=>x.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+button.classList.add("active");
+
+}
+
+
+/* =====================================================
+   CONFIG
+   ===================================================== */
+
+function loadRanks(){
+
+const select=document.getElementById("rank");
+
+select.innerHTML=
+`<option value="">Select Rank</option>`;
+
+SYSTEM_CONFIG.ranks.forEach(rank=>{
+
+const option=document.createElement("option");
+
+option.value=rank;
+option.textContent=rank;
+
+select.appendChild(option);
+
+});
+
+}
+
+
+function fillSelect(id,items,label){
+
+const select=document.getElementById(id);
+
+select.innerHTML=
+`<option value="">${label}</option>`;
+
+items.forEach(x=>{
+
+const option=document.createElement("option");
+
+option.value=x;
+option.textContent=x;
+
+select.appendChild(option);
+
+});
+
+}
+
+
+function loadEntryRankFilter(){
+
+fillSelect(
+"entryRankFilter",
+SYSTEM_CONFIG.ranks,
+"All Rank"
+);
+
+}
+
+
+function loadAdminFilters(){
+
+fillSelect(
+"adminRank",
+SYSTEM_CONFIG.ranks,
+"All Rank"
+);
+
+fillSelect(
+"adminUnit",
+SYSTEM_CONFIG.units,
+"All Unit"
+);
+
+}
+
+
+function loadSuperFilters(){
+
+fillSelect(
+"superRank",
+SYSTEM_CONFIG.ranks,
+"All Rank"
+);
+
+fillSelect(
+"superUnit",
+SYSTEM_CONFIG.units,
+"All Unit"
+);
+
+}
+
+
+/* =====================================================
+   BP
+   ===================================================== */
+
+async function bpInput(){
+
+const input=document.getElementById("bp");
+
+let value=input.value
+.toUpperCase()
+.replace(/[^A-Z0-9]/g,"");
+
+if(!value.startsWith("BP")){
+
+value="BP"+value.replace(/B|P/g,"");
+
+}
+
+input.value=value.substring(0,12);
+
+if(!/^BP\d{10}$/.test(input.value))return;
+
+try{
+
+const result=await apiRequest(
+"publicSearch",
+{bp:input.value}
+);
+
+if(result.success && result.data){
+
+showModal(
+"Duplicate BP",
+`
+<p>এই BP নম্বরের তথ্য আগে থেকেই আছে।</p>
+<p><b>BP:</b> ${safe(result.data.bp)}</p>
+<p><b>Unit:</b> ${safe(result.data.unit)}</p>
 `,
-                "OK",
-                function () {
-                  closeModal();
-                  resetForm();
-                },
-              );
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
+"OK",
+()=>{
+closeModal();
+resetForm();
+}
+);
 
-      /* =====================================================
-       * SAVE PERSONNEL
-       * ===================================================== */
+}
 
-      async function savePersonnel(e) {
-        e.preventDefault();
+}catch(error){
 
-        if (!currentUser || currentUser.type !== "DataEntry") {
-          alert("Please login first.");
-          return;
-        }
+console.error(error);
 
-        const bp = document.getElementById("bp").value.trim();
-        const rank = document.getElementById("rank").value;
-        const brash = document.getElementById("brash").value.trim();
-        const name = document.getElementById("name").value.trim();
-        const mobile = document.getElementById("mobile").value.trim();
-        const remark = document.getElementById("remark").value.trim();
+}
 
-        if (!/^BP\d{10}$/.test(bp)) {
-          alert("BP অবশ্যই BP + ১০ ডিজিট হতে হবে।");
-          return;
-        }
+}
 
-        if (!rank) {
-          alert("Rank নির্বাচন করুন।");
-          return;
-        }
 
-        if (brash && !/^\d{1,4}$/.test(brash)) {
-          alert("Brash সর্বোচ্চ ৪ ডিজিট হতে হবে।");
-          return;
-        }
+/* =====================================================
+   SAVE
+   ===================================================== */
 
-        if (!name) {
-          alert("Name আবশ্যক।");
-          return;
-        }
+async function savePersonnel(e){
 
-        if (!/^01\d{9}$/.test(mobile)) {
-          alert("Mobile অবশ্যই ১১ ডিজিটের হতে হবে।");
-          return;
-        }
+e.preventDefault();
 
-        try {
-          const result = await savePersonnelAPI({
-            bp,
-            rank,
-            brash,
-            name,
-            unit: currentUser.unit,
-            mobile,
-            remark,
-          });
+if(!currentUser ||
+currentUser.type!=="DataEntry"){
 
-          if (!result.success) {
-            alert(apiMessage(result));
-            return;
-          }
+alert("Please login first.");
+return;
 
-          showModal(
-            "Data Saved",
-            "তথ্য সফলভাবে Save হয়েছে।",
-            "OK",
-            async function () {
-              closeModal();
-              resetForm();
-              await renderSubmitted();
-            },
-          );
-        } catch (error) {
-          console.error(error);
-          alert("Save করার সময় server error হয়েছে।");
-        }
-      }
+}
 
-      /* =====================================================
-       * RESET
-       * ===================================================== */
+const bp=document.getElementById("bp")
+.value.trim().toUpperCase();
 
-      function resetForm() {
-        document.getElementById("personnelForm").reset();
+const rank=document.getElementById("rank").value;
 
-        if (currentUser && currentUser.type === "DataEntry") {
-          document.getElementById("unit").value = currentUser.unit || "";
-        }
-      }
+const brash=document.getElementById("brash")
+.value.trim();
 
-      /* =====================================================
-       * SUBMITTED LIST
-       * ===================================================== */
+const name=document.getElementById("name")
+.value.trim();
 
-      async function renderSubmitted() {
-        if (!currentUser) return;
+const mobile=document.getElementById("mobile")
+.value.trim();
 
-        const filter = document.getElementById("entryRankFilter").value;
-        const body = document.getElementById("submittedBody");
+const remark=document.getElementById("remark")
+.value.trim();
 
-        body.innerHTML = `
+
+if(!/^BP\d{10}$/.test(bp)){
+
+alert("BP অবশ্যই BP + ১০ ডিজিট হতে হবে।");
+return;
+
+}
+
+if(!rank){
+
+alert("Rank নির্বাচন করুন।");
+return;
+
+}
+
+if(brash && !/^\d{1,4}$/.test(brash)){
+
+alert("Brash সর্বোচ্চ ৪ ডিজিট হতে হবে।");
+return;
+
+}
+
+if(!name){
+
+alert("Name আবশ্যক।");
+return;
+
+}
+
+if(!/^01\d{9}$/.test(mobile)){
+
+alert("Mobile অবশ্যই ১১ ডিজিটের হতে হবে।");
+return;
+
+}
+
+
+try{
+
+const result=await apiRequest(
+"save",
+{
+token:authToken,
+bp,
+rank,
+brash,
+name,
+mobile,
+remark
+}
+);
+
+if(!result.success){
+
+alert(apiMessage(result));
+return;
+
+}
+
+showModal(
+"Data Saved",
+"তথ্য সফলভাবে সংরক্ষণ হয়েছে।",
+"OK",
+async()=>{
+
+closeModal();
+resetForm();
+await renderSubmitted();
+
+}
+);
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Save করার সময় server error হয়েছে.\n\n"+
+error.message
+);
+
+}
+
+}
+
+
+/* =====================================================
+   RESET
+   ===================================================== */
+
+function resetForm(){
+
+document.getElementById("personnelForm").reset();
+
+if(currentUser &&
+currentUser.type==="DataEntry"){
+
+document.getElementById("unit").value=
+currentUser.unit||"";
+
+}
+
+}
+
+
+/* =====================================================
+   SUBMITTED
+   ===================================================== */
+
+async function renderSubmitted(){
+
+if(!currentUser)return;
+
+const filter=
+document.getElementById("entryRankFilter").value;
+
+const body=
+document.getElementById("submittedBody");
+
+body.innerHTML=
+`<tr><td colspan="9">Loading...</td></tr>`;
+
+try{
+
+const result=await apiRequest(
+"getSubmitted",
+{
+token:authToken,
+rank:filter
+}
+);
+
+if(!result.success){
+
+body.innerHTML=
+`<tr><td colspan="9">
+${safe(apiMessage(result))}
+</td></tr>`;
+
+return;
+
+}
+
+const data=result.data||[];
+
+body.innerHTML="";
+
+data.forEach((x,i)=>{
+
+body.innerHTML+=`
 <tr>
-<td colspan="9">Loading...</td>
-</tr>`;
-
-        try {
-          const result = await getSubmittedAPI(filter);
-
-          if (!result.success) {
-            body.innerHTML = `
-<tr>
-<td colspan="9">${safe(apiMessage(result))}</td>
-</tr>`;
-            return;
-          }
-
-          const data = result.data || [];
-
-          body.innerHTML = "";
-
-          data.forEach((x, i) => {
-            body.innerHTML += `
-<tr>
-<td>${i + 1}</td>
+<td>${i+1}</td>
 <td>${safe(x.bp)}</td>
 <td>${safe(x.rank)}</td>
-<td>${safe(x.brash || "")}</td>
+<td>${safe(x.brash)}</td>
 <td>${safe(x.name)}</td>
 <td>${safe(x.unit)}</td>
 <td>${safe(x.mobile)}</td>
-<td>${safe(x.remark || "")}</td>
+<td>${safe(x.remark)}</td>
 <td>${safe(x.dateTime)}</td>
-</tr>`;
-          });
+</tr>
+`;
 
-          document.getElementById("entryTotal").textContent = data.length;
-        } catch (error) {
-          console.error(error);
-          body.innerHTML = `
+});
+
+document.getElementById("entryTotal")
+.textContent=data.length;
+
+}catch(error){
+
+body.innerHTML=
+`<tr><td colspan="9">
+${safe(error.message)}
+</td></tr>`;
+
+}
+
+}
+
+
+/* =====================================================
+   ADMIN
+   ===================================================== */
+
+async function renderAdmin(){
+
+const rank=document.getElementById("adminRank").value;
+const unit=document.getElementById("adminUnit").value;
+const body=document.getElementById("adminBody");
+
+body.innerHTML=
+`<tr><td colspan="12">Loading...</td></tr>`;
+
+try{
+
+const result=await apiRequest(
+"getAll",
+{
+token:authToken,
+rank,
+unit
+}
+);
+
+if(!result.success){
+
+body.innerHTML=
+`<tr><td colspan="12">
+${safe(apiMessage(result))}
+</td></tr>`;
+
+return;
+
+}
+
+const data=result.data||[];
+
+body.innerHTML="";
+
+data.forEach((x,i)=>{
+
+const edit=x.edited
+?`<button class="disabled-btn" disabled>Edit</button>`
+:`<button class="edit-btn"
+onclick="editRecord('${safe(x.id)}')">
+Edit
+</button>`;
+
+const del=x.deleteRequested
+?`<button class="disabled-btn" disabled>Requested</button>`
+:`<button class="delete-btn"
+onclick="requestDelete('${safe(x.id)}')">
+Delete
+</button>`;
+
+body.innerHTML+=`
 <tr>
-<td colspan="9">Server connection failed.</td>
-</tr>`;
-        }
-      }
-
-      /* =====================================================
-       * ADMIN TABLE
-       * ===================================================== */
-
-      async function renderAdmin() {
-        const rank = document.getElementById("adminRank").value;
-        const unit = document.getElementById("adminUnit").value;
-        const body = document.getElementById("adminBody");
-
-        body.innerHTML = `
-<tr>
-<td colspan="12">Loading...</td>
-</tr>`;
-
-        try {
-          const result = await getAllAPI(rank, unit);
-
-          if (!result.success) {
-            body.innerHTML = `
-<tr>
-<td colspan="12">${safe(apiMessage(result))}</td>
-</tr>`;
-            return;
-          }
-
-          const data = result.data || [];
-
-          body.innerHTML = "";
-
-          data.forEach((x, i) => {
-            const edit = x.edited
-              ? `<button class="disabled-btn" disabled>Edit</button>`
-              : `<button class="edit-btn" onclick="editRecord('${safe(x.id)}')">Edit</button>`;
-
-            const del = x.deleteRequested
-              ? `<button class="disabled-btn" disabled>Requested</button>`
-              : `<button class="delete-btn" onclick="requestDelete('${safe(x.id)}')">Delete</button>`;
-
-            body.innerHTML += `
-<tr>
-<td>${i + 1}</td>
+<td>${i+1}</td>
 <td>${safe(x.bp)}</td>
 <td>${safe(x.rank)}</td>
-<td>${safe(x.brash || "")}</td>
+<td>${safe(x.brash)}</td>
 <td>${safe(x.name)}</td>
 <td>${safe(x.unit)}</td>
 <td>${safe(x.mobile)}</td>
-<td>${safe(x.remark || "")}</td>
+<td>${safe(x.remark)}</td>
 <td>${safe(x.user)}</td>
 <td>${safe(x.dateTime)}</td>
 <td>${edit}</td>
 <td>${del}</td>
-</tr>`;
-          });
+</tr>
+`;
 
-          document.getElementById("adminTotal").textContent = data.length;
-        } catch (error) {
-          console.error(error);
-          body.innerHTML = `
-<tr>
-<td colspan="12">Server connection failed.</td>
-</tr>`;
-        }
-      }
+});
 
-      /* =====================================================
-       * EDIT
-       * ===================================================== */
+document.getElementById("adminTotal")
+.textContent=data.length;
 
-      async function editRecord(id) {
-        let dataResult;
+}catch(error){
 
-        try {
-          dataResult = await getAllAPI();
-        } catch (error) {
-          alert("Server connection failed.");
-          return;
-        }
+body.innerHTML=
+`<tr><td colspan="12">
+${safe(error.message)}
+</td></tr>`;
 
-        if (!dataResult.success) {
-          alert(apiMessage(dataResult));
-          return;
-        }
+}
 
-        const record = (dataResult.data || []).find((x) => x.id === id);
+}
 
-        if (!record) {
-          alert("Record পাওয়া যায়নি।");
-          return;
-        }
 
-        const html = `
+/* =====================================================
+   EDIT
+   ===================================================== */
+
+async function editRecord(id){
+
+try{
+
+const result=await apiRequest(
+"getAll",
+{token:authToken}
+);
+
+if(!result.success){
+
+alert(apiMessage(result));
+return;
+
+}
+
+const record=(result.data||[])
+.find(x=>x.id===id);
+
+if(!record){
+
+alert("Record পাওয়া যায়নি।");
+return;
+
+}
+
+const html=`
 <p><b>BP:</b> ${safe(record.bp)}</p>
 
 <label>Rank</label>
-<select id="editRank" style="width:100%;padding:10px">
-${(window.SYSTEM_CONFIG?.ranks || [])
-  .map(
-    (r) =>
-      `<option value="${safe(r)}" ${
-        r === record.rank ? "selected" : ""
-      }>${safe(r)}</option>`,
-  )
-  .join("")}
+
+<select id="editRank"
+style="width:100%;padding:10px">
+
+${SYSTEM_CONFIG.ranks.map(r=>`
+<option value="${safe(r)}"
+${r===record.rank?"selected":""}>
+${safe(r)}
+</option>
+`).join("")}
+
 </select>
 
 <br><br>
 
 <label>Brash</label>
-<input
-id="editBrash"
+<input id="editBrash"
 maxlength="4"
-value="${safe(record.brash || "")}"
+value="${safe(record.brash)}"
 style="width:100%;padding:10px">
 
 <br><br>
 
 <label>Name</label>
-<input
-id="editName"
+<input id="editName"
 value="${safe(record.name)}"
 style="width:100%;padding:10px">
 
 <br><br>
 
 <label>Mobile</label>
-<input
-id="editMobile"
+<input id="editMobile"
 maxlength="11"
 value="${safe(record.mobile)}"
 style="width:100%;padding:10px">
@@ -1877,401 +2106,563 @@ style="width:100%;padding:10px">
 <br><br>
 
 <label>Remark</label>
-<textarea
-id="editRemark"
-style="width:100%;padding:10px"
-rows="3">${safe(record.remark || "")}</textarea>
+<textarea id="editRemark"
+rows="3"
+style="width:100%;padding:10px">${safe(record.remark)}</textarea>
 `;
 
-        showModal("Edit Personnel", html, "Save", async function () {
-          const rank = document.getElementById("editRank").value;
-          const brash = document.getElementById("editBrash").value.trim();
-          const name = document.getElementById("editName").value.trim();
-          const mobile = document.getElementById("editMobile").value.trim();
-          const remark = document.getElementById("editRemark").value.trim();
+showModal(
+"Edit Personnel",
+html,
+"Save",
+async()=>{
 
-          if (brash && !/^\d{1,4}$/.test(brash)) {
-            alert("Brash সর্বোচ্চ ৪ ডিজিট হতে হবে।");
-            return;
-          }
+const rank=document.getElementById("editRank").value;
+const brash=document.getElementById("editBrash").value.trim();
+const name=document.getElementById("editName").value.trim();
+const mobile=document.getElementById("editMobile").value.trim();
+const remark=document.getElementById("editRemark").value.trim();
 
-          if (!name) {
-            alert("Name আবশ্যক।");
-            return;
-          }
+if(!rank){
+alert("Rank নির্বাচন করুন।");
+return;
+}
 
-          if (!/^01\d{9}$/.test(mobile)) {
-            alert("Mobile ১১ ডিজিট হতে হবে।");
-            return;
-          }
+if(brash && !/^\d{1,4}$/.test(brash)){
+alert("Brash সর্বোচ্চ ৪ ডিজিট হতে হবে।");
+return;
+}
 
-          try {
-            const result = await editPersonnelAPI({
-              id,
-              rank,
-              brash,
-              name,
-              mobile,
-              remark,
-            });
+if(!name){
+alert("Name আবশ্যক।");
+return;
+}
 
-            if (!result.success) {
-              alert(apiMessage(result));
-              return;
-            }
+if(!/^01\d{9}$/.test(mobile)){
+alert("Mobile ১১ ডিজিট হতে হবে।");
+return;
+}
 
-            closeModal();
-            await renderAdmin();
+try{
 
-            if (currentUser.type === "SuperAdmin") {
-              await renderSuper();
-            }
-          } catch (error) {
-            console.error(error);
-            alert("Edit করার সময় server error হয়েছে।");
-          }
-        });
-      }
+const save=await apiRequest(
+"edit",
+{
+token:authToken,
+id,
+rank,
+brash,
+name,
+mobile,
+remark
+}
+);
 
-      /* =====================================================
-       * DELETE REQUEST
-       * ===================================================== */
+if(!save.success){
 
-      async function requestDelete(id) {
-        let dataResult;
+alert(apiMessage(save));
+return;
 
-        try {
-          dataResult = await getAllAPI();
-        } catch (error) {
-          alert("Server connection failed.");
-          return;
-        }
+}
 
-        if (!dataResult.success) {
-          alert(apiMessage(dataResult));
-          return;
-        }
+closeModal();
 
-        const record = (dataResult.data || []).find((x) => x.id === id);
+await renderAdmin();
 
-        if (!record) return;
+}catch(error){
 
-        const html = `
-<p><strong>BP:</strong> ${safe(record.bp)}</p>
+alert(error.message);
 
-<p>Delete করার কারণ/মন্তব্য:</p>
+}
 
-<textarea
-id="deleteRemark"
+}
+);
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+   DELETE REQUEST
+   ===================================================== */
+
+async function requestDelete(id){
+
+try{
+
+const result=await apiRequest(
+"getAll",
+{token:authToken}
+);
+
+if(!result.success){
+
+alert(apiMessage(result));
+return;
+
+}
+
+const record=(result.data||[])
+.find(x=>x.id===id);
+
+if(!record)return;
+
+showModal(
+"Delete Request",
+`
+<p><b>BP:</b> ${safe(record.bp)}</p>
+
+<p>Delete করার কারণ:</p>
+
+<textarea id="deleteRemark"
 rows="4"
 style="width:100%;padding:10px"
-placeholder="মন্তব্য লিখুন..."
-></textarea>
-`;
+placeholder="মন্তব্য লিখুন..."></textarea>
+`,
+"Send Request",
+async()=>{
 
-        showModal("Delete Request", html, "Send Request", async function () {
-          const remark = document.getElementById("deleteRemark").value.trim();
+const remark=
+document.getElementById("deleteRemark")
+.value.trim();
 
-          if (!remark) {
-            alert("মন্তব্য আবশ্যক।");
-            return;
-          }
+if(!remark){
 
-          try {
-            const result = await deleteRequestAPI(id, remark);
+alert("মন্তব্য আবশ্যক।");
+return;
 
-            if (!result.success) {
-              alert(apiMessage(result));
-              return;
-            }
+}
 
-            closeModal();
-            await renderAdmin();
+try{
 
-            alert("Delete Request Super Admin-এর কাছে পাঠানো হয়েছে।");
-          } catch (error) {
-            console.error(error);
-            alert("Delete Request পাঠানোর সময় server error হয়েছে।");
-          }
-        });
-      }
+const result=await apiRequest(
+"deleteRequest",
+{
+token:authToken,
+id,
+remark
+}
+);
 
-      /* =====================================================
-       * SUPER TABLE
-       * ===================================================== */
+if(!result.success){
 
-      async function renderSuper() {
-        const rank = document.getElementById("superRank").value;
-        const unit = document.getElementById("superUnit").value;
-        const body = document.getElementById("superBody");
+alert(apiMessage(result));
+return;
 
-        body.innerHTML = `
+}
+
+closeModal();
+
+await renderAdmin();
+
+alert("Delete Request পাঠানো হয়েছে।");
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+);
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+   SUPER ADMIN
+   ===================================================== */
+
+async function renderSuper(){
+
+const rank=document.getElementById("superRank").value;
+const unit=document.getElementById("superUnit").value;
+const body=document.getElementById("superBody");
+
+body.innerHTML=
+`<tr><td colspan="12">Loading...</td></tr>`;
+
+try{
+
+const result=await apiRequest(
+"getAll",
+{
+token:authToken,
+rank,
+unit
+}
+);
+
+if(!result.success){
+
+body.innerHTML=
+`<tr><td colspan="12">
+${safe(apiMessage(result))}
+</td></tr>`;
+
+return;
+
+}
+
+const data=result.data||[];
+
+body.innerHTML="";
+
+data.forEach((x,i)=>{
+
+const del=x.deleteRequested
+?`<button class="delete-btn"
+onclick="superDelete('${safe(x.id)}')">
+Delete
+</button>`
+:`<button class="disabled-btn" disabled>
+Waiting
+</button>`;
+
+body.innerHTML+=`
 <tr>
-<td colspan="12">Loading...</td>
-</tr>`;
-
-        try {
-          const result = await getAllAPI(rank, unit);
-
-          if (!result.success) {
-            body.innerHTML = `
-<tr>
-<td colspan="12">${safe(apiMessage(result))}</td>
-</tr>`;
-            return;
-          }
-
-          const data = result.data || [];
-
-          body.innerHTML = "";
-
-          data.forEach((x, i) => {
-            const del = x.deleteRequested
-              ? `<button class="delete-btn" onclick="superDelete('${safe(x.id)}')">Delete</button>`
-              : `<button class="disabled-btn" disabled>Delete</button>`;
-
-            body.innerHTML += `
-<tr>
-<td>${i + 1}</td>
+<td>${i+1}</td>
 <td>${safe(x.bp)}</td>
 <td>${safe(x.rank)}</td>
-<td>${safe(x.brash || "")}</td>
+<td>${safe(x.brash)}</td>
 <td>${safe(x.name)}</td>
 <td>${safe(x.unit)}</td>
 <td>${safe(x.mobile)}</td>
-<td>${safe(x.remark || "")}</td>
+<td>${safe(x.remark)}</td>
 <td>${safe(x.user)}</td>
 <td>${safe(x.dateTime)}</td>
 <td>${del}</td>
-<td>${safe(x.deleteRequestDate || "-")}</td>
-</tr>`;
-          });
+<td>${safe(x.deleteRequestDate||"-")}</td>
+</tr>
+`;
 
-          document.getElementById("superTotal").textContent = data.length;
-        } catch (error) {
-          console.error(error);
-          body.innerHTML = `
+});
+
+document.getElementById("superTotal")
+.textContent=data.length;
+
+}catch(error){
+
+body.innerHTML=
+`<tr><td colspan="12">
+${safe(error.message)}
+</td></tr>`;
+
+}
+
+}
+
+
+/* =====================================================
+   SUPER DELETE
+   ===================================================== */
+
+async function superDelete(id){
+
+if(!confirm(
+"এই Data Recycle Database-এ পাঠাবেন?"
+))return;
+
+try{
+
+const result=await apiRequest(
+"superDelete",
+{
+token:authToken,
+id
+}
+);
+
+if(!result.success){
+
+alert(apiMessage(result));
+return;
+
+}
+
+await renderSuper();
+await renderRecycle();
+
+await renderSummary(
+"superSummaryHead",
+"superSummaryBody",
+"superSummaryFoot"
+);
+
+alert("Data Recycle Database-এ চলে গেছে।");
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+   RECYCLE
+   ===================================================== */
+
+async function renderRecycle(){
+
+const body=document.getElementById("recycleBody");
+
+body.innerHTML=
+`<tr><td colspan="11">Loading...</td></tr>`;
+
+try{
+
+const result=await apiRequest(
+"getRecycle",
+{token:authToken}
+);
+
+if(!result.success){
+
+body.innerHTML=
+`<tr><td colspan="11">
+${safe(apiMessage(result))}
+</td></tr>`;
+
+return;
+
+}
+
+const data=result.data||[];
+
+body.innerHTML="";
+
+data.forEach((x,i)=>{
+
+body.innerHTML+=`
 <tr>
-<td colspan="12">Server connection failed.</td>
-</tr>`;
-        }
-      }
-
-      /* =====================================================
-       * SUPER DELETE
-       * ===================================================== */
-
-      async function superDelete(id) {
-        const yes = confirm("এই Data Recycle Database-এ পাঠাবেন?");
-
-        if (!yes) return;
-
-        try {
-          const result = await superDeleteAPI(id);
-
-          if (!result.success) {
-            alert(apiMessage(result));
-            return;
-          }
-
-          await renderSuper();
-          await renderRecycle();
-          await renderSummary(
-            "superSummaryHead",
-            "superSummaryBody",
-            "superSummaryFoot",
-          );
-
-          alert("Data Recycle Database-এ চলে গেছে।");
-        } catch (error) {
-          console.error(error);
-          alert("Delete করার সময় server error হয়েছে।");
-        }
-      }
-
-      /* =====================================================
-       * RECYCLE
-       * ===================================================== */
-
-      async function renderRecycle() {
-        const body = document.getElementById("recycleBody");
-
-        body.innerHTML = `
-<tr>
-<td colspan="11">Loading...</td>
-</tr>`;
-
-        try {
-          const result = await getRecycleAPI();
-
-          if (!result.success) {
-            body.innerHTML = `
-<tr>
-<td colspan="11">${safe(apiMessage(result))}</td>
-</tr>`;
-            return;
-          }
-
-          const data = result.data || [];
-
-          body.innerHTML = "";
-
-          data.forEach((x, i) => {
-            body.innerHTML += `
-<tr>
-<td>${i + 1}</td>
+<td>${i+1}</td>
 <td>${safe(x.bp)}</td>
 <td>${safe(x.rank)}</td>
 <td>${safe(x.name)}</td>
 <td>${safe(x.unit)}</td>
 <td>${safe(x.mobile)}</td>
-<td>${safe(x.remark || "")}</td>
+<td>${safe(x.remark)}</td>
 <td>${safe(x.user)}</td>
 <td>${safe(x.dateTime)}</td>
-<td>${safe(x.deleteRequestDate || "-")}</td>
-<td>${safe(x.deletedAt || "-")}</td>
-</tr>`;
-          });
-        } catch (error) {
-          console.error(error);
-          body.innerHTML = `
-<tr>
-<td colspan="11">Server connection failed.</td>
-</tr>`;
-        }
-      }
+<td>${safe(x.deleteRequestDate||"-")}</td>
+<td>${safe(x.deletedAt||"-")}</td>
+</tr>
+`;
 
-      /* =====================================================
-       * SUMMARY
-       * ===================================================== */
+});
 
-      async function renderSummary(headId, bodyId, footId) {
-        const head = document.getElementById(headId);
-        const body = document.getElementById(bodyId);
-        const foot = document.getElementById(footId);
+}catch(error){
 
-        if (!head || !body || !foot) return;
+body.innerHTML=
+`<tr><td colspan="11">
+${safe(error.message)}
+</td></tr>`;
 
-        head.innerHTML = `
+}
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+async function renderSummary(headId,bodyId,footId){
+
+const head=document.getElementById(headId);
+const body=document.getElementById(bodyId);
+const foot=document.getElementById(footId);
+
+if(!head||!body||!foot)return;
+
+try{
+
+const result=await apiRequest(
+"summary",
+{token:authToken}
+);
+
+if(!result.success){
+
+body.innerHTML=
+`<tr><td colspan="20">
+${safe(apiMessage(result))}
+</td></tr>`;
+
+return;
+
+}
+
+const ranks=result.ranks||[];
+const rows=result.rows||[];
+const totals=result.totals||{};
+
+head.innerHTML=
+`
 <tr>
 <th>SL</th>
 <th>Unit</th>
-${(window.SYSTEM_CONFIG?.ranks || [])
-  .map((x) => `<th>${safe(x)}</th>`)
-  .join("")}
+${ranks.map(x=>`<th>${safe(x)}</th>`).join("")}
 <th>Total</th>
-</tr>`;
+</tr>
+`;
 
-        try {
-          const result = await getSummaryAPI();
+body.innerHTML="";
 
-          if (!result.success) {
-            body.innerHTML = `
+rows.forEach((row,i)=>{
+
+body.innerHTML+=`
 <tr>
-<td colspan="${(window.SYSTEM_CONFIG?.ranks || []).length + 3}">
-${safe(apiMessage(result))}
-</td>
-</tr>`;
-            return;
-          }
 
-          const ranks = result.ranks || [];
-          const rows = result.rows || [];
-          const totals = result.totals || {};
+<td>${i+1}</td>
 
-          body.innerHTML = "";
-
-          rows.forEach((row, index) => {
-            let cells = "";
-
-            ranks.forEach((rank) => {
-              cells += `<td>${Number(row.counts?.[rank] || 0)}</td>`;
-            });
-
-            body.innerHTML += `
-<tr>
-<td>${index + 1}</td>
 <td>${safe(row.unit)}</td>
-${cells}
-<td><strong>${Number(row.total || 0)}</strong></td>
-</tr>`;
-          });
 
-          foot.innerHTML = `
-<tr>
-<th colspan="2">মোট</th>
-${ranks.map((rank) => `<th>${Number(totals[rank] || 0)}</th>`).join("")}
-<th>${Number(result.grandTotal || 0)}</th>
-</tr>`;
-        } catch (error) {
-          console.error(error);
-          body.innerHTML = `
-<tr>
-<td colspan="${(window.SYSTEM_CONFIG?.ranks || []).length + 3}">
-Server connection failed.
+${ranks.map(rank=>
+`<td>${Number(row.counts?.[rank]||0)}</td>`
+).join("")}
+
+<td>
+<strong>${Number(row.total||0)}</strong>
 </td>
-</tr>`;
-        }
-      }
 
-      /* =====================================================
-       * MODAL
-       * ===================================================== */
+</tr>
+`;
 
-      function showModal(title, content, okText, callback) {
-        document.getElementById("modalTitle").textContent = title;
-        document.getElementById("modalContent").innerHTML = content;
+});
 
-        const ok = document.getElementById("modalOK");
+foot.innerHTML=
+`
+<tr>
 
-        ok.textContent = okText || "OK";
-        ok.onclick = callback;
+<th colspan="2">মোট</th>
 
-        document.getElementById("modal").classList.add("show");
-      }
+${ranks.map(rank=>
+`<th>${Number(totals[rank]||0)}</th>`
+).join("")}
 
-      function closeModal() {
-        document.getElementById("modal").classList.remove("show");
-      }
+<th>${Number(result.grandTotal||0)}</th>
 
-      /* =====================================================
-       * PRINT
-       * ===================================================== */
+</tr>
+`;
 
-      function printTable(id) {
-        const table = document.getElementById(id);
+}catch(error){
 
-        if (!table) return;
+body.innerHTML=
+`<tr><td colspan="20">
+${safe(error.message)}
+</td></tr>`;
 
-        const win = window.open("", "_blank", "width=1500,height=900");
+}
 
-        win.document.write(`
-<!DOCTYPE html>
+}
+
+
+/* =====================================================
+   MODAL
+   ===================================================== */
+
+function showModal(title,content,okText,callback){
+
+document.getElementById("modalTitle")
+.textContent=title;
+
+document.getElementById("modalContent")
+.innerHTML=content;
+
+const ok=document.getElementById("modalOK");
+
+ok.textContent=okText||"OK";
+ok.onclick=callback;
+
+document.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function closeModal(){
+
+document.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+/* =====================================================
+   PRINT
+   ===================================================== */
+
+function printTable(id){
+
+const table=document.getElementById(id);
+
+if(!table)return;
+
+const win=window.open(
+"",
+"_blank",
+"width=1500,height=900"
+);
+
+if(!win){
+
+alert("Browser popup block করেছে।");
+return;
+
+}
+
+win.document.write(`
+<!doctype html>
+
 <html lang="bn">
+
 <head>
+
 <meta charset="UTF-8">
+
 <title>Bandarban Police FMS</title>
 
 <style>
+
 body{
 font-family:Arial,"Noto Sans Bengali",sans-serif;
 padding:20px
 }
+
 h2,h3{text-align:center}
+
 table{
 width:100%;
 border-collapse:collapse;
 font-size:11px
 }
+
 th,td{
 border:1px solid #333;
 padding:5px
 }
+
 th{background:#ddd}
+
 @page{
 size:landscape;
 margin:10mm
 }
+
 </style>
 
 </head>
@@ -2284,73 +2675,93 @@ margin:10mm
 ${table.outerHTML}
 
 </body>
+
 </html>
 `);
 
-        win.document.close();
+win.document.close();
 
-        setTimeout(function () {
-          win.print();
-          win.close();
-        }, 500);
-      }
+setTimeout(()=>{
+win.print();
+win.close();
+},500);
 
-      /* =====================================================
-       * CSV / EXCEL
-       * ===================================================== */
+}
 
-      function downloadCSV(tableId, fileName) {
-        const table = document.getElementById(tableId);
 
-        if (!table) return;
+/* =====================================================
+   CSV
+   ===================================================== */
 
-        const rows = table.querySelectorAll("tr");
-        const csv = [];
+function downloadCSV(tableId,fileName){
 
-        rows.forEach((row) => {
-          const cols = row.querySelectorAll("th,td");
-          const values = [];
+const table=document.getElementById(tableId);
 
-          cols.forEach((col) => {
-            values.push(
-              `"${col.innerText.replace(/"/g, '""').replace(/\n/g, " ")}"`,
-            );
-          });
+if(!table)return;
 
-          csv.push(values.join(","));
-        });
+const rows=table.querySelectorAll("tr");
+const csv=[];
 
-        const blob = new Blob(["\uFEFF" + csv.join("\n")], {
-          type: "text/csv;charset=utf-8;",
-        });
+rows.forEach(row=>{
 
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
+const cols=row.querySelectorAll("th,td");
+const values=[];
 
-        a.href = url;
-        a.download = fileName + ".csv";
+cols.forEach(col=>{
 
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+values.push(
+`"${col.innerText
+.replace(/"/g,'""')
+.replace(/\n/g,' ')}"`
+);
 
-        URL.revokeObjectURL(url);
-      }
+});
 
-      /* =====================================================
-       * SECURITY
-       * ===================================================== */
+csv.push(values.join(","));
 
-      function safe(value) {
-        if (value === undefined || value === null) return "";
+});
 
-        return String(value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
-    </script>
-  </body>
+const blob=new Blob(
+["\uFEFF"+csv.join("\n")],
+{type:"text/csv;charset=utf-8;"}
+);
+
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+
+a.href=url;
+a.download=fileName+".csv";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+/* =====================================================
+   SECURITY
+   ===================================================== */
+
+function safe(value){
+
+if(value===undefined||value===null)return "";
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
 </html>
