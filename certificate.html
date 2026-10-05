@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বান্দরবান জেলা পুলিশ - সার্টিফিকেট ম্যানেজমেন্ট সিস্টেম</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0284c7;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .dashboard-gradient-bg { background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #cbd5e1 100%) !important; }
+
+        header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 1rem 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .header-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header-title h1 { font-size: 1.4rem; font-weight: 700; }
+        .header-title p { font-size: 0.85rem; opacity: 0.8; }
+
+        .profile-badge { display: flex; align-items: center; gap: 0.75rem; background: rgba(255, 255, 255, 0.1); padding: 0.4rem 0.8rem; border-radius: 50px; backdrop-filter: blur(5px); }
+        .profile-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #38bdf8; }
+
+        .container { max-width: 1300px; margin: 1.5rem auto; padding: 0 1rem; flex: 1; width: 100%; }
+        .user-theme { background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0e7ff 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        .card { background: var(--card); padding: 1.8rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; border: 1px solid #e2e8f0; }
+
+        #tab_receive.tab-content { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; padding: 1.5rem; border-radius: 12px; }
+        #tab_board.tab-content { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; padding: 1.5rem; border-radius: 12px; }
+        #tab_verify.tab-content { background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border: 1px solid #f5d0fe; padding: 1.5rem; border-radius: 12px; }
+        #tab_office.tab-content { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; padding: 1.5rem; border-radius: 12px; }
+        #tab_datatable.tab-content, #tab_recycle.tab-content { background: #ffffff; border: 1px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; }
+
+        .btn-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+        .btn { padding: 0.65rem 1.4rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: var(--secondary); color: white; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
+        .btn-danger { background: var(--danger); }
+        .btn-success { background: var(--success); }
+        .btn-dark { background: #334155; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #334155; }
+        input, select { width: 100%; padding: 0.75rem 1rem; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-weight: 500; color: #0f172a; background-color: #ffffff; }
+        input:focus, select:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2); }
+        input:disabled, select:disabled { background-color: #f1f5f9; cursor: not-allowed; color: #94a3b8; }
+
+        .login-card { max-width: 420px; margin: 2.5rem auto; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; }
+        .login-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 2rem 1.5rem; text-align: center; }
+        .login-body { padding: 2rem; }
+
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { padding-right: 45px; }
+        .toggle-password { position: absolute; right: 12px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 1rem; padding: 5px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+        .form-header-box { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid rgba(0, 0, 0, 0.08); }
+        .form-header-box i { font-size: 1.5rem; color: var(--primary); background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 10px; }
+        
+        .tabs { display: flex; gap: 0.5rem; border-bottom: 2px solid #cbd5e1; margin-bottom: 1.5rem; overflow-x: auto; }
+        .tab-btn { padding: 0.75rem 1.2rem; border: none; background: none; font-weight: 600; color: #475569; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: rgba(30, 58, 138, 0.05); border-radius: 6px 6px 0 0; }
+
+        .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; background: #f1f5f9; padding: 0.75rem; border-radius: 8px; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        th, td { padding: 0.75rem 0.6rem; border: 1px solid #cbd5e1; white-space: nowrap; }
+        th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+
+        footer { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #cbd5e1; padding: 1.25rem 2rem; text-align: center; margin-top: auto; font-size: 0.85rem; }
+        .footer-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .footer-container span { color: #38bdf8; font-weight: 600; }
+
+        .anim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 1000; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #334155; border-top: 6px solid #38bdf8; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .printable, .printable * { visibility: visible; }
+            .printable { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+            footer { display: none !important; }
+        }
+    </style>
+</head>
+<body id="pageBody">
+
+<header>
+    <div class="header-container">
+        <div class="header-title">
+            <h1>বান্দরবান জেলা পুলিশ</h1>
+            <p>সার্টিফিকেট ম্যানেজমেন্ট সিস্টেম</p>
+        </div>
+        <div id="headerProfile" class="profile-badge hidden">
+            <img id="userAvatar" src="" class="profile-img" alt="Profile">
+            <div>
+                <div id="userName" style="font-weight:700; font-size:0.9rem;"></div>
+                <div id="userRoleTag" style="font-size:0.75rem; opacity:0.8;"></div>
+            </div>
+            <button class="btn btn-danger" style="margin-left:0.5rem; padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="resetToLanding()">লগআউট</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Landing Page -->
+    <div id="landingView" class="card" style="text-align: center; padding: 4rem 1rem; max-width: 600px; margin: 2rem auto;">
+        <h2 style="color: var(--primary); margin-bottom: 0.5rem;">স্বাগতম!</h2>
+        <p style="color: #64748b; margin-bottom: 2rem;">অনুগ্রহ করে আপনার পোর্টাল নির্বাচন করুন</p>
+        <div class="btn-group">
+            <button class="btn" style="padding: 0.75rem 1.5rem; font-size: 1rem;" onclick="showPortal('user')">ইউজার পোর্টাল</button>
+            <button class="btn" style="background: var(--primary); padding: 0.75rem 1.5rem; font-size: 1rem;" onclick="showPortal('login')">লগইন পোর্টাল</button>
+        </div>
+        
+        <div class="card shadow-sm mb-4" style="text-align: left; margin-top: 2rem;">
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-info-circle"></i> সাধারণ নির্দেশনাবলী
+            </div>
+            <ul style="padding-left: 1.2rem; font-size: 0.9rem; color: #475569; line-height: 1.6;">
+                <li style="margin-bottom: 0.5rem;">আপনার আবেদনকৃত সার্টিফিকেট সম্পর্কে জানতে ইউজার পোর্টাল এ ক্লিক করুন।</li>
+                <li style="margin-bottom: 0.5rem;">BP ঘরে ইংরেজিতে BP সহ বিপি নাম্বার দিন। কোন চিহ্ন বা স্পেস দেওয়া যাবে না। নমুনা BP9818229900</li>
+                <li style="margin-bottom: 0.5rem;">তারপর আপনার সার্টিফিকেটটি সিলেক্ট করুন। যদি সার্টিফিকেট না দেখায় তাহলে আপনার আবেদনটি রিজার্ভ অফিসে গৃহিত হয়নি।</li>
+                <li>যেকোনো প্রয়োজনে সংশ্লিষ্ট সেকশন বা অ্যাডমিন পল্লব দাশ মোবাইল ০১৬৪১৬৬৩৫৯৬ এর সাথে যোগাযোগ করুন।</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Login Portal -->
+    <div id="loginView" class="login-card hidden">
+        <div class="login-header">
+            <h3>প্যানেল লগইন</h3>
+            <p>আপনার সিকিউরড ক্রেন্ডেনশিয়াল দিয়ে প্রবেশ করুন</p>
+        </div>
+        <div class="login-body">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-id-card me-1"></i> ইউজার ID</label>
+                    <input type="text" id="loginId" placeholder="BPXXXXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock me-1"></i> পাসওয়ার্ড</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-group" style="justify-content: space-between; margin-top: 1.8rem;">
+                    <button type="button" class="btn btn-dark" onclick="resetToLanding()"><i class="fas fa-arrow-left"></i> ফিরে যান</button>
+                    <button type="submit" class="btn" style="flex: 1;"><i class="fas fa-sign-in-alt"></i> লগইন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User View -->
+    <div id="userPortal" class="user-theme hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+            <h3 style="color: var(--primary);">সাধারণ ইউজার পোর্টাল</h3>
+            <button class="btn btn-dark" onclick="resetToLanding()">হোম পেজ</button>
+        </div>
+        <div class="grid card">
+            <div class="form-group">
+                <label>BP নম্বর (১২ ডিজিট, 'BP' দিয়ে শুরু)</label>
+                <input type="text" id="userBp" maxlength="12" placeholder="BPXXXXXXXXXX" oninput="handleUserBpChange()">
+            </div>
+            <div class="form-group">
+                <label>Certificate</label>
+                <select id="userCertSelect" disabled onchange="handleUserCertSelect()">
+                    <option value="">-- নির্বাচন করুন --</option>
+                </select>
+            </div>
+        </div>
+        <div id="userDetails" class="card hidden">
+            <h4 style="margin-bottom: 1rem; color: var(--primary);">সনদের বিবরণী ও বর্তমান স্ট্যাটাস</h4>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>BP</th><th>Rank</th><th>Brash</th><th>Name</th><th>Unit</th><th>Certificate</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="u_bp"></td><td id="u_rank"></td><td id="u_brash"></td><td id="u_name"></td>
+                            <td id="u_unit"></td><td id="u_cert"></td><td id="u_status" style="font-weight:bold; color:var(--secondary);"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin/Master Dashboard View -->
+    <div id="dashPortal" class="hidden">
+        <div class="tabs" id="tabContainer"></div>
+        <div class="card">
+            <!-- 1. Application Receive Form -->
+            <div id="tab_receive" class="tab-content hidden">
+                <div class="form-header-box"><i class="fas fa-file-pen"></i><div><h3>আবেদন গ্রহণ ফরম</h3><p>নতুন সার্টিফিকেট আবেদন এন্ট্রি করুন</p></div></div>
+                <form onsubmit="saveReceiveForm(event)">
+                    <div class="grid">
+                        <div class="form-group"><label>BP নম্বর *</label><input type="text" id="rec_bp" maxlength="12" placeholder="BPXXXXXXXXXX" required oninput="checkReceiveBp()"></div>
+                        <div class="form-group"><label>Rank *</label><select id="rec_rank" required></select></div>
+                        <div class="form-group"><label>Brash</label><input type="number" id="rec_brash" oninput="if(this.value.length>4) this.value=this.value.slice(0,4)"></div>
+                        <div class="form-group"><label>Name *</label><input type="text" id="rec_name" required></div>
+                        <div class="form-group"><label>Unit *</label><select id="rec_unit" required></select></div>
+                        <div class="form-group"><label>Certificate *</label><select id="rec_cert" required></select></div>
+                        <div class="form-group"><label>আবেদন গ্রহণের তারিখ (aRDate) [দিন/মাস/বছর] *</label><input type="date" id="rec_aRDate" required></div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;"><button type="submit" class="btn btn-success"><i class="fas fa-save"></i> ডাটা Save করুন</button></div>
+                </form>
+            </div>
+
+            <!-- 2. Board Send Form -->
+            <div id="tab_board" class="tab-content hidden">
+                <div class="form-header-box"><i class="fas fa-paper-plane"></i><div><h3>বোর্ডে প্রেরণ ফরম</h3><p>যাচাইয়ের জন্য আবেদন প্রেরণ করুন</p></div></div>
+                <form onsubmit="saveBoardForm(event)">
+                    <div class="grid">
+                        <div class="form-group"><label>BP নম্বর *</label><input type="text" id="brd_bp" maxlength="12" placeholder="BPXXXXXXXXXX" required oninput="checkBoardBp()"></div>
+                        <div class="form-group"><label>Certificate *</label><select id="brd_cert" required disabled onchange="populateBoardCertDetails()"><option value="">-- নির্বাচন করুন --</option></select></div>
+                        <div class="form-group"><label>Rank</label><input type="text" id="brd_rank" disabled></div>
+                        <div class="form-group"><label>Brash</label><input type="text" id="brd_brash" disabled></div>
+                        <div class="form-group"><label>Name</label><input type="text" id="brd_name" disabled></div>
+                        <div class="form-group"><label>Unit</label><input type="text" id="brd_unit" disabled></div>
+                        <div class="form-group"><label>স্মারক নং (cInvDNo) *</label><input type="number" id="brd_cInvDNo" required oninput="if(this.value.length>4) this.value=this.value.slice(0,4)"></div>
+                        <div class="form-group"><label>প্রেরণের তারিখ (cInvDDate) [দিন/মাস/বছর] *</label><input type="date" id="brd_cInvDDate" required></div>
+                        <div class="form-group"><label>Board *</label><select id="brd_board" required></select></div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;"><button type="submit" class="btn btn-success"><i class="fas fa-save"></i> ডাটা Save করুন</button></div>
+                </form>
+            </div>
+
+            <!-- 3. Verified Receive Form -->
+            <div id="tab_verify" class="tab-content hidden">
+                <div class="form-header-box"><i class="fas fa-certificate"></i><div><h3>ভেরিফাইড সনদ রিসিভ ফরম</h3><p>ভেরিফাইড সনদ গ্রহণের তথ্য এন্ট্রি দিন</p></div></div>
+                <form onsubmit="saveVerifyForm(event)">
+                    <div class="grid">
+                        <div class="form-group"><label>BP নম্বর *</label><input type="text" id="vrf_bp" maxlength="12" placeholder="BPXXXXXXXXXX" required oninput="checkVerifyBp()"></div>
+                        <div class="form-group"><label>Certificate *</label><select id="vrf_cert" required disabled onchange="populateVerifyCertDetails()"><option value="">-- নির্বাচন করুন --</option></select></div>
+                        <div class="form-group"><label>Board</label><input type="text" id="vrf_board" disabled></div>
+                        <div class="form-group"><label>Rank</label><input type="text" id="vrf_rank" disabled></div>
+                        <div class="form-group"><label>Brash</label><input type="text" id="vrf_brash" disabled></div>
+                        <div class="form-group"><label>Name</label><input type="text" id="vrf_name" disabled></div>
+                        <div class="form-group"><label>Unit</label><input type="text" id="vrf_unit" disabled></div>
+                        <div class="form-group"><label>রিসিভ স্মারক (cVerifiedRNo) *</label><input type="number" id="vrf_cVerifiedRNo" required oninput="if(this.value.length>4) this.value=this.value.slice(0,4)"></div>
+                        <div class="form-group"><label>রিসিভ তারিখ (cVerifiedRDate) [দিন/মাস/বছর] *</label><input type="date" id="vrf_cVerifiedRDate" required></div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;"><button type="submit" class="btn btn-success"><i class="fas fa-save"></i> ডাটা Save করুন</button></div>
+                </form>
+            </div>
+
+            <!-- 4. Office Order Form -->
+            <div id="tab_office" class="tab-content hidden">
+                <div class="form-header-box"><i class="fas fa-file-shield"></i><div><h3>অফিস আদেশ ফরম</h3><p>চূড়ান্ত অফিস আদেশ সম্পন্ন করুন</p></div></div>
+                <form onsubmit="saveOfficeForm(event)">
+                    <div class="grid">
+                        <div class="form-group"><label>BP নম্বর *</label><input type="text" id="off_bp" maxlength="12" placeholder="BPXXXXXXXXXX" required oninput="checkOfficeBp()"></div>
+                        <div class="form-group"><label>Certificate *</label><select id="off_cert" required disabled onchange="populateOfficeCertDetails()"><option value="">-- নির্বাচন করুন --</option></select></div>
+                        <div class="form-group"><label>Board</label><input type="text" id="off_board" disabled></div>
+                        <div class="form-group"><label>Rank</label><input type="text" id="off_rank" disabled></div>
+                        <div class="form-group"><label>Brash</label><input type="text" id="off_brash" disabled></div>
+                        <div class="form-group"><label>Name</label><input type="text" id="off_name" disabled></div>
+                        <div class="form-group"><label>Unit</label><input type="text" id="off_unit" disabled></div>
+                        <div class="form-group"><label>সংযুক্তি আদেশ নং (officeOrderNo) *</label><input type="number" id="off_officeOrderNo" required oninput="if(this.value.length>4) this.value=this.value.slice(0,4)"></div>
+                        <div class="form-group"><label>আদেশের তারিখ (officeOrdeDate) [দিন/মাস/বছর] *</label><input type="date" id="off_officeOrdeDate" required></div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;"><button type="submit" class="btn btn-success"><i class="fas fa-save"></i> ডাটা Save করুন</button></div>
+                </form>
+            </div>
+
+            <!-- 5. Data Table Tab -->
+            <div id="tab_datatable" class="tab-content hidden printable">
+                <h3 class="no-print" style="margin-bottom:1rem; color:var(--primary);">প্রধান ডাটা টেবিল</h3>
+                <div class="toolbar no-print">
+                    <div>
+                        <label style="display:inline; margin-right:0.5rem;">Status ফিল্টার:</label>
+                        <select id="filterStatus" style="width: auto; display: inline-block;" onchange="renderDataTable()">
+                            <option value="">সকল স্ট্যাটাস</option>
+                            <option value="আবেদন গৃহিত">আবেদন গৃহিত</option>
+                            <option value="সার্টিফিকেট বোর্ড এ">সার্টিফিকেট বোর্ড এ</option>
+                            <option value="সার্টিফিকেট ভেরিফাইড">সার্টিফিকেট ভেরিফাইড</option>
+                            <option value="অফিস আদেশ সম্পন্ন">অফিস আদেশ সম্পন্ন</option>
+                        </select>
+                    </div>
+                    <div><strong>মোট ডাটা: <span id="dataCount">0</span> টি</strong></div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-dark" onclick="window.print()">প্রিন্ট</button>
+                        <button class="btn btn-success" onclick="exportToCSV('main_data.csv', 'dt_table')">Excel ডাউনলোড</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="dt_table">
+                        <thead>
+                            <tr>
+                                <th>SL</th><th>BP</th><th>Rank</th><th>Brash</th><th>Name</th><th>Unit</th><th>Certificate</th>
+                                <th>aRDate</th><th>cInvDNo & Date</th><th>Board</th><th>cVerifiedRNo & Date</th>
+                                <th>officeOrderNo & Date</th><th>Status</th><th id="th_adminDelDate" class="hidden">adminDeleteDate</th><th class="no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. Recycle Bin Tab -->
+            <div id="tab_recycle" class="tab-content hidden printable">
+                <h3 class="no-print" style="margin-bottom:1rem; color:var(--primary);">রিসাইকেল বিন ডাটা টেবিল</h3>
+                <div class="toolbar no-print">
+                    <div>
+                        <label style="display:inline; margin-right:0.5rem;">Status ফিল্টার:</label>
+                        <select id="filterRecycleStatus" style="width: auto; display: inline-block;" onchange="renderRecycleTable()">
+                            <option value="">সকল স্ট্যাটাস</option>
+                            <option value="আবেদন গৃহিত">আবেদন গৃহিত</option>
+                            <option value="সার্টিফিকেট বোর্ড এ">সার্টিফিকেট বোর্ড এ</option>
+                            <option value="সার্টিফিকেট ভেরিফাইড">সার্টিফিকেট ভেরিফাইড</option>
+                            <option value="অফিস আদেশ সম্পন্ন">অফিস আদেশ সম্পন্ন</option>
+                        </select>
+                    </div>
+                    <div><strong>মোট ডাটা: <span id="recycleCount">0</span> টি</strong></div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-dark" onclick="window.print()">প্রিন্ট</button>
+                        <button class="btn btn-success" onclick="exportToCSV('recycle_bin.csv', 'rc_table')">Excel ডাউনলোড</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="rc_table">
+                        <thead>
+                            <tr>
+                                <th>SL</th><th>BP</th><th>Rank</th><th>Brash</th><th>Name</th><th>Unit</th><th>Certificate</th>
+                                <th>aRDate</th><th>cInvDNo & Date</th><th>Board</th><th>cVerifiedRNo & Date</th>
+                                <th>officeOrderNo & Date</th><th>Status</th><th>adminDeleteDate</th><th>masterDeleteDate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recycleTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div>সিস্টেম ডিজাইন ও ডেভেলপমেন্ট: <span>মোঃ তৌহিদুল ইসলাম</span></div>
+        <div>&copy; 2026 বান্দরবান জেলা পুলিশ। সর্বস্বত্ব সংরক্ষিত।</div>
+    </div>
+</footer>
+
+<div id="animOverlay" class="anim-overlay hidden">
+    <div class="spinner"></div>
+    <h2 style="color: #38bdf8;">অফিস আদেশ সম্পন্ন!</h2>
+    <p style="font-size: 1.1rem; margin-top: 0.5rem; color: #cbd5e1;">আপনার সনদ যাচাইকরণ ও আদেশ সফলভাবে সম্পন্ন হয়েছে।</p>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxb1PDGcsvzPeWAC5tpHfjWRVsVn8GkOH97Bzp1InY595b6ryG0Ofp_HBAkSNTa7TSLhQ/exec"; // আপনার Apps Script URL এখানে দিন
+
+const RANKS = ["কনস্টেবল", "নায়েক", "এএসআই (নিরস্ত্র)", "এএসআই (সশস্ত্র)", "এটিএসআই", "এসআই (নিরস্ত্র)", "এসআই (সশস্ত্র)", "টিএসআই", "সার্জেন্ট"];
+const UNITS = [
+    "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা", 
+    "ঘুমধুম তদন্ত কেন্দ্র", "বাইশারী তদন্ত কেন্দ্র", "টংকাবতি তদন্ত কেন্দ্র", "সদর ফাঁড়ি", "বাইশারী ফাঁড়ি", 
+    "কেয়াজুপাড়া ফাঁড়ি", "গজালিয়া ফাঁড়ি", "সোনাইছড়ি ফাঁড়ি", "ফাইতং ফাঁড়ি", "রাজবিল্লা ফাঁড়ি", "ডিবি", "ডিএসবি", 
+    "সদর কোর্ট", "লামা কোর্ট", "সদর ট্রাফিক", "লামা ট্রাফিক", "আলীকদম ট্রাফিক", "নাইক্ষ্যংছড়ি ট্রাফিক", 
+    "পুলিশ সুপারের কার্যালয়","পুলিশ লাইন", "এমটি", "পুলিশ কন্ট্রোল রুম", "ডিপার্টমেন্টাল স্টোর", "অস্ত্রাগার", "রেশন স্টোর", 
+    "ব্যান্ড গ্রুপ", "রিজার্ভ অফিস", "সদর সার্কেল অফিস", "লামা সার্কেল অফিস", "রুমা সার্কেল অফিস", "আরআই অফিস", 
+    "মেজর অফিস", "চিম্বুক ক্যাম্প", "মেঘলা ক্যাম্প", "মিলনছড়ি ক্যাম্প", "হানসামপাড়া ক্যাম্প", "বেতছড়া ক্যাম্প", 
+    "তারাছামূখ ক্যাম্প", "তালুকদারপাড়া ক্যাম্প", "মুরংবাজার ক্যাম্প", "কৈক্ষ্যংঝিরি ক্যাম্প", "কুমারী ক্যাম্প", 
+    "আজিজনগর ক্যাম্প", "আলীক্ষ্যং ক্যাম্প", "২৬-কিলো ক্যাম্প", "রেইচা চেকপোষ্ট", "ডুলুপাড়া চেকপোষ্ট", 
+    "ইয়াংছা চেকপোষ্ট", "রুমা এসবি গার্ড", "রোয়াংছড়ি এসবি গার্ড", "বেতার বেইজ"
+];
+const CERTIFICATES = [
+    "এইচএসসি (HSC)", "বিএ (BA)", "বিএসএস (BSS)", "বিএসসি (BSc)", "বিবিএস (BBS)", 
+    "বিএ (সম্মান) / BA (Honours)", "বিএসএস (সম্মান) / BSS (Honours)", "বিএসসি (সম্মান) / BSc (Honours)", 
+    "বিবিএ / BBA", "এমএ (MA)", "এমএসএস (MSS)", "এমএসসি (MSc)", "এমএস (MS)", "এমবিএ (MBA)", 
+    "এমবিএস (MBS)", "ইএমবিএ (EMBA)", "এলএলএম (LLM)", "এমইডি (MEd)", "এমপিএইচ (MPH)", "আলিম (Alim)", 
+    "ফাজিল (Fazil)", "কামিল (Kamil)", "এইচএসসি (ভোকেশনাল)", "এইচএসসি (বিজনেস ম্যানেজমেন্ট)", 
+    "ডিপ্লোমা-ইন-ইঞ্জিনিয়ারিং", "ডিপ্লোমা সনদ", "ট্রেড সার্টিফিকেট ও ন্যাশনাল স্কিল সার্টিফিকে", "ড্রাইভিং লাইসেন্স"
+];
+const BOARDS = [
+    "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, ঢাকা", "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, রাজশাহী", 
+    "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, চট্টগ্রাম", "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, কুমিল্লা", 
+    "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, যশোর", "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, বরিশাল", 
+    "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, সিলেট", "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, দিনাজপুর", 
+    "মাধ্যমিক ও উচ্চ মাধ্যমিক শিক্ষা বোর্ড, ময়মনসিংহ", "বাংলাদেশ মাদ্রাসা শিক্ষা বোর্ড (ঢাকা)", 
+    "বাংলাদেশ কারিগরি শিক্ষা বোর্ড (ঢাকা)", "জাতীয় বিশ্ববিদ্যালয়, গাজীপুর", "বাংলাদেশ উন্মুক্ত বিশ্ববিদ্যালয়, গাজীপুর", 
+    "বিআরটিএ, ঢাকা মেট্রো সার্কেল-১: মিরপুর (প্রধান কার্যালয় সংলগ্ন)", "বিআরটিএ, ঢাকা মেট্রো সার্কেল-২: ইকুরিয়া (কেরানীগঞ্জ)", 
+    "বিআরটিএ, ঢাকা মেট্রো সার্কেল-৩: উত্তরা (দিয়াবাড়ী)", "বিআরটিএ, ঢাকা মেট্রো সার্কেল-৪: পূর্বাচল (নতুন সার্কেল)", 
+    "বিআরটিএ, চট্টগ্রাম মেট্রো সার্কেল-১: নতুনপাড়া, চট্টগ্রাম", "বিআরটিএ, চট্টগ্রাম মেট্রো সার্কেল-২: হাটহাজারী রোড, চট্টগ্রাম", 
+    "বিআরটিএ, ঢাকা জেলা সার্কেল (সাভার)", "বিআরটিএ, গাজীপুর জেলা সার্কেল", "বিআরটিএ, নারায়ণগঞ্জ জেলা সার্কেল", 
+    "বিআরটিএ, নরসিংদী জেলা সার্কেল", "বিআরটিএ, মানিকগঞ্জ জেলা সার্কেল", "বিআরটিএ, মুন্সিগঞ্জ জেলা সার্কেল", 
+    "বিআরটিএ, কিশোরগঞ্জ জেলা সার্কেল", "বিআরটিএ, টাঙ্গাইল জেলা সার্কেল", "বিআরটিএ, ফরিদপুর জেলা সার্কেল", 
+    "বিআরটিএ, মাদারীপুর জেলা সার্কেল", "বিআরটিএ, শরীয়তপুর জেলা সার্কেল", "বিআরটিএ, গোপালগঞ্জ জেলা সার্কেল", 
+    "বিআরটিএ, রাজবাড়ী জেলা সার্কেল", "বিআরটিএ, চট্টগ্রাম জেলা সার্কেল", "বিআরটিএ, কক্সবাজার জেলা সার্কেল", 
+    "বিআরটিএ, কুমিল্লা জেলা সার্কেল", "বিআরটিএ, ফেনী জেলা সার্কেল", "বিআরটিএ, নোয়াখালী জেলা সার্কেল", 
+    "বিআরটিএ, লক্ষ্মীপুর জেলা সার্কেল", "বিআরটিএ, চাঁদপুর জেলা সার্কেল", "বিআরটিএ, ব্রাহ্মণবাড়ীয়া জেলা সার্কেল", 
+    "বিআরটিএ, রাঙ্গামাটি জেলা সার্কেল", "বিআরটিএ, খাগড়াছড়ি জেলা সার্কেল", "বিআরটিএ, বান্দরবান জেলা সার্কেল", 
+    "বিআরটিএ, রাজশাহী সার্কেল (মেট্রো ও জেলা)", "বিআরটিএ, বগুড়া জেলা সার্কেল", "বিআরটিএ, পাবনা জেলা সার্কেল", 
+    "বিআরটিএ, সিরাজগঞ্জ জেলা সার্কেল", "বিআরটিএ, নাটোর জেলা সার্কেল", "বিআরটিএ, নওগাঁ জেলা সার্কেল", 
+    "বিআরটিএ, চাঁপাইনবাবগঞ্জ জেলা সার্কেল", "বিআরটিএ, জয়পুরহাট জেলা সার্কেল", "বিআরটিএ, খুলনা সার্কেল (মেট্রো ও জেলা)", 
+    "বিআরটিএ, যশোর জেলা সার্কেল", "বিআরটিএ, কুষ্টিয়া জেলা সার্কেল", "বিআরটিএ, ঝিনাইদহ জেলা সার্কেল", 
+    "বিআরটিএ, মাগুরা জেলা সার্কেল", "বিআরটিএ, নড়াইল জেলা সার্কেল", "বিআরটিএ, সাতক্ষীরা জেলা সার্কেল", 
+    "বিআরটিএ, বাগেরহাট জেলা সার্কেল", "বিআরটিএ, মেহেরপুর জেলা সার্কেল", "বিআরটিএ, চুয়াডাঙ্গা জেলা সার্কেল", 
+    "বিআরটিএ, সিলেট সার্কেল (মেট্রো ও জেলা)", "বিআরটিএ, সুনামগঞ্জ জেলা সার্কেল", "বিআরটিএ, মৌলভীবাজার (মৌলভীবাজার) জেলা সার্কেল", 
+    "বিআরটিএ, হবিগঞ্জ জেলা সার্কেল", "বিআরটিএ, বরিশাল সার্কেল (মেট্রো ও জেলা)", "বিআরটিএ, পটুয়াখালী জেলা সার্কেল", 
+    "বিআরটিএ, ভোলা জেলা সার্কেল", "বিআরটিএ, পিরোজপুর জেলা সার্কেল", "বিআরটিএ, বরগুনা জেলা সার্কেল", 
+    "বিআরটিএ, ঝালকাঠি জেলা সার্কেল", "বিআরটিএ, রংপুর জেলা সার্কেল", "বিআরটিএ, দিনাজপুর জেলা সার্কেল", 
+    "বিআরটিএ, কুড়িগ্রাম জেলা সার্কেল", "বিআরটিএ, গাইবান্ধা জেলা সার্কেল", "বিআরটিএ, নীলফামারী জেলা সার্কেল", 
+    "বিআরটিএ, লালমনিরহাট জেলা সার্কেল", "বিআরটিএ, পঞ্চগড় জেলা সার্কেল", "বিআরটিএ, ঠাকুরগাঁও জেলা সার্কেল", 
+    "বিআরটিএ, ময়মনসিংহ জেলা সার্কেল", "বিআরটিএ, জামালপুর জেলা সার্কেল", "বিআরটিএ, শেরপুর জেলা সার্কেল", 
+    "বিআরটিএ, নেত্রকোনা জেলা সার্কেল"
+];
+
+let db = [];
+let recycleDb = [];
+let currentUserRole = null;
+
+window.onload = function() {
+    populateSelect('rec_rank', RANKS);
+    populateSelect('rec_unit', UNITS);
+    populateSelect('rec_cert', CERTIFICATES);
+    populateSelect('brd_board', BOARDS);
+    
+    const todayStr = new Date().toISOString().split('T')[0];
+    ['rec_aRDate', 'brd_cInvDDate', 'vrf_cVerifiedRDate', 'off_officeOrdeDate'].forEach(id => {
+        document.getElementById(id).setAttribute('max', todayStr);
+    });
+
+    fetchDataFromCloud();
+};
+
+function fetchDataFromCloud() {
+    if(WEB_APP_URL.includes("YOUR_GOOGLE_APPS_SCRIPT")) return;
+    fetch(WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+            db = data.mainData || [];
+            recycleDb = data.recycleData || [];
+        })
+        .catch(err => console.error("Error fetching data:", err));
+}
+
+function populateSelect(elemId, arr) {
+    const el = document.getElementById(elemId);
+    el.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+    arr.forEach(item => { el.innerHTML += `<option value="${item}">${item}</option>`; });
+}
+
+function validateBP(bp) { return /^BP\d{10}$/.test(bp); }
+
+function getCurrentTimestamp() {
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+    return `${dd}/${mm}/${yyyy} ${hours}:${minutes}:${seconds}${ampm}`;
+}
+
+function hideAllViews() {
+    ['landingView', 'loginView', 'userPortal', 'dashPortal'].forEach(id => { document.getElementById(id).classList.add('hidden'); });
+    document.getElementById('pageBody').classList.remove('dashboard-gradient-bg');
+}
+
+function resetToLanding() {
+    currentUserRole = null;
+    document.getElementById('headerProfile').classList.add('hidden');
+    hideAllViews();
+    document.getElementById('landingView').classList.remove('hidden');
+}
+
+function showPortal(type) {
+    hideAllViews();
+    fetchDataFromCloud();
+    if(type === 'user') {
+        document.getElementById('userPortal').classList.remove('hidden');
+        document.getElementById('userBp').value = '';
+        document.getElementById('userCertSelect').innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+        document.getElementById('userCertSelect').disabled = true;
+        document.getElementById('userDetails').classList.add('hidden');
+    } else if(type === 'login') {
+        document.getElementById('loginView').classList.remove('hidden');
+        document.getElementById('loginId').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('loginPassword');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+// Backend Authentication Request
+function handleLogin(e) {
+    e.preventDefault();
+    const id = document.getElementById('loginId').value.trim();
+    const pass = document.getElementById('loginPassword').value.trim();
+
+    const payload = { action: "login", id: id, password: pass };
+
+    fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.status === "success") {
+            currentUserRole = res.role;
+            setupProfile(res.name, res.roleTag, res.avatar);
+            setupDashboard();
+        } else {
+            alert(res.message);
+        }
+    })
+    .catch(err => alert('লগইন করতে সমস্যা হচ্ছে: ' + err));
+}
+
+function setupProfile(name, role, avatar) {
+    document.getElementById('userName').innerText = name;
+    document.getElementById('userRoleTag').innerText = role;
+    document.getElementById('userAvatar').src = avatar;
+    document.getElementById('headerProfile').classList.remove('hidden');
+}
+
+function setupDashboard() {
+    hideAllViews();
+    fetchDataFromCloud();
+    document.getElementById('dashPortal').classList.remove('hidden');
+    document.getElementById('pageBody').classList.add('dashboard-gradient-bg');
+
+    const nav = document.getElementById('tabContainer');
+    nav.innerHTML = '';
+
+    if(currentUserRole === 'admin') {
+        nav.innerHTML = `
+            <button class="tab-btn active" onclick="switchTab('tab_receive', this)"><i class="fas fa-file-pen me-1"></i> আবেদন গ্রহণ</button>
+            <button class="tab-btn" onclick="switchTab('tab_board', this)"><i class="fas fa-paper-plane me-1"></i> বোর্ডে প্রেরণ</button>
+            <button class="tab-btn" onclick="switchTab('tab_verify', this)"><i class="fas fa-certificate me-1"></i> ভেরিফাইড সনদ রিসিভ</button>
+            <button class="tab-btn" onclick="switchTab('tab_office', this)"><i class="fas fa-file-shield me-1"></i> অফিস আদেশ</button>
+            <button class="tab-btn" onclick="switchTab('tab_datatable', this)"><i class="fas fa-table me-1"></i> ডাটা টেবিল</button>
+        `;
+        document.getElementById('th_adminDelDate').classList.add('hidden');
+        switchTab('tab_receive', nav.children[0]);
+    } else {
+        nav.innerHTML = `
+            <button class="tab-btn active" onclick="switchTab('tab_datatable', this)"><i class="fas fa-table me-1"></i> ডাটা টেবিল</button>
+            <button class="tab-btn" onclick="switchTab('tab_recycle', this)"><i class="fas fa-trash-alt me-1"></i> রিসাইকেল বিন ডাটা</button>
+        `;
+        document.getElementById('th_adminDelDate').classList.remove('hidden');
+        switchTab('tab_datatable', nav.children[0]);
+    }
+}
+
+function switchTab(tabId, btnElem) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+    document.getElementById(tabId).classList.remove('hidden');
+    if(btnElem) btnElem.classList.add('active');
+
+    if(tabId === 'tab_datatable' || tabId === 'tab_recycle') {
+        fetchDataFromCloud();
+        setTimeout(() => {
+            if(tabId === 'tab_datatable') renderDataTable();
+            if(tabId === 'tab_recycle') renderRecycleTable();
+        }, 500);
+    }
+}
+
+function handleUserBpChange() {
+    const bp = document.getElementById('userBp').value.trim();
+    const certSelect = document.getElementById('userCertSelect');
+    document.getElementById('userDetails').classList.add('hidden');
+
+    if(validateBP(bp)) {
+        const matches = db.filter(item => item.BP === bp);
+        if(matches.length > 0) {
+            certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+            matches.forEach(item => { certSelect.innerHTML += `<option value="${item.Certificate}">${item.Certificate}</option>`; });
+            certSelect.disabled = false;
+        } else {
+            alert('উক্ত BP নম্বর দিয়ে কোন তথ্য পাওয়া যায়নি!');
+            certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+            certSelect.disabled = true;
+        }
+    } else {
+        certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+        certSelect.disabled = true;
+    }
+}
+
+function handleUserCertSelect() {
+    const bp = document.getElementById('userBp').value.trim();
+    const cert = document.getElementById('userCertSelect').value;
+    if(!cert) return;
+
+    const record = db.find(item => item.BP === bp && item.Certificate === cert);
+    if(record) {
+        if(record.Status === 'অফিস আদেশ সম্পন্ন') {
+            const overlay = document.getElementById('animOverlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => { overlay.classList.add('hidden'); displayUserData(record); }, 5000);
+        } else {
+            displayUserData(record);
+        }
+    }
+}
+
+function displayUserData(rec) {
+    document.getElementById('u_bp').innerText = rec.BP;
+    document.getElementById('u_rank').innerText = rec.Rank;
+    document.getElementById('u_brash').innerText = rec.Brash || 'N/A';
+    document.getElementById('u_name').innerText = rec.Name;
+    document.getElementById('u_unit').innerText = rec.Unit;
+    document.getElementById('u_cert').innerText = rec.Certificate;
+    document.getElementById('u_status').innerText = rec.Status;
+    document.getElementById('userDetails').classList.remove('hidden');
+}
+
+function checkReceiveBp() {
+    const bp = document.getElementById('rec_bp').value.trim();
+    if(validateBP(bp)) {
+        const existing = db.filter(item => item.BP === bp);
+        if(existing.length > 0) {
+            const confirmUse = confirm('BP দিয়ে পূর্বে ডাটা এন্ট্রি আছে। আপনি কি পূর্বের ডাটা ব্যবহার করতে চান?');
+            const prev = existing[existing.length - 1];
+            if(confirmUse) {
+                document.getElementById('rec_rank').value = prev.Rank;
+                document.getElementById('rec_brash').value = prev.Brash;
+                document.getElementById('rec_name').value = prev.Name;
+                document.getElementById('rec_unit').value = prev.Unit;
+                ['rec_rank', 'rec_brash', 'rec_name', 'rec_unit'].forEach(id => document.getElementById(id).disabled = true);
+            } else {
+                document.getElementById('rec_name').value = prev.Name;
+                document.getElementById('rec_name').disabled = true;
+                ['rec_rank', 'rec_brash', 'rec_unit'].forEach(id => document.getElementById(id).disabled = false);
+            }
+        }
+    } else {
+        ['rec_rank', 'rec_brash', 'rec_name', 'rec_unit'].forEach(id => document.getElementById(id).disabled = false);
+    }
+}
+
+function saveReceiveForm(e) {
+    e.preventDefault();
+    const bp = document.getElementById('rec_bp').value.trim();
+    const cert = document.getElementById('rec_cert').value;
+
+    if(!validateBP(bp)) { alert('BP নম্বর অবশ্যই ১২ ডিজিটের হতে হবে এবং শুরুতে BP থাকতে হবে!'); return; }
+    if(db.some(item => item.BP === bp && item.Certificate === cert)) { alert('ডাটাবেজে একই BP এবং Certificate দিয়ে ডাটা ইতোমধ্যে সংরক্ষিত আছে!'); return; }
+
+    const payload = {
+        action: "saveReceive", BP: bp, Rank: document.getElementById('rec_rank').value,
+        Brash: document.getElementById('rec_brash').value, Name: document.getElementById('rec_name').value,
+        Unit: document.getElementById('rec_unit').value, Certificate: cert, aRDate: document.getElementById('rec_aRDate').value
+    };
+
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .then(() => {
+        alert(`আপনার BP: ${bp} এবং Certificate: ${cert} সফলভাবে গৃহিত হয়েছে।`);
+        e.target.reset();
+        ['rec_rank', 'rec_brash', 'rec_name', 'rec_unit'].forEach(id => document.getElementById(id).disabled = false);
+        fetchDataFromCloud();
+    });
+}
+
+function checkBoardBp() {
+    const bp = document.getElementById('brd_bp').value.trim();
+    const certSelect = document.getElementById('brd_cert');
+    if(validateBP(bp)) {
+        const matches = db.filter(item => item.BP === bp && item.Status === 'আবেদন গৃহিত');
+        if(matches.length > 0) {
+            certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+            matches.forEach(item => { certSelect.innerHTML += `<option value="${item.Certificate}">${item.Certificate}</option>`; });
+            certSelect.disabled = false;
+        } else { certSelect.disabled = true; }
+    } else { certSelect.disabled = true; }
+}
+
+function populateBoardCertDetails() {
+    const item = db.find(x => x.BP === document.getElementById('brd_bp').value.trim() && x.Certificate === document.getElementById('brd_cert').value);
+    if(item) {
+        document.getElementById('brd_rank').value = item.Rank;
+        document.getElementById('brd_brash').value = item.Brash;
+        document.getElementById('brd_name').value = item.Name;
+        document.getElementById('brd_unit').value = item.Unit;
+    }
+}
+
+function saveBoardForm(e) {
+    e.preventDefault();
+    const payload = {
+        action: "updateBoard", BP: document.getElementById('brd_bp').value.trim(),
+        Certificate: document.getElementById('brd_cert').value, cInvDNo: document.getElementById('brd_cInvDNo').value,
+        cInvDDate: document.getElementById('brd_cInvDDate').value, Board: document.getElementById('brd_board').value
+    };
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .then(() => { alert('বোর্ডে প্রেরণের তথ্য সংরক্ষণ করা হয়েছে।'); e.target.reset(); document.getElementById('brd_cert').disabled = true; fetchDataFromCloud(); });
+}
+
+function checkVerifyBp() {
+    const bp = document.getElementById('vrf_bp').value.trim();
+    const certSelect = document.getElementById('vrf_cert');
+    if(validateBP(bp)) {
+        const matches = db.filter(item => item.BP === bp && item.Status === 'সার্টিফিকেট বোর্ড এ');
+        if(matches.length > 0) {
+            certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+            matches.forEach(item => { certSelect.innerHTML += `<option value="${item.Certificate}">${item.Certificate}</option>`; });
+            certSelect.disabled = false;
+        } else { certSelect.disabled = true; }
+    } else { certSelect.disabled = true; }
+}
+
+function populateVerifyCertDetails() {
+    const item = db.find(x => x.BP === document.getElementById('vrf_bp').value.trim() && x.Certificate === document.getElementById('vrf_cert').value);
+    if(item) {
+        document.getElementById('vrf_board').value = item.Board;
+        document.getElementById('vrf_rank').value = item.Rank;
+        document.getElementById('vrf_brash').value = item.Brash;
+        document.getElementById('vrf_name').value = item.Name;
+        document.getElementById('vrf_unit').value = item.Unit;
+    }
+}
+
+function saveVerifyForm(e) {
+    e.preventDefault();
+    const payload = {
+        action: "updateVerify", BP: document.getElementById('vrf_bp').value.trim(),
+        Certificate: document.getElementById('vrf_cert').value, cVerifiedRNo: document.getElementById('vrf_cVerifiedRNo').value,
+        cVerifiedRDate: document.getElementById('vrf_cVerifiedRDate').value
+    };
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .then(() => { alert('ভেরিফাইড সনদ গ্রহণের তথ্য সংরক্ষিত হয়েছে।'); e.target.reset(); document.getElementById('vrf_cert').disabled = true; fetchDataFromCloud(); });
+}
+
+function checkOfficeBp() {
+    const bp = document.getElementById('off_bp').value.trim();
+    const certSelect = document.getElementById('off_cert');
+    if(validateBP(bp)) {
+        const matches = db.filter(item => item.BP === bp && item.Status === 'সার্টিফিকেট ভেরিফাইড');
+        if(matches.length > 0) {
+            certSelect.innerHTML = '<option value="">-- নির্বাচন করুন --</option>';
+            matches.forEach(item => { certSelect.innerHTML += `<option value="${item.Certificate}">${item.Certificate}</option>`; });
+            certSelect.disabled = false;
+        } else { certSelect.disabled = true; }
+    } else { certSelect.disabled = true; }
+}
+
+function populateOfficeCertDetails() {
+    const item = db.find(x => x.BP === document.getElementById('off_bp').value.trim() && x.Certificate === document.getElementById('off_cert').value);
+    if(item) {
+        document.getElementById('off_board').value = item.Board;
+        document.getElementById('off_rank').value = item.Rank;
+        document.getElementById('off_brash').value = item.Brash;
+        document.getElementById('off_name').value = item.Name;
+        document.getElementById('off_unit').value = item.Unit;
+    }
+}
+
+function saveOfficeForm(e) {
+    e.preventDefault();
+    const payload = {
+        action: "updateOffice", BP: document.getElementById('off_bp').value.trim(),
+        Certificate: document.getElementById('off_cert').value, officeOrderNo: document.getElementById('off_officeOrderNo').value,
+        officeOrdeDate: document.getElementById('off_officeOrdeDate').value
+    };
+    fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .then(() => { alert('অফিস আদেশ সফলভাবে সম্পন্ন হয়েছে।'); e.target.reset(); document.getElementById('off_cert').disabled = true; fetchDataFromCloud(); });
+}
+
+function renderDataTable() {
+    const tbody = document.getElementById('dataTableBody');
+    const filterVal = document.getElementById('filterStatus').value;
+    tbody.innerHTML = '';
+    let filteredData = db.filter(item => filterVal === '' || item.Status === filterVal);
+    document.getElementById('dataCount').innerText = filteredData.length;
+
+    filteredData.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        let actionBtnHTML = '';
+        if(currentUserRole === 'admin') {
+            if(item.Status === 'অফিস আদেশ সম্পন্ন') actionBtnHTML = '<span style="color:#94a3b8;">Hidden</span>';
+            else if(item.deleteRequested) actionBtnHTML = `<button class="btn" disabled style="font-size:0.75rem; padding:0.2rem 0.5rem;">Requested</button>`;
+            else actionBtnHTML = `<button class="btn btn-danger" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="adminDeleteRequest('${item.BP}', '${item.Certificate}')">Delete</button>`;
+        } else if(currentUserRole === 'master') {
+            if(item.deleteRequested) actionBtnHTML = `<button class="btn btn-danger" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="masterConfirmDelete('${item.BP}', '${item.Certificate}')">Delete</button>`;
+            else actionBtnHTML = `<button class="btn" disabled style="font-size:0.75rem; padding:0.2rem 0.5rem;">Delete</button>`;
+        }
+
+        const adminDelTd = currentUserRole === 'master' ? `<td>${item.adminDeleteDate || ''}</td>` : '';
+        tr.innerHTML = `
+            <td>${index + 1}</td><td>${item.BP}</td><td>${item.Rank}</td><td>${item.Brash || ''}</td>
+            <td>${item.Name}</td><td>${item.Unit}</td><td>${item.Certificate}</td><td>${item.aRDate || ''}</td>
+            <td>${item.cInvDNo ? item.cInvDNo + ' (' + item.cInvDDate + ')' : ''}</td><td>${item.Board || ''}</td>
+            <td>${item.cVerifiedRNo ? item.cVerifiedRNo + ' (' + item.cVerifiedRDate + ')' : ''}</td>
+            <td>${item.officeOrderNo ? item.officeOrderNo + ' (' + item.officeOrdeDate + ')' : ''}</td>
+            <td><strong>${item.Status}</strong></td>${adminDelTd}<td class="no-print">${actionBtnHTML}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderRecycleTable() {
+    const tbody = document.getElementById('recycleTableBody');
+    const filterVal = document.getElementById('filterRecycleStatus').value;
+    tbody.innerHTML = '';
+    let filteredData = recycleDb.filter(item => filterVal === '' || item.Status === filterVal);
+    document.getElementById('recycleCount').innerText = filteredData.length;
+
+    filteredData.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index + 1}</td><td>${item.BP}</td><td>${item.Rank}</td><td>${item.Brash || ''}</td>
+            <td>${item.Name}</td><td>${item.Unit}</td><td>${item.Certificate}</td><td>${item.aRDate || ''}</td>
+            <td>${item.cInvDNo ? item.cInvDNo + ' (' + item.cInvDDate + ')' : ''}</td><td>${item.Board || ''}</td>
+            <td>${item.cVerifiedRNo ? item.cVerifiedRNo + ' (' + item.cVerifiedRDate + ')' : ''}</td>
+            <td>${item.officeOrderNo ? item.officeOrderNo + ' (' + item.officeOrdeDate + ')' : ''}</td>
+            <td>${item.Status}</td><td>${item.adminDeleteDate || ''}</td><td>${item.masterDeleteDate || ''}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function adminDeleteRequest(bp, cert) {
+    if(confirm('আপনি কি এই ডাটাটি মুছে ফেলার জন্য Master ID-তে রিকোয়েস্ট পাঠাতে চান?')) {
+        fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "adminDeleteRequest", BP: bp, Certificate: cert, adminDeleteDate: getCurrentTimestamp() }) })
+        .then(res => res.json()).then(() => { fetchDataFromCloud(); setTimeout(renderDataTable, 500); });
+    }
+}
+
+function masterConfirmDelete(bp, cert) {
+    if(confirm('আপনি কি নিশ্চিত যে ডাটাটি মূল ডাটাবেজ থেকে মুছে রিসাইকেল বিন-এ স্থানান্তর করতে চান?')) {
+        fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "masterConfirmDelete", BP: bp, Certificate: cert, masterDeleteDate: getCurrentTimestamp() }) })
+        .then(res => res.json()).then(() => { fetchDataFromCloud(); setTimeout(renderDataTable, 500); });
+    }
+}
+
+function exportToCSV(filename, tableId) {
+    let csv = [];
+    let rows = document.querySelectorAll(`#${tableId} tr`);
+    for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        for (let j = 0; j < cols.length; j++) {
+            if(!cols[j].classList.contains('no-print')) {
+                let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+                row.push('"' + data + '"');
+            }
+        }
+        csv.push(row.join(","));
+    }
+    let csvFile = new Blob(["\ufeff" + csv.join("\n")], {type: "text/csv;charset=utf-8;"});
+    let downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+</script>
+</body>
+</html>
